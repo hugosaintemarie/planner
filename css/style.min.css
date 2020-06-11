@@ -1,0 +1,2 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter', sans-serif;background-color:#1e1e1e;color:#f1f1f1;padding:3em;user-select:none}.month-wrap{width:100%}.month-wrap div{display:flex}.month-wrap div>div{border:1px solid white;height:100px;flex:1;padding:16px}.month-wrap div>div.previous-month-day,.month-wrap div>div.next-month-day{opacity:.3}
+/*# sourceMappingURL=style.min.css.map */
