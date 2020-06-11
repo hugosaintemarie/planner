@@ -14,6 +14,14 @@ body {
     user-select: none;
 }
 
+.row {
+    display: flex;
+
+    > * {
+        flex: 1;
+    }
+}
+
 .month-wrap {
     width: 100%;
 
@@ -22,12 +30,11 @@ body {
 
         > div {
             border: 1px solid white;
-            height: 100px;
+            height: 40px;
             flex: 1;
-            padding: 16px;
+            padding: 8px;
             
-            &.previous-month-day,
-            &.next-month-day {
+            &.out {
                 opacity: .3;
             }
         }
