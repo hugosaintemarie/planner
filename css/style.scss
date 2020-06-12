@@ -207,6 +207,13 @@ main {
                 opacity: .3;
             }
 
+            > span {
+                width: 100%;
+                color: #666;
+                text-transform: uppercase;
+                font-size: .8em;
+            }
+
             .event {
                 height: 24px;
                 background-color: grey;

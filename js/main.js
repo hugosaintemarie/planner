@@ -52,10 +52,12 @@ $(document).on('click', '.calendars-wrap .calendar', e => {
     $('.calendar-wrap .content').html($(e.target).closest('.calendar').find('.content').html());
 });
 
-$(document).on('click focus', '[contenteditable]', e => {
+// Click on contenteditable: select all
+$(document).on('click focusin', '[contenteditable]', e => {
     document.execCommand('selectAll', false, null);
 });
 
+// Enter key in contenteditable: prevent new line and blur
 $(document).on('keypress', '[contenteditable]', e => {
     if (e.which === 13) {
         $(e.target).blur();
@@ -63,6 +65,7 @@ $(document).on('keypress', '[contenteditable]', e => {
     }
 });
 
+// Rename calendar in sidebar
 $(document).on('input', '.calendars-wrap p span', e => {
     if ($(e.target).closest('.calendar').hasClass('selected')) {
         const val = $(e.target).text();
@@ -70,9 +73,21 @@ $(document).on('input', '.calendars-wrap p span', e => {
     }
 });
 
+// Rename selected calendar
 $(document).on('input', '.calendar-wrap h2', e => {
     const val = $(e.target).text();
     $('.calendars-wrap .calendar.selected p span').text(val);
+});
+
+// Rename event
+$(document).on('input', '.events-wrap ul span', e => {
+    const $el = $(e.target);
+    const val = $el.text();
+    const type = $el.closest('li').attr('data-type');
+
+    console.log(`.event[data-type="${type}"]`);
+
+    $(`.event[data-type="${type}"] span`).text(val);
 });
 
 let event = { id: 1 };
@@ -80,8 +95,11 @@ let event = { id: 1 };
 $(document).on('mousedown', '.calendar-wrap .day', e => {
     if (!settings.multipleEventsPerDay && $(e.target).closest('.day').find('.event').length) return;
 
-    event.title = $('.events-wrap ul li.selected').text();
-    event.color = $('.events-wrap ul li.selected').css('background-color');
+    const $event = $('.events-wrap ul li.selected');
+
+    event.type = $event.attr('data-type');
+    event.title = $event.text();
+    event.color = $event.css('background-color');
     event.start = $(e.target).closest('.day').attr('data-iso');
     event.end = $(e.target).closest('.day').attr('data-iso');
 
@@ -123,7 +141,7 @@ function buildEvent() {
         // Add event
         let classname = days.indexOf(day) === 0 ? ' start' : '';
         classname += days.indexOf(day) === days.length - 1 ? ' end' : '';
-        $el.append(`<div data-id="${event.id}" class="event${classname}" style="background-color: ${event.color}">${classname.includes('start') ? `<span>${event.title}</span>` : ''}</div>`);
+        $el.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="background-color: ${event.color}">${classname.includes('start') ? `<span>${event.title}</span>` : ''}</div>`);
     }
 }
 
@@ -151,7 +169,7 @@ function buildCalendar() {
 
         const classname = day < start || day > end ? ' out' : '';
 
-        html += `<div class="day${classname}" data-iso="${day.toISOString().split('T')[0]}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span></div>`;
+        html += `<div class="day${classname}" data-iso="${day.toISOString().split('T')[0]}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span></div>`;
 
         if (day.getDay() === 0) html += '</div><div>';
     }
