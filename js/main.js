@@ -6,9 +6,16 @@ $(document).on('change', '#start, #end', () => {
     buildCalendar();
 });
 
+$(document).on('click', '.events-wrap ul li', e => {
+    $('.events-wrap ul li.selected').removeClass('selected');
+    $(e.target).addClass('selected');
+});
+
 let event = { id: 1 };
 
 $(document).on('mousedown', '.day', e => {
+    event.title = $('.events-wrap ul li.selected').text();
+    event.color = $('.events-wrap ul li.selected').css('background-color');
     event.start = $(e.target).closest('.day').attr('data-iso');
     event.end = $(e.target).closest('.day').attr('data-iso');
 
@@ -18,7 +25,7 @@ $(document).on('mousedown', '.day', e => {
 });
 
 $(document).on('mouseenter', '.day', e => {
-    if (!event.start) return;
+    if (!event.title) return;
     event.end = $(e.target).closest('.day').attr('data-iso');
 
     buildEvent();
@@ -54,7 +61,7 @@ function buildEvent() {
         // Add event
         let classname = days.indexOf(day) === 0 ? ' start' : '';
         classname += days.indexOf(day) === days.length - 1 ? ' end' : '';
-        $el.append(`<div data-id="${event.id}" class="event${classname}">${classname.includes('start') ? `Event ${event.id}` : ''}</div>`);
+        $el.append(`<div data-id="${event.id}" class="event${classname}" style="background-color: ${event.color}">${classname.includes('start') ? `${event.title}` : ''}</div>`);
     }
 }
 
