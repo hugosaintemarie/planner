@@ -13,11 +13,31 @@ $(document).ready(() => {
 // Add new calendar
 $(document).on('click', '.calendars-wrap .add', e => {
     const calendar = `<div class="calendar">
+        <div class="tools">
+            <i data-tool="duplicate" class="far fa-clone"></i>
+            <i data-tool="delete" class="far fa-trash-alt"></i>
+        </div>
         <div class="content">${ buildCalendar() }</div>
         <p><span contenteditable spellcheck="false">Calendar ${$('.calendars-wrap .calendar').length + 1}</span></p>
     </div>`;
 
     $(e.target).closest('.add').before(calendar);
+
+    // Unselect any selection
+    window.getSelection().removeAllRanges();
+});
+
+// Duplicate calendar
+$(document).on('click', '.calendar .tools [data-tool="duplicate"]', e => {
+    const $calendar = $(e.target).closest('.calendar')
+    const $new = $calendar.clone();
+
+    // Remove selected class and rename with 'copy'
+    $new.removeClass('selected');
+    $new.find('p span').append(' copy');
+
+    // Clone calendar
+    $calendar.after($new);
 
     // Unselect any selection
     window.getSelection().removeAllRanges();
