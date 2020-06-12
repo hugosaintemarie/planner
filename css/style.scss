@@ -32,7 +32,7 @@ body {
 
 header {
     height: 64px;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid #333;
     padding: 16px;
 }
 
@@ -51,11 +51,11 @@ main {
     }
 
     .calendars-wrap {
-        border-right: 1px solid white;
+        border-right: 1px solid #333;
     }
 
     .events-wrap {
-        border-left: 1px solid white;
+        border-left: 1px solid #333;
     }
 }
 
@@ -64,6 +64,8 @@ main {
         margin-top: 16px;
 
         .calendar {
+            cursor: pointer;
+
             &.selected {
                 .content {
                     border-color: white;
@@ -110,9 +112,23 @@ main {
             }
 
             p {
-                margin-top: 4px;
                 text-align: center;
                 opacity: .3;
+                margin-top: 8px;
+
+                span {
+                    padding: 4px 8px;
+                    border-radius: 4px;
+
+                    &:focus {
+                        outline: none;
+                        background-color: #111;
+                    }
+
+                    &::selection {
+                        background-color: #333;
+                    }
+                }
             }
         }
     }
@@ -120,6 +136,23 @@ main {
 
 .calendar-wrap {
     padding: 16px 0;
+
+    h2 {
+        display: inline-block;
+        margin-top: -4px;
+        margin-left: -8px;
+        padding: 4px 8px;
+        border-radius: 4px;
+
+        &:focus {
+            outline: none;
+            background-color: #111;
+        }
+
+        &::selection {
+            background-color: #333;
+        }
+    }
 
     .head {
         display: flex;

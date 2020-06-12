@@ -20,7 +20,27 @@ $(document).on('click', '.calendars-wrap .calendar', e => {
     $('.calendars-wrap .calendar.selected').removeClass('selected');
     $(e.target).closest('.calendar').addClass('selected');
 
-    $('.calendar-wrap .content').html($(e.target).closest('.content').html());
+    // Update title
+    $('.calendar-wrap h2').html($(e.target).closest('.calendar').find('p span').html());
+
+    // Update main calendar
+    $('.calendar-wrap .content').html($(e.target).closest('.calendar').find('.content').html());
+});
+
+$(document).on('click', '.calendars-wrap p span, .calendar-wrap h2', e => {
+    document.execCommand('selectAll', false, null);
+});
+
+$(document).on('input', '.calendars-wrap p span', e => {
+    if ($(e.target).closest('.calendar').hasClass('selected')) {
+        const val = $(e.target).text();
+        $('.calendar-wrap h2').text(val);
+    }
+});
+
+$(document).on('input', '.calendar-wrap h2', e => {
+    const val = $(e.target).text();
+    $('.calendars-wrap .calendar.selected p span').text(val);
 });
 
 let event = { id: 1 };
