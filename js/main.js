@@ -1,3 +1,8 @@
+const settings = {
+    spreadOnDrag: false,
+    multipleEventsPerDay: false,
+}
+
 $(document).ready(() => {
     buildCalendar();
 });
@@ -11,26 +16,31 @@ $(document).on('click', '.events-wrap ul li', e => {
     $(e.target).addClass('selected');
 });
 
+$(document).on('click', '.calendars-wrap .calendar', e => {
+    $('.calendars-wrap .calendar.selected').removeClass('selected');
+    $(e.target).closest('.calendar').addClass('selected');
+
+    $('.calendar-wrap .content').html($(e.target).closest('.content').html());
+});
+
 let event = { id: 1 };
 
-$(document).on('mousedown', '.day', e => {
+$(document).on('mousedown', '.calendar-wrap .day', e => {
+    if (!settings.multipleEventsPerDay && $(e.target).closest('.day').find('.event').length) return;
+
     event.title = $('.events-wrap ul li.selected').text();
     event.color = $('.events-wrap ul li.selected').css('background-color');
     event.start = $(e.target).closest('.day').attr('data-iso');
     event.end = $(e.target).closest('.day').attr('data-iso');
 
     buildEvent();
-
-    // $el.append('<div class="event start end"></div>');
 });
 
 $(document).on('mouseenter', '.day', e => {
-    if (!event.title) return;
+    if (!event.title || !settings.spreadOnDrag) return;
     event.end = $(e.target).closest('.day').attr('data-iso');
 
     buildEvent();
-
-    // $el.append('<div class="event start end"></div>');
 });
 
 $(document).on('mouseup', '.day', e => {
@@ -56,12 +66,12 @@ function buildEvent() {
 
     for (day of days) {
         const iso = day.toISOString().split('T')[0];
-        const $el = $(`.day[data-iso="${iso}"]`);
+        const $el = $(`.calendars-wrap .calendar.selected .day[data-iso="${iso}"], .calendar-wrap .day[data-iso="${iso}"]`);
 
         // Add event
         let classname = days.indexOf(day) === 0 ? ' start' : '';
         classname += days.indexOf(day) === days.length - 1 ? ' end' : '';
-        $el.append(`<div data-id="${event.id}" class="event${classname}" style="background-color: ${event.color}">${classname.includes('start') ? `${event.title}` : ''}</div>`);
+        $el.append(`<div data-id="${event.id}" class="event${classname}" style="background-color: ${event.color}">${classname.includes('start') ? `<span>${event.title}</span>` : ''}</div>`);
     }
 }
 
@@ -89,11 +99,12 @@ function buildCalendar() {
 
         const classname = day < start || day > end ? ' out' : '';
 
-        html += `<div class="day${classname}" data-iso="${day.toISOString().split('T')[0]}">${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</div>`;
+        html += `<div class="day${classname}" data-iso="${day.toISOString().split('T')[0]}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span></div>`;
 
         if (day.getDay() === 0) html += '</div><div>';
     }
     html += '</div>';
 
     $('.calendar-wrap .content').html(html);
+    $('.calendars-wrap .calendar .content').html(html);
 }

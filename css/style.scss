@@ -59,6 +59,65 @@ main {
     }
 }
 
+.calendars-wrap {
+    .calendars {
+        margin-top: 16px;
+
+        .calendar {
+            &.selected {
+                .content {
+                    border-color: white;
+                    border-radius: 4px;
+                }
+
+                p {
+                    opacity: 1;
+                }
+            }
+
+            &:not(:last-child) {
+                margin-bottom: 16px;
+            }
+
+            .content {
+                padding: 8px;
+                border: 2px solid transparent;
+    
+                > div {
+                    display: flex;
+    
+                    .day {
+                        flex: 1;
+                        height: 16px;
+                        border: 1px solid grey;
+    
+                        &.out {
+                            opacity: .3;
+                        }
+                        
+                        span {
+                            display: none;
+                        }
+
+                        .event {
+                            width: 8px;
+                            height: 8px;
+                            border-radius: 50%;
+                            margin: 3px 8px;
+                        }
+                    }
+                }
+            }
+
+            p {
+                margin-top: 4px;
+                text-align: center;
+                opacity: .3;
+            }
+        }
+    }
+}
+
 .calendar-wrap {
     padding: 16px 0;
 
