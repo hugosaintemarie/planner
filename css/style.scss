@@ -131,6 +131,17 @@ main {
                 }
             }
         }
+
+        .add {
+            text-align: center;
+            cursor: pointer;
+            opacity: .3;
+            margin-top: 32px;
+
+            &:hover {
+                opacity: .7;
+            }
+        }
     }
 }
 

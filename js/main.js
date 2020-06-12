@@ -4,11 +4,27 @@ const settings = {
 }
 
 $(document).ready(() => {
-    buildCalendar();
+    const calendar = buildCalendar();
+
+    $('.calendar-wrap .content').html(calendar);
+    $('.calendars-wrap .calendar .content').html(calendar);
+});
+
+$(document).on('click', '.calendars-wrap .add', e => {
+    const calendar = `<div class="calendar">
+        <div class="content">${ buildCalendar() }</div>
+        <p><span contenteditable>Calendar ${$('.calendars-wrap .calendar').length + 1}</span></p>
+    </div>`;
+
+    $(e.target).closest('.add').before(calendar)
+    // $('.calendars-wrap .calendar .content').html(calendar);
 });
 
 $(document).on('change', '#start, #end', () => {
-    buildCalendar();
+    const calendar = buildCalendar();
+
+    $('.calendar-wrap .content').html(calendar);
+    $('.calendars-wrap .calendar .content').html(calendar);
 });
 
 $(document).on('click', '.events-wrap ul li', e => {
@@ -125,6 +141,5 @@ function buildCalendar() {
     }
     html += '</div>';
 
-    $('.calendar-wrap .content').html(html);
-    $('.calendars-wrap .calendar .content').html(html);
+    return html;
 }
