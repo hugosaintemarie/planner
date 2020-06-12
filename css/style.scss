@@ -34,6 +34,11 @@ header {
     height: 64px;
     border-bottom: 1px solid #333;
     padding: 16px;
+
+    div:nth-child(2) {
+        text-align: right;
+        padding-top: 4px;
+    }
 }
 
 main {
