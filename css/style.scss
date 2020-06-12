@@ -237,10 +237,12 @@ main {
         margin-top: 16px;
 
         li {
+            // height: 36px;
             border-radius: 4px;
-            padding: 8px 12px;
+            padding: 8px;
             opacity: .3;
             cursor: pointer;
+            background-color: grey;
 
             &:not(:last-child) {
                 margin-bottom: 8px;
@@ -261,6 +263,39 @@ main {
             &:nth-child(3) {
                 background-color: #109210;
             }
+
+            &:nth-child(4) {
+                background-color: #8a2e82;
+            }
+
+            &:nth-child(5) {
+                background-color: #c56a94;
+            }
+
+            span {
+                display: inline-block;
+                padding: 4px 8px;
+                border-radius: 4px;
+
+                &:focus {
+                    outline: none;
+                    background-color: rgba(0,0,0,.2);
+                }
+                
+                &::selection {
+                    background-color: #333;
+                }
+            }
+        }
+    }
+
+    .add {
+        cursor: pointer;
+        opacity: .3;
+        margin-top: 16px;
+
+        &:hover {
+            opacity: .7;
         }
     }
 }

@@ -13,11 +13,20 @@ $(document).ready(() => {
 $(document).on('click', '.calendars-wrap .add', e => {
     const calendar = `<div class="calendar">
         <div class="content">${ buildCalendar() }</div>
-        <p><span contenteditable>Calendar ${$('.calendars-wrap .calendar').length + 1}</span></p>
+        <p><span contenteditable spellcheck="false">Calendar ${$('.calendars-wrap .calendar').length + 1}</span></p>
     </div>`;
 
-    $(e.target).closest('.add').before(calendar)
-    // $('.calendars-wrap .calendar .content').html(calendar);
+    $(e.target).closest('.add').before(calendar);
+});
+
+$(document).on('click', '.events-wrap .add', e => {
+    const event = `<li data-type="${$('.events-wrap ul li').length + 1}"><span contenteditable spellcheck="false">New event</span></li>`;
+
+    const $ul = $(e.target).closest('.events-wrap').find('ul');
+
+    $ul.append(event);
+    $ul.find('li:last-child').trigger('click');
+    $ul.find('li:last-child span').focus();
 });
 
 $(document).on('change', '#start, #end', () => {
@@ -29,7 +38,7 @@ $(document).on('change', '#start, #end', () => {
 
 $(document).on('click', '.events-wrap ul li', e => {
     $('.events-wrap ul li.selected').removeClass('selected');
-    $(e.target).addClass('selected');
+    $(e.target).closest('li').addClass('selected');
 });
 
 $(document).on('click', '.calendars-wrap .calendar', e => {
@@ -43,8 +52,15 @@ $(document).on('click', '.calendars-wrap .calendar', e => {
     $('.calendar-wrap .content').html($(e.target).closest('.calendar').find('.content').html());
 });
 
-$(document).on('click', '.calendars-wrap p span, .calendar-wrap h2', e => {
+$(document).on('click focus', '[contenteditable]', e => {
     document.execCommand('selectAll', false, null);
+});
+
+$(document).on('keypress', '[contenteditable]', e => {
+    if (e.which === 13) {
+        $(e.target).blur();
+        return false;
+    }
 });
 
 $(document).on('input', '.calendars-wrap p span', e => {
