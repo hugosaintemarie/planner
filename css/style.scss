@@ -96,7 +96,9 @@ main {
                     .day {
                         flex: 1;
                         height: 16px;
-                        border: 1px solid grey;
+                        border: 1px solid #444;
+                        margin-left: -1px;
+                        margin-top: -1px;
     
                         &.out {
                             opacity: .3;
@@ -173,7 +175,7 @@ main {
     .head {
         display: flex;
         padding: 16px 0;
-        border-bottom: 1px solid rgba(255,255,255,.3);
+        border-bottom: 1px solid rgba(255,255,255,.1);
         margin-bottom: -1px;
 
         > div {
@@ -188,6 +190,8 @@ main {
         max-height: calc(100% - 64px);
         padding-bottom: 16px;
         overflow-y: auto;
+        padding-left: 1px;
+        padding-top: 1px;
 
         &::-webkit-scrollbar {
             width: 0;
@@ -199,9 +203,11 @@ main {
         
         .day {
             flex: 1;
-            border: 1px solid white;
+            border: 1px solid #444;
             height: 72px;
             padding: 8px;
+            margin-left: -1px;
+            margin-top: -1px;
             
             &.out {
                 opacity: .3;
@@ -220,7 +226,7 @@ main {
                 margin-top: 8px;
                 margin-right: -8px;
                 margin-left: -8px;
-                padding: 2px 4px;
+                padding: 2px 6px;
 
                 &.start {
                     margin-left: 0;

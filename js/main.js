@@ -10,6 +10,7 @@ $(document).ready(() => {
     $('.calendars-wrap .calendar .content').html(calendar);
 });
 
+// Add new calendar
 $(document).on('click', '.calendars-wrap .add', e => {
     const calendar = `<div class="calendar">
         <div class="content">${ buildCalendar() }</div>
@@ -17,16 +18,21 @@ $(document).on('click', '.calendars-wrap .add', e => {
     </div>`;
 
     $(e.target).closest('.add').before(calendar);
+
+    // Unselect any selection
+    window.getSelection().removeAllRanges();
 });
 
 $(document).on('click', '.events-wrap .add', e => {
-    const event = `<li data-type="${$('.events-wrap ul li').length + 1}"><span contenteditable spellcheck="false">New event</span></li>`;
+    const event = `<li data-type="${$('.events-wrap ul li').length + 1}"><span contenteditable spellcheck="false"></span></li>`;
 
     const $ul = $(e.target).closest('.events-wrap').find('ul');
-
     $ul.append(event);
+
+    // Select new event and focus span
     $ul.find('li:last-child').trigger('click');
     $ul.find('li:last-child span').focus();
+    document.execCommand('selectAll', false, null);
 });
 
 $(document).on('change', '#start, #end', () => {
@@ -41,7 +47,8 @@ $(document).on('click', '.events-wrap ul li', e => {
     $(e.target).closest('li').addClass('selected');
 });
 
-$(document).on('click', '.calendars-wrap .calendar', e => {
+// Switch calendar
+$(document).on('click', '.calendars-wrap .calendar .content', e => {
     $('.calendars-wrap .calendar.selected').removeClass('selected');
     $(e.target).closest('.calendar').addClass('selected');
 
@@ -50,12 +57,20 @@ $(document).on('click', '.calendars-wrap .calendar', e => {
 
     // Update main calendar
     $('.calendar-wrap .content').html($(e.target).closest('.calendar').find('.content').html());
+
+    // Unselect any selection
+    window.getSelection().removeAllRanges();
 });
 
-// Click on contenteditable: select all
-$(document).on('click focusin', '[contenteditable]', e => {
-    document.execCommand('selectAll', false, null);
-});
+// // Click on contenteditable: select all
+// $(document).on('click', '[contenteditable]', e => {
+//     document.execCommand('selectAll', false, null);
+// });
+
+// // Tab to contenteditable: select all
+// $(document).on('keyup', '[contenteditable]', e => {
+//     if (e.which === 9) document.execCommand('selectAll', false, null);
+// });
 
 // Enter key in contenteditable: prevent new line and blur
 $(document).on('keypress', '[contenteditable]', e => {
@@ -84,8 +99,6 @@ $(document).on('input', '.events-wrap ul span', e => {
     const $el = $(e.target);
     const val = $el.text();
     const type = $el.closest('li').attr('data-type');
-
-    console.log(`.event[data-type="${type}"]`);
 
     $(`.event[data-type="${type}"] span`).text(val);
 });
