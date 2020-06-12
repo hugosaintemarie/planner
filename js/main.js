@@ -43,6 +43,11 @@ $(document).on('click', '.calendar .tools [data-tool="duplicate"]', e => {
     window.getSelection().removeAllRanges();
 });
 
+// Delete calendar
+$(document).on('click', '.calendar .tools [data-tool="delete"]', e => {
+    $(e.target).closest('.calendar').remove();
+});
+
 $(document).on('click', '.events-wrap .add', e => {
     const event = `<li data-type="${$('.events-wrap ul li').length + 1}"><span contenteditable spellcheck="false"></span></li>`;
 
