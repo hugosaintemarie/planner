@@ -165,9 +165,9 @@ main {
 
                 span {
                     display: inline-block;
-                    max-width: calc(100% - 64px);
                     padding: 4px 8px;
                     border-radius: 4px;
+                    word-break: break-word;
 
                     &:focus {
                         outline: none;
@@ -181,7 +181,7 @@ main {
             }
         }
     }
-    
+
     .add {
         text-align: center;
         cursor: pointer;
