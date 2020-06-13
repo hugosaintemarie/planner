@@ -136,15 +136,27 @@ $(document).on('input', '.events-wrap ul span', e => {
 let event = { id: 1 };
 
 $(document).on('mousedown', '.calendar-wrap .day', e => {
-    if (!settings.multipleEventsPerDay && $(e.target).closest('.day').find('.event').length) return;
-
     const $event = $('.events-wrap ul li.selected');
+    const type = $event.attr('data-type');
+    const $day = $(e.target).closest('.day');
 
-    event.type = $event.attr('data-type');
+    // Already an event that day, when unallowed
+    if (!settings.multipleEventsPerDay && $(e.target).closest('.day').find('.event').length) {
+        const $presentEvent = $day.find('.event');
+
+        // Remove event in main calendar and sidebar
+        const $events = $(`.calendars-wrap .calendar.selected [data-iso="${$presentEvent.closest('.day').attr('data-iso')}"] .event, .calendar-wrap [data-iso="${$presentEvent.closest('.day').attr('data-iso')}"] .event`);
+        $events.remove();
+
+        // If same type, simply remove event and don't recreate one (toggle-like behavior)
+        if (type === $presentEvent.attr('data-type')) return;
+    }
+
+    event.type = type;
     event.title = $event.text();
     event.color = $event.css('background-color');
-    event.start = $(e.target).closest('.day').attr('data-iso');
-    event.end = $(e.target).closest('.day').attr('data-iso');
+    event.start = $day.attr('data-iso');
+    event.end = $day.attr('data-iso');
 
     buildEvent();
 });
