@@ -1,6 +1,7 @@
 const settings = {
     spreadOnDrag: false,
     multipleEventsPerDay: false,
+    eventsColors: ['#1d6c99', '#c2761f', '#109210', '#8a2e82', '#c56a94']
 }
 
 $(document).ready(() => {
@@ -8,11 +9,13 @@ $(document).ready(() => {
 
     $('.calendar-wrap .content').html(calendar);
     $('.calendars-wrap .calendar .content').html(calendar);
+
+    addEvents(['Workout', 'Tennis', 'Jogging']);
 });
 
 // Add new calendar
-$(document).on('click', '.calendars-wrap .add', e => {
-    const calendar = `<div class="calendar">
+$(document).on('click', '.calendars-wrap .add', () => {
+    const calendar = `<div class="calendar sortable">
         <div class="tools">
             <i data-tool="duplicate" class="far fa-clone"></i>
             <i data-tool="delete" class="far fa-trash-alt"></i>
@@ -21,7 +24,7 @@ $(document).on('click', '.calendars-wrap .add', e => {
         <p><span contenteditable spellcheck="false">Calendar ${$('.calendars-wrap .calendar').length + 1}</span></p>
     </div>`;
 
-    $(e.target).closest('.add').before(calendar);
+    $('.calendars-wrap .calendars').append(calendar);
 
     // Unselect any selection
     window.getSelection().removeAllRanges();
@@ -48,16 +51,18 @@ $(document).on('click', '.calendar .tools [data-tool="delete"]', e => {
     $(e.target).closest('.calendar').remove();
 });
 
+// Add new event
 $(document).on('click', '.events-wrap .add', e => {
-    const event = `<li data-type="${$('.events-wrap ul li').length + 1}"><span contenteditable spellcheck="false"></span></li>`;
+    const type = parseInt($('.events-wrap ul li').length);
+    const event = `<li data-type="${type}" class="sortable" style="background-color: ${settings.eventsColors[type]}"><span contenteditable spellcheck="false"></span></li>`;
 
     const $ul = $(e.target).closest('.events-wrap').find('ul');
     $ul.append(event);
 
     // Select new event and focus span
-    $ul.find('li:last-child').trigger('click');
+    $ul.find('li.selected').removeClass('selected');
+    $ul.find('li:last-child').addClass('selected');
     $ul.find('li:last-child span').focus();
-    document.execCommand('selectAll', false, null);
 });
 
 $(document).on('change', '#start, #end', () => {
@@ -67,13 +72,13 @@ $(document).on('change', '#start, #end', () => {
     $('.calendars-wrap .calendar .content').html(calendar);
 });
 
-$(document).on('click', '.events-wrap ul li', e => {
+$(document).on('mousedown', '.events-wrap ul li', e => {
     $('.events-wrap ul li.selected').removeClass('selected');
     $(e.target).closest('li').addClass('selected');
 });
 
 // Switch calendar
-$(document).on('click', '.calendars-wrap .calendar .content', e => {
+$(document).on('mousedown', '.calendars-wrap .calendar .content', e => {
     $('.calendars-wrap .calendar.selected').removeClass('selected');
     $(e.target).closest('.calendar').addClass('selected');
 
@@ -214,4 +219,114 @@ function buildCalendar() {
     html += '</div>';
 
     return html;
+}
+
+let $sortedEl;
+let sortedPosition = {};
+let sortedOrigin = {};
+
+$(document).on('mousedown', '.sortable', e => {
+    $sortedEl = $(e.target).closest('.sortable');
+
+    sortedPosition = $sortedEl.position();
+    
+    sortedOrigin = {
+        x: e.clientX,
+        y: e.clientY
+    };
+
+    $sortedEl.css({
+        'cursor': 'grabbing',
+        'zIndex': 1
+    });
+
+    const $parent = $sortedEl.parent();
+
+    $sortedEl.parent().css({
+        'width': $parent.outerWidth(),
+        'height': $parent.outerHeight()
+    });
+
+    $parent.children().each((id, el) => {
+        const $el = $(el);
+        $el.css({
+            'top': $el.position().top,
+            'left': $el.position().left,
+            'width': $el.outerWidth(),
+            'height': $el.outerHeight()
+        });
+    });
+
+    $parent.children().each((id, el) => {
+        $(el).css('position', 'absolute');
+    });
+});
+
+$(document).on('mouseup', e => {
+    if (!$sortedEl) return;
+
+    $sortedEl.css({
+        'cursor': '',
+        'zIndex': ''
+    });
+    
+    const $parent = $sortedEl.parent();
+
+    $sortedEl.parent().css({
+        'width': '',
+        'height': ''
+    });
+
+    $parent.children().each((id, el) => {
+        const $el = $(el);
+        $el.css({
+            'top': '',
+            'left': '',
+            'width': '',
+            'height': ''
+        });
+    });
+
+    $parent.children().each((id, el) => {
+        $(el).css('position', '');
+    });
+
+    $sortedEl = null;
+});
+
+$(document).on('mousemove', e => {
+    if (!$sortedEl) return;
+
+    const deltaX = e.clientX - sortedOrigin.x;
+    const deltaY = e.clientY - sortedOrigin.y;
+
+    $sortedEl.css({
+        'top': Math.min(Math.max(sortedPosition.top + deltaY, $sortedEl.parent().offset().top), $sortedEl.parent().offset().top + $sortedEl.parent().outerHeight() - $sortedEl.outerHeight()),
+        // 'left': sortedPosition.left + deltaX
+    });
+
+    $sortedEl.nextAll().each((id, el) => {
+        const $el = $(el);
+        if ($sortedEl.position().top > $el.position().top - 30) {
+            $el.css('top', $el.position().top - $sortedEl.outerHeight(true));
+            $sortedEl.before($el);
+        }
+    });
+
+    $sortedEl.prevAll().each((id, el) => {
+        const $el = $(el);
+        if ($sortedEl.position().top < $el.position().top + 30) {
+            $sortedEl.after($el);
+            $el.css('top', $el.position().top + $sortedEl.outerHeight(true));
+        }
+    });
+});
+
+function addEvents(array) {
+    for (const event of array) {
+        const $ul = $('.events-wrap ul');
+        const type = $ul.find('li').length;
+        const li = `<li data-type="${type}" style="background-color: ${settings.eventsColors[type]}" class="sortable${type === 0 ? ' selected' : ''}"><span contenteditable>${event}</span></li>`;
+        $ul.append(li);
+    }
 }

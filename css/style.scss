@@ -127,6 +127,7 @@ main {
             .content {
                 padding: 8px;
                 border: 2px solid transparent;
+                background-color: #1e1e1e;
     
                 > div {
                     display: flex;
@@ -179,16 +180,16 @@ main {
                 }
             }
         }
+    }
+    
+    .add {
+        text-align: center;
+        cursor: pointer;
+        opacity: .3;
+        margin-top: 32px;
 
-        .add {
-            text-align: center;
-            cursor: pointer;
-            opacity: .3;
-            margin-top: 32px;
-
-            &:hover {
-                opacity: .7;
-            }
+        &:hover {
+            opacity: .7;
         }
     }
 }
@@ -304,26 +305,6 @@ main {
 
             &.selected {
                 opacity: 1;
-            }
-
-            &:nth-child(1) {
-                background-color: #1d6c99;
-            }
-
-            &:nth-child(2) {
-                background-color: #c2761f;
-            }
-
-            &:nth-child(3) {
-                background-color: #109210;
-            }
-
-            &:nth-child(4) {
-                background-color: #8a2e82;
-            }
-
-            &:nth-child(5) {
-                background-color: #c56a94;
             }
 
             span {
