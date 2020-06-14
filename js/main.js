@@ -25,9 +25,9 @@ $(document).on('click', '.calendars-wrap .add', () => {
     </div>`;
 
     $('.calendars-wrap .calendars').append(calendar);
+    const $calendar = $('.calendars-wrap .calendar:last-child');
 
-    // Unselect any selection
-    window.getSelection().removeAllRanges();
+    selectCalendar($calendar);
 });
 
 // Duplicate calendar
@@ -48,7 +48,12 @@ $(document).on('click', '.calendar .tools [data-tool="duplicate"]', e => {
 
 // Delete calendar
 $(document).on('click', '.calendar .tools [data-tool="delete"]', e => {
-    $(e.target).closest('.calendar').remove();
+    const $calendar = $(e.target).closest('.calendar');
+    if ($calendar.hasClass('selected')) {
+        const $calendarToSelect = $calendar.next().length ? $calendar.next() : $calendar.prev().length ? $calendar.prev() : null;
+        if ($calendarToSelect) selectCalendar($calendarToSelect);
+    }
+    $calendar.remove();
 });
 
 // Add new event
@@ -79,18 +84,23 @@ $(document).on('mousedown', '.events-wrap ul li', e => {
 
 // Switch calendar
 $(document).on('mousedown', '.calendars-wrap .calendar .content', e => {
+    const $calendar = $(e.target).closest('.calendar');
+    selectCalendar($calendar);
+});
+
+function selectCalendar($calendar) {
     $('.calendars-wrap .calendar.selected').removeClass('selected');
-    $(e.target).closest('.calendar').addClass('selected');
+    $calendar.addClass('selected');
 
     // Update title
-    $('.calendar-wrap h2').html($(e.target).closest('.calendar').find('p span').html());
+    $('.calendar-wrap h2').html($calendar.find('p span').html());
 
     // Update main calendar
-    $('.calendar-wrap .content').html($(e.target).closest('.calendar').find('.content').html());
+    $('.calendar-wrap .content').html($calendar.find('.content').html());
 
     // Unselect any selection
     window.getSelection().removeAllRanges();
-});
+}
 
 // // Click on contenteditable: select all
 // $(document).on('click', '[contenteditable]', e => {
