@@ -134,36 +134,123 @@ $(document).on('input', '.events-wrap ul span', e => {
 });
 
 let event = { id: 1 };
+let selectedDays = []; 
 
 $(document).on('mousedown', '.calendar-wrap .day', e => {
-    const $event = $('.events-wrap ul li.selected');
-    const type = $event.attr('data-type');
     const $day = $(e.target).closest('.day');
+    const date = $day.attr('data-date')
 
-    // Already an event that day, when unallowed
-    if (!settings.multipleEventsPerDay && $(e.target).closest('.day').find('.event').length) {
-        const $presentEvent = $day.find('.event');
+    if (e.metaKey) {
+        if (selectedDays.some(d => d.getTime() === new Date(date).getTime())) selectedDays = selectedDays.filter(d => d.getTime() !== new Date(date).getTime());
+        else selectedDays.push(new Date(date)); 
+    } else if (e.shiftKey) {
+        const $firstSelectedDay = $('.calendar-wrap .day.selectedFirst').length ? $('.calendar-wrap .day.selectedFirst') : $('.calendar-wrap .day.selected').eq(0);
+        $firstSelectedDay.addClass('selectedFirst');
 
-        // Remove event in main calendar and sidebar
-        const $events = $(`.calendars-wrap .calendar.selected [data-iso="${$presentEvent.closest('.day').attr('data-iso')}"] .event, .calendar-wrap [data-iso="${$presentEvent.closest('.day').attr('data-iso')}"] .event`);
-        $events.remove();
+        selectedDays = [new Date($firstSelectedDay.attr('data-date')), new Date(date)];
 
-        // If same type, simply remove event and don't recreate one (toggle-like behavior)
-        if (type === $presentEvent.attr('data-type')) return;
+        const lowestWeekDay = Math.min(...selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+        const highestWeekDay = Math.max(...selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+
+        let start = new Date($firstSelectedDay.attr('data-date'));    
+        let end = new Date($day.attr('data-date'));
+        
+        if (start > end) {
+            const _start = start;
+            start = end;
+            end = _start;
+        }
+        
+        start.setDate(start.getDate() - (start.getDay() - lowestWeekDay));
+        end.setDate(end.getDate() + (highestWeekDay - end.getDay()));
+        
+        let days = [start];
+
+        // Build array of all days from firstDay to end
+        while (days[days.length - 1] < end && days.length < 100) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+
+        // Filter out days out of rectangle
+        days = days.filter(d => d.getDay() >= lowestWeekDay && d.getDay() <= highestWeekDay);
+
+        selectedDays = days;
+    } else if (e.altKey) {
+        const $firstSelectedDay = $('.calendar-wrap .day.selectedFirst').length ? $('.calendar-wrap .day.selectedFirst') : $('.calendar-wrap .day.selected').eq(0);
+        $firstSelectedDay.addClass('selectedFirst');
+
+        let start = new Date($firstSelectedDay.attr('data-date'));
+        let end = new Date($day.attr('data-date'));
+
+        if (start > end) {
+            const _start = start;
+            start = end;
+            end = _start;
+        }
+
+        const days = [start];
+    
+        // Build array of all days from firstDay to end
+        while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+
+        selectedDays = days;
+    } else {
+        if (selectedDays.length && selectedDays[0].getTime() === new Date(date).getTime()) {
+            selectedDays = []; 
+        } else {
+            selectedDays = [new Date(date)]; 
+            $('.calendar-wrap .day.selectedFirst').removeClass('selectedFirst');
+            $day.addClass('selectedFirst');
+        }
     }
+    highlightSelection();
 
-    event.type = type;
-    event.title = $event.text();
-    event.color = $event.css('background-color');
-    event.start = $day.attr('data-iso');
-    event.end = $day.attr('data-iso');
+    // const $event = $('.events-wrap ul li.selected');
+    // const type = $event.attr('data-type');
 
-    buildEvent();
+    // // Already an event that day, when unallowed
+    // if (!settings.multipleEventsPerDay && $(e.target).closest('.day').find('.event').length) {
+    //     const $presentEvent = $day.find('.event');
+
+    //     // Remove event in main calendar and sidebar
+    //     const $events = $(`.calendars-wrap .calendar.selected [data-date="${$presentEvent.closest('.day').attr('data-date')}"] .event, .calendar-wrap [data-date="${$presentEvent.closest('.day').attr('data-date')}"] .event`);
+    //     $events.remove();
+
+    //     // If same type, simply remove event and don't recreate one (toggle-like behavior)
+    //     if (type === $presentEvent.attr('data-type')) return;
+    // }
+
+    // event.type = type;
+    // event.title = $event.text();
+    // event.color = $event.css('background-color');
+    // event.start = $day.attr('data-date');
+    // event.end = $day.attr('data-date');
+
+    // buildEvent();
 });
+
+function highlightSelection() {
+    $('.calendar-wrap .day.selected').removeClass('selected');
+
+    for (const day of selectedDays) {
+        const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
+        const $el = $(`.calendar-wrap .day[data-date="${date}"]`);
+        $el.addClass('selected');
+        $el.removeClass('no-top no-right no-bottom no-left');
+        
+        const dayBeforeSelected = selectedDays.some(d => d.getTime() === new Date(new Date(day).setDate(day.getDate() - 1)).getTime());
+        const dayAfterSelected = selectedDays.some(d => d.getTime() === new Date(new Date(day).setDate(day.getDate() + 1)).getTime());
+        const dayWeekBeforeSelected = selectedDays.some(d => d.getTime() === new Date(new Date(day).setDate(day.getDate() - 7)).getTime());
+        const dayWeekAfterSelected = selectedDays.some(d => d.getTime() === new Date(new Date(day).setDate(day.getDate() + 7)).getTime());
+
+        if (dayWeekBeforeSelected) $el.addClass('no-top');
+        if (dayAfterSelected && day.getDay() !== 0) $el.addClass('no-right');
+        if (dayWeekAfterSelected) $el.addClass('no-bottom');
+        if (dayBeforeSelected && day.getDay() !== 1) $el.addClass('no-left');
+    }
+}
 
 $(document).on('mouseenter', '.day', e => {
     if (!event.title || !settings.spreadOnDrag) return;
-    event.end = $(e.target).closest('.day').attr('data-iso');
+    event.end = $(e.target).closest('.day').attr('data-date');
 
     buildEvent();
 });
@@ -190,8 +277,8 @@ function buildEvent() {
     while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
 
     for (day of days) {
-        const iso = day.toISOString().split('T')[0];
-        const $el = $(`.calendars-wrap .calendar.selected .day[data-iso="${iso}"], .calendar-wrap .day[data-iso="${iso}"]`);
+        const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
+        const $el = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"], .calendar-wrap .day[data-date="${date}"]`);
 
         // Add event
         let classname = days.indexOf(day) === 0 ? ' start' : '';
@@ -220,11 +307,11 @@ function buildCalendar() {
     // Build HTML
     let html = '<div>';
     for (day of days) {
+        const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
         day.setHours(0);
-
         const classname = day < start || day > end ? ' out' : '';
 
-        html += `<div class="day${classname}" data-iso="${day.toISOString().split('T')[0]}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span></div>`;
+        html += `<div class="day${classname}" data-date="${date}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span></div>`;
 
         if (day.getDay() === 0) html += '</div><div>';
     }
