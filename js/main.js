@@ -17,8 +17,10 @@ $(document).ready(() => {
 $(document).on('click', '.calendars-wrap .add', () => {
     const calendar = `<div class="calendar sortable">
         <div class="tools">
+            <i data-tool="toggle" class="far fa-eye"></i>
             <i data-tool="duplicate" class="far fa-clone"></i>
             <i data-tool="delete" class="far fa-trash-alt"></i>
+            <i data-tool="sort">⋮⋮</i>
         </div>
         <div class="content">${ buildCalendar() }</div>
         <p><span contenteditable spellcheck="false">Calendar ${$('.calendars-wrap .calendar').length + 1}</span></p>
@@ -28,6 +30,11 @@ $(document).on('click', '.calendars-wrap .add', () => {
     const $calendar = $('.calendars-wrap .calendar:last-child');
 
     selectCalendar($calendar);
+});
+
+$(document).on('click', '.calendars-wrap [data-tool="toggle"]', e => {
+    const $calendar = $(e.target).closest('.calendar')
+    $calendar.toggleClass('hidden');
 });
 
 // Duplicate calendar
@@ -100,6 +107,8 @@ function selectCalendar($calendar) {
 
     // Unselect any selection
     window.getSelection().removeAllRanges();
+
+    highlightSelection();
 }
 
 // // Click on contenteditable: select all
@@ -401,8 +410,9 @@ let $sortedEl;
 let sortedPosition = {};
 let sortedOrigin = {};
 
-$(document).on('mousedown', '.sortable', e => {
-    $sortedEl = $(e.target).closest('.sortable');
+$(document).on('mousedown', '.sortable i[data-tool="sort"]', e => {
+    const $icon = $(e.target);
+    $sortedEl = $icon.closest('.sortable');
 
     sortedPosition = $sortedEl.position();
     
@@ -411,10 +421,9 @@ $(document).on('mousedown', '.sortable', e => {
         y: e.clientY
     };
 
-    $sortedEl.css({
-        'cursor': 'grabbing',
-        'zIndex': 1
-    });
+    $icon.css('cursor', 'grabbing');
+
+    $sortedEl.css('zIndex', '1');
 
     const $parent = $sortedEl.parent();
 
@@ -502,7 +511,13 @@ function addEvents(array) {
     for (const event of array) {
         const $ul = $('.events-wrap ul');
         const type = $ul.find('li').length;
-        const li = `<li data-type="${type}" style="background-color: ${settings.eventsColors[type]}" class="sortable${type === 0 ? ' selected' : ''}"><span contenteditable>${event}</span></li>`;
+        const li = `<li data-type="${type}" style="background-color: ${settings.eventsColors[type]}" class="sortable${type === 0 ? ' selected' : ''}">
+            <span contenteditable>${event}</span>
+            <span class="tools">
+                <i class="fas fa-caret-down"></i>
+                <i data-tool="sort">⋮⋮</i>
+            </span>
+        </li>`;
         $ul.append(li);
     }
 }

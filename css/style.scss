@@ -74,6 +74,21 @@ main {
             cursor: pointer;
             padding-left: 24px;
 
+            &:only-child {
+                .tools {
+                    i {
+                        &[data-tool="sort"] {
+                            opacity: .3;
+                            cursor: default;
+
+                            &:hover {
+                                color: #999;
+                            }
+                        }
+                    }
+                }
+            }
+
             &.selected {
                 .content {
                     border-color: white;
@@ -96,7 +111,7 @@ main {
                 opacity: 0;
                 transition: opacity .1s ease;
 
-                .far {
+                i {
                     width: 24px;
                     height: 24px;
                     display: flex;
@@ -105,15 +120,25 @@ main {
                     font-size: .875em;
                     top: 6px;
                     right: 8px;
+                    color: #999;
                     cursor: pointer;
-                    color: #666;
-
+    
                     &:not(:last-child) {
                         margin-bottom: 8px;
                     }
 
                     &:hover {
                         color: white;
+                    }
+
+                    &:not(.far) {
+                        font-size: 1rem;
+                        font-style: normal;
+                        font-weight: bold;
+                    }
+
+                    &[data-tool="sort"] {
+                        cursor: grab;
                     }
                 }
             }
@@ -177,6 +202,33 @@ main {
                     &::selection {
                         background-color: #333;
                     }
+                }
+            }
+
+            &.hidden {
+                .content {
+                    display: none;
+                }
+
+                span {
+                    margin-top: 4px;
+                }
+
+                .tools {
+                    opacity: .5;
+
+                    i {
+                        &:not([data-tool="toggle"]) {
+                            display: none;
+                        }
+
+                        &[data-tool="toggle"] {
+                            &::before {
+                                content: "\f070";
+                            }
+                        }
+                    }
+
                 }
             }
         }
@@ -341,20 +393,21 @@ main {
         margin-top: 16px;
 
         li {
+            position: relative;
             // height: 36px;
             border-radius: 4px;
-            padding: 8px;
-            opacity: .3;
+            padding: 12px 6px;
+            // opacity: .3;
             cursor: pointer;
             background-color: grey;
 
             &:not(:last-child) {
-                margin-bottom: 8px;
+                margin-bottom: 12px;
             }
 
-            &.selected {
-                opacity: 1;
-            }
+            // &.selected {
+            //     opacity: 1;
+            // }
 
             span {
                 display: inline-block;
@@ -368,6 +421,41 @@ main {
                 
                 &::selection {
                     background-color: #333;
+                }
+            }
+
+            .tools {
+                position: absolute;
+                right: 4px;
+                
+                i {
+                    width: 16px;
+                    height: 16px;
+                    display: inline-flex;
+                    justify-content: center;
+                    align-content: center;
+                    opacity: 0;
+
+                    &:not(.far) {
+                        font-style: normal;
+                        font-weight: bold;
+                    }
+
+                    &[data-tool="sort"] {
+                        cursor: grab;
+                    }
+                }
+            }
+
+            &:hover {
+                .tools {
+                    i {
+                        opacity: .5;
+
+                        &:hover {
+                            opacity: 1;
+                        }
+                    }
                 }
             }
         }
