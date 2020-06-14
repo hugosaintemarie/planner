@@ -171,8 +171,8 @@ $(document).on('mousedown', '.calendar-wrap .day', e => {
             end = _start;
         }
         
-        start.setDate(start.getDate() - (start.getDay() - lowestWeekDay));
-        end.setDate(end.getDate() + (highestWeekDay - end.getDay()));
+        start.setDate(start.getDate() - (start.getDay() - lowestWeekDay % 7));
+        end.setDate(end.getDate() + (highestWeekDay % 7 - end.getDay()));
         
         let days = [start];
 
@@ -180,7 +180,7 @@ $(document).on('mousedown', '.calendar-wrap .day', e => {
         while (days[days.length - 1] < end && days.length < 100) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
 
         // Filter out days out of rectangle
-        days = days.filter(d => d.getDay() >= lowestWeekDay && d.getDay() <= highestWeekDay);
+        days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
 
         selectedDays = days;
     } else if (e.altKey) {
