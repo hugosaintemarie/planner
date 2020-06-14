@@ -154,22 +154,15 @@ $(document).on('mousedown', '.calendar-wrap .day', e => {
         if (selectedDays.some(d => d.getTime() === new Date(date).getTime())) selectedDays = selectedDays.filter(d => d.getTime() !== new Date(date).getTime());
         else selectedDays.push(new Date(date)); 
     } else if (e.shiftKey) {
-        const $firstSelectedDay = $('.calendar-wrap .day.selectedFirst').length ? $('.calendar-wrap .day.selectedFirst') : $('.calendar-wrap .day.selected').eq(0);
-        $firstSelectedDay.addClass('selectedFirst');
+        const $firstSelectedDay = $('.calendar-wrap .day.selected-first').length ? $('.calendar-wrap .day.selected-first') : $('.calendar-wrap .day.selected').eq(0);
+        $firstSelectedDay.addClass('selected-first');
 
         selectedDays = [new Date($firstSelectedDay.attr('data-date')), new Date(date)];
 
         const lowestWeekDay = Math.min(...selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
         const highestWeekDay = Math.max(...selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
 
-        let start = new Date($firstSelectedDay.attr('data-date'));    
-        let end = new Date($day.attr('data-date'));
-        
-        if (start > end) {
-            const _start = start;
-            start = end;
-            end = _start;
-        }
+        const [start, end] = [new Date($firstSelectedDay.attr('data-date')), new Date($day.attr('data-date'))].sort((a, b) => a > b ? 1 : -1);
         
         start.setDate(start.getDate() - (start.getDay() - lowestWeekDay % 7));
         end.setDate(end.getDate() + (highestWeekDay % 7 - end.getDay()));
@@ -184,17 +177,10 @@ $(document).on('mousedown', '.calendar-wrap .day', e => {
 
         selectedDays = days;
     } else if (e.altKey) {
-        const $firstSelectedDay = $('.calendar-wrap .day.selectedFirst').length ? $('.calendar-wrap .day.selectedFirst') : $('.calendar-wrap .day.selected').eq(0);
-        $firstSelectedDay.addClass('selectedFirst');
+        const $firstSelectedDay = $('.calendar-wrap .day.selected-first').length ? $('.calendar-wrap .day.selected-first') : $('.calendar-wrap .day.selected').eq(0);
+        $firstSelectedDay.addClass('selected-first');
 
-        let start = new Date($firstSelectedDay.attr('data-date'));
-        let end = new Date($day.attr('data-date'));
-
-        if (start > end) {
-            const _start = start;
-            start = end;
-            end = _start;
-        }
+        const [start, end] = [new Date($firstSelectedDay.attr('data-date')), new Date($day.attr('data-date'))].sort((a, b) => a > b ? 1 : -1);
 
         const days = [start];
     
@@ -207,8 +193,9 @@ $(document).on('mousedown', '.calendar-wrap .day', e => {
             selectedDays = []; 
         } else {
             selectedDays = [new Date(date)]; 
-            $('.calendar-wrap .day.selectedFirst').removeClass('selectedFirst');
-            $day.addClass('selectedFirst');
+            $('.calendar-wrap .day.selected-first').removeClass('selected-first');
+            $('.calendar-wrap .day.selected-last').removeClass('selected-last');
+            $day.addClass('selected-first selected-last');
         }
     }
     highlightSelection();
@@ -235,6 +222,93 @@ $(document).on('mousedown', '.calendar-wrap .day', e => {
     // event.end = $day.attr('data-date');
 
     // buildEvent();
+});
+
+$(document).on('keydown', e => {
+    // Listen for arrow keys only
+    if (![37, 38, 39, 40].includes(e.which)) return;
+
+    // Ignore if no selection
+    const $selected = $('.calendar-wrap .day.selected-last');
+    if (!$selected.length) return;
+
+    let target;
+    const date = new Date($selected.attr('data-date'));
+
+    if (e.which === 37) {
+        // Left: one day before
+        target = new Date(date.setDate(date.getDate() - 1));
+
+        // Prevent changing week with shift key
+        if (target.getDay() === 0 && e.shiftKey) return;
+    } else if (e.which === 38) {
+        // Up: one week before
+        target = new Date(date.setDate(date.getDate() - 7));
+    } else if (e.which === 39) {
+        // Right: one day after
+        target = new Date(date.setDate(date.getDate() + 1));
+
+        // Prevent changing week with shift key
+        if (target.getDay() === 1 && e.shiftKey) return;
+    } else if (e.which === 40) {
+        // Down: one week after
+        target = new Date(date.setDate(date.getDate() + 7));
+    }
+
+    if (e.shiftKey) {
+        const $selectedFirst = $('.selected-first');
+        $('.selected-last').removeClass('selected-last');
+
+        const targetDate = `${target.getFullYear()}-${`${target.getMonth() + 1}`.padStart(2, '0')}-${`${target.getDate()}`.padStart(2, '0')}`;
+        const $target = $(`.calendar-wrap .day[data-date="${targetDate}"]`);
+        $target.addClass('selected-last');
+
+        selectedDays = [new Date($selectedFirst.attr('data-date')), new Date(date)];
+
+        const lowestWeekDay = Math.min(...selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+        const highestWeekDay = Math.max(...selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+
+        const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date(target)].sort((a, b) => a > b ? 1 : -1);
+
+        start.setDate(start.getDate() - (start.getDay() - lowestWeekDay % 7));
+        end.setDate(end.getDate() + (highestWeekDay % 7 - end.getDay()));
+        
+        let days = [start];
+
+        // Build array of all days from firstDay to end
+        while (days[days.length - 1] < end && days.length < 100) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+
+        // Filter out days out of rectangle
+        days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
+
+        selectedDays = days;
+    } else if (e.altKey) {
+        const $selectedFirst = $('.selected-first');
+        $('.selected-last').removeClass('selected-last');
+
+        const targetDate = `${target.getFullYear()}-${`${target.getMonth() + 1}`.padStart(2, '0')}-${`${target.getDate()}`.padStart(2, '0')}`;
+        const $target = $(`.calendar-wrap .day[data-date="${targetDate}"]`);
+        $target.addClass('selected-last');
+
+        const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date(target)].sort((a, b) => a > b ? 1 : -1);
+
+        const days = [start];
+    
+        // Build array of all days from firstDay to end
+        while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+
+        selectedDays = days;
+    } else {
+        const date = `${target.getFullYear()}-${`${target.getMonth() + 1}`.padStart(2, '0')}-${`${target.getDate()}`.padStart(2, '0')}`;
+        const $target = $(`.calendar-wrap .day[data-date="${date}"]`);
+        $('.selected-first').removeClass('selected-first');
+        $('.selected-last').removeClass('selected-last');
+        $target.addClass('selected-first selected-last');
+        
+        selectedDays = [target];
+    }
+
+    highlightSelection();
 });
 
 function highlightSelection() {
@@ -272,14 +346,7 @@ $(document).on('mouseup', '.day', e => {
 function buildEvent() {
     $(`.event[data-id="${event.id}"]`).remove();
 
-    let start = new Date(event.start);
-    let end = new Date(event.end);
-
-    if (start > end) {
-        const _start = start;
-        start = end;
-        end = _start;
-    }
+    const [start, end] = [new Date(event.start), new Date(event.end)].sort((a, b) => a > b ? 1 : -1);
 
     const days = [start];
     
