@@ -18,9 +18,9 @@ $(document).on('click', '.calendars-wrap .add', () => {
     const calendar = `<div class="calendar sortable">
         <div class="tools">
             <i data-tool="toggle" class="far fa-eye"></i>
+            <i data-tool="sort">⋮⋮</i>
             <i data-tool="duplicate" class="far fa-clone"></i>
             <i data-tool="delete" class="far fa-trash-alt"></i>
-            <i data-tool="sort">⋮⋮</i>
         </div>
         <div class="content">${ buildCalendar() }</div>
         <p><span contenteditable spellcheck="false">Calendar ${$('.calendars-wrap .calendar').length + 1}</span></p>
@@ -35,6 +35,10 @@ $(document).on('click', '.calendars-wrap .add', () => {
 $(document).on('click', '.calendars-wrap [data-tool="toggle"]', e => {
     const $calendar = $(e.target).closest('.calendar')
     $calendar.toggleClass('hidden');
+    if ($calendar.hasClass('selected')) {
+        const $calendarToSelect = $calendar.nextAll(':not(.hidden)').eq(0).length ? $calendar.nextAll(':not(.hidden)').eq(0) : $calendar.prevAll(':not(.hidden)').length ? $calendar.prevAll(':not(.hidden)') : null;
+        if ($calendarToSelect) selectCalendar($calendarToSelect);
+    }
 });
 
 // Duplicate calendar
@@ -57,7 +61,7 @@ $(document).on('click', '.calendar .tools [data-tool="duplicate"]', e => {
 $(document).on('click', '.calendar .tools [data-tool="delete"]', e => {
     const $calendar = $(e.target).closest('.calendar');
     if ($calendar.hasClass('selected')) {
-        const $calendarToSelect = $calendar.next().length ? $calendar.next() : $calendar.prev().length ? $calendar.prev() : null;
+        const $calendarToSelect = $calendar.nextAll(':not(.hidden)').eq(0).length ? $calendar.nextAll(':not(.hidden)').eq(0) : $calendar.prevAll(':not(.hidden)').length ? $calendar.prevAll(':not(.hidden)') : null;
         if ($calendarToSelect) selectCalendar($calendarToSelect);
     }
     $calendar.remove();
@@ -152,7 +156,7 @@ $(document).on('input', '.events-wrap ul span', e => {
     $(`.event[data-type="${type}"] span`).text(val);
 });
 
-let event = { id: 1 };
+let event = {};
 let selectedDays = []; 
 
 $(document).on('mousedown', '.calendar-wrap .day', e => {
@@ -208,35 +212,15 @@ $(document).on('mousedown', '.calendar-wrap .day', e => {
         }
     }
     highlightSelection();
-
-    // const $event = $('.events-wrap ul li.selected');
-    // const type = $event.attr('data-type');
-
-    // // Already an event that day, when unallowed
-    // if (!settings.multipleEventsPerDay && $(e.target).closest('.day').find('.event').length) {
-    //     const $presentEvent = $day.find('.event');
-
-    //     // Remove event in main calendar and sidebar
-    //     const $events = $(`.calendars-wrap .calendar.selected [data-date="${$presentEvent.closest('.day').attr('data-date')}"] .event, .calendar-wrap [data-date="${$presentEvent.closest('.day').attr('data-date')}"] .event`);
-    //     $events.remove();
-
-    //     // If same type, simply remove event and don't recreate one (toggle-like behavior)
-    //     if (type === $presentEvent.attr('data-type')) return;
-    // }
-
-    // event.type = type;
-    // event.title = $event.text();
-    // event.color = $event.css('background-color');
-    // event.start = $day.attr('data-date');
-    // event.end = $day.attr('data-date');
-
-    // buildEvent();
 });
 
 $(document).on('keydown', e => {
-    // Listen for arrow keys only
-    if (![37, 38, 39, 40].includes(e.which)) return;
+    // Arrow keys: move selection
+    if ([37, 38, 39, 40].includes(e.which)) moveSelection(e);
+    else if (e.which === 8) emptySelection();
+});
 
+function moveSelection(e) {
     // Ignore if no selection
     const $selected = $('.calendar-wrap .day.selected-last');
     if (!$selected.length) return;
@@ -318,7 +302,7 @@ $(document).on('keydown', e => {
     }
 
     highlightSelection();
-});
+}
 
 function highlightSelection() {
     $('.calendar-wrap .day.selected').removeClass('selected');
@@ -341,6 +325,15 @@ function highlightSelection() {
     }
 }
 
+function emptySelection() {
+    for (day of selectedDays) {
+        const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
+        
+        const $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
+        $events.remove();
+    }
+}
+
 $(document).on('mouseenter', '.day', e => {
     if (!event.title || !settings.spreadOnDrag) return;
     event.end = $(e.target).closest('.day').attr('data-date');
@@ -349,28 +342,58 @@ $(document).on('mouseenter', '.day', e => {
 });
 
 $(document).on('mouseup', '.day', e => {
-    event = { id: event.id + 1 };
+    // event = { id: event.id + 1 };
 });
 
-function buildEvent() {
-    $(`.event[data-id="${event.id}"]`).remove();
+$(document).on('click', '.events-wrap ul li', e => {
+    const $event = $(e.target).closest('li');
+    const type = $event.attr('data-type');
 
+    const selectedDaysEvents = selectedDays.map(d => {
+        const date = `${d.getFullYear()}-${`${d.getMonth() + 1}`.padStart(2, '0')}-${`${d.getDate()}`.padStart(2, '0')}`;
+        return $(`.calendar-wrap .day[data-date="${date}"] .event`).attr('data-type');
+    });
+
+    if (selectedDaysEvents.every(e => e === type)) {
+        // If same type, simply remove event and don't recreate one (toggle-like behavior)
+        for (day of selectedDays) {
+            const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
+            
+            const $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
+            $events.remove();
+        }
+    } else {
+        for (day of selectedDays) {
+            const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
+            
+            const $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
+            $events.remove();
+                
+            const $day = $(`.calendar-wrap .day[data-date="${date}"]`);
+            
+            // event = { id: event.id + 1 };
+            event.type = type;
+            event.title = $event.find('.title').text();
+            event.color = $event.css('background-color');
+            event.start = $day.attr('data-date');
+            event.end = $day.attr('data-date');
+    
+            buildEvent();
+        }
+    }
+});
+function buildEvent() {
     const [start, end] = [new Date(event.start), new Date(event.end)].sort((a, b) => a > b ? 1 : -1);
 
-    const days = [start];
-    
-    // Build array of all days from firstDay to end
-    while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+    const date = `${start.getFullYear()}-${`${start.getMonth() + 1}`.padStart(2, '0')}-${`${start.getDate()}`.padStart(2, '0')}`;
 
-    for (day of days) {
-        const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
-        const $el = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"], .calendar-wrap .day[data-date="${date}"]`);
+    const days = [start, end];
 
-        // Add event
-        let classname = days.indexOf(day) === 0 ? ' start' : '';
-        classname += days.indexOf(day) === days.length - 1 ? ' end' : '';
-        $el.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="background-color: ${event.color}">${classname.includes('start') ? `<span>${event.title}</span>` : ''}</div>`);
-    }
+    const $el = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"], .calendar-wrap .day[data-date="${date}"]`);
+
+    // Add event
+    let classname = ' start end';
+    $el.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="background-color: ${event.color}">${classname.includes('start') ? `<span>${event.title}</span>` : ''}</div>`);
 }
 
 function buildCalendar() {
@@ -413,6 +436,9 @@ let sortedOrigin = {};
 $(document).on('mousedown', '.sortable i[data-tool="sort"]', e => {
     const $icon = $(e.target);
     $sortedEl = $icon.closest('.sortable');
+    
+    // Ignore sort if only child
+    if ($sortedEl.is(':only-child')) return;
 
     sortedPosition = $sortedEl.position();
     
@@ -512,7 +538,7 @@ function addEvents(array) {
         const $ul = $('.events-wrap ul');
         const type = $ul.find('li').length;
         const li = `<li data-type="${type}" style="background-color: ${settings.eventsColors[type]}" class="sortable${type === 0 ? ' selected' : ''}">
-            <span contenteditable>${event}</span>
+            <span class="title" contenteditable>${event}</span>
             <span class="tools">
                 <i class="fas fa-caret-down"></i>
                 <i data-tool="sort">⋮⋮</i>
