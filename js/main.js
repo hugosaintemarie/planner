@@ -163,19 +163,24 @@ $(document).on('mousedown', '.calendar-wrap .day', e => {
     const $day = $(e.target).closest('.day');
     const date = $day.attr('data-date')
 
-    if (e.metaKey) {
-        if (selectedDays.some(d => d.getTime() === new Date(date).getTime())) selectedDays = selectedDays.filter(d => d.getTime() !== new Date(date).getTime());
-        else selectedDays.push(new Date(date)); 
+    if (e.metaKey && !e.shiftKey && !e.altKey) {
+        if (selectedDays.some(d => d.getTime() === new Date(date).getTime())) {
+            selectedDays = selectedDays.filter(d => d.getTime() !== new Date(date).getTime());
+        } else {
+            $('.selected-first').removeClass('selected-first');
+            $day.addClass('selected-first');
+            selectedDays.push(new Date(date)); 
+        }
     } else if (e.shiftKey) {
-        const $firstSelectedDay = $('.calendar-wrap .day.selected-first').length ? $('.calendar-wrap .day.selected-first') : $('.calendar-wrap .day.selected').eq(0);
-        $firstSelectedDay.addClass('selected-first');
+        const $selectedFirst = $('.calendar-wrap .day.selected-first').length ? $('.calendar-wrap .day.selected-first') : $('.calendar-wrap .day.selected').eq(0);
+        $selectedFirst.addClass('selected-first');
 
-        selectedDays = [new Date($firstSelectedDay.attr('data-date')), new Date(date)];
+        const _selectedDays = [new Date($selectedFirst.attr('data-date')), new Date(date)];
 
-        const lowestWeekDay = Math.min(...selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
-        const highestWeekDay = Math.max(...selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+        const lowestWeekDay = Math.min(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+        const highestWeekDay = Math.max(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
 
-        const [start, end] = [new Date($firstSelectedDay.attr('data-date')), new Date($day.attr('data-date'))].sort((a, b) => a > b ? 1 : -1);
+        const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date($day.attr('data-date'))].sort((a, b) => a > b ? 1 : -1);
         
         start.setDate(start.getDate() - (start.getDay() - lowestWeekDay % 7));
         end.setDate(end.getDate() + (highestWeekDay % 7 - end.getDay()));
@@ -188,19 +193,21 @@ $(document).on('mousedown', '.calendar-wrap .day', e => {
         // Filter out days out of rectangle
         days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
 
-        selectedDays = days;
+        if (e.metaKey) selectedDays.push(...days);
+        else selectedDays = days;
     } else if (e.altKey) {
-        const $firstSelectedDay = $('.calendar-wrap .day.selected-first').length ? $('.calendar-wrap .day.selected-first') : $('.calendar-wrap .day.selected').eq(0);
-        $firstSelectedDay.addClass('selected-first');
+        const $selectedFirst = $('.calendar-wrap .day.selected-first').length ? $('.calendar-wrap .day.selected-first') : $('.calendar-wrap .day.selected').eq(0);
+        $selectedFirst.addClass('selected-first');
 
-        const [start, end] = [new Date($firstSelectedDay.attr('data-date')), new Date($day.attr('data-date'))].sort((a, b) => a > b ? 1 : -1);
+        const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date($day.attr('data-date'))].sort((a, b) => a > b ? 1 : -1);
 
         const days = [start];
     
         // Build array of all days from firstDay to end
         while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
 
-        selectedDays = days;
+        if (e.metaKey) selectedDays.push(...days);
+        else selectedDays = days;
     } else {
         if (selectedDays.length && selectedDays[0].getTime() === new Date(date).getTime()) {
             selectedDays = []; 
