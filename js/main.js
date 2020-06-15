@@ -323,11 +323,11 @@ function moveSelection(e) {
 }
 
 function highlightSelection() {
-    $('.calendar-wrap .day.selected').removeClass('selected');
+    $('.day.selected').removeClass('selected');
 
     for (const day of selectedDays) {
         const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
-        const $el = $(`.calendar-wrap .day[data-date="${date}"]`);
+        const $el = $(`.day[data-date="${date}"]`);
         $el.addClass('selected');
         $el.removeClass('no-top no-right no-bottom no-left');
         
@@ -352,7 +352,7 @@ function emptySelection() {
     }
 }
 
-$(document).on('mouseenter', '.day', e => {
+$(document).on('mouseenter', '.calendar-wrap .day', e => {
     if (selectedDays.length) dragSelect(e);
     // if (!event.title || !settings.spreadOnDrag) return;
     // event.end = $(e.target).closest('.day').attr('data-date');

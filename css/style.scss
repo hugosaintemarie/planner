@@ -158,14 +158,63 @@ main {
                     display: flex;
     
                     .day {
+                        position: relative;
                         flex: 1;
                         height: 16px;
                         border: 1px solid #444;
                         margin-left: -1px;
                         margin-top: -1px;
+
+                        &.selected {
+                            background-color: #61a0ff10;
+            
+                            > span {
+                                color: #888;
+                            }
+            
+                            &::after {
+                                content: "";
+                                position: absolute;
+                                top: -1px;
+                                left: -1px;
+                                z-index: 1;
+                                width: 100%;
+                                height: 100%;
+                                border: 1px solid #61a0ff80;
+                                border-radius: 1px;
+                            }
+            
+                            &.no-top {
+                                &::after {
+                                    border-top-color: transparent;
+                                }
+                            }
+            
+                            &.no-right {
+                                &::after {
+                                    border-right-color: transparent;
+                                }
+                            }
+            
+                            &.no-bottom {
+                                &::after {
+                                    border-bottom-color: transparent;
+                                }
+                            }
+            
+                            &.no-left {
+                                &::after {
+                                    border-left-color: transparent;
+                                }
+                            }
+                        }
     
                         &.out {
-                            opacity: .3;
+                            border-color: #44444450;
+                
+                            span {
+                                color: #66666650;
+                            }
                         }
                         
                         span {
