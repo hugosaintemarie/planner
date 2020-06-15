@@ -161,14 +161,15 @@ let selectedDays = [];
 
 $(document).on('mousedown', '.calendar-wrap .day', e => {
     const $day = $(e.target).closest('.day');
-    const date = $day.attr('data-date')
+    const date = $day.attr('data-date');
 
     if (e.metaKey && !e.shiftKey && !e.altKey) {
+        $('.selected-first').removeClass('selected-first');
+        $day.addClass('selected-first');
+
         if (selectedDays.some(d => d.getTime() === new Date(date).getTime())) {
             selectedDays = selectedDays.filter(d => d.getTime() !== new Date(date).getTime());
         } else {
-            $('.selected-first').removeClass('selected-first');
-            $day.addClass('selected-first');
             selectedDays.push(new Date(date)); 
         }
     } else if (e.shiftKey) {
@@ -352,10 +353,11 @@ function emptySelection() {
 }
 
 $(document).on('mouseenter', '.day', e => {
-    if (!event.title || !settings.spreadOnDrag) return;
-    event.end = $(e.target).closest('.day').attr('data-date');
+    if (selectedDays.length) dragSelect(e);
+    // if (!event.title || !settings.spreadOnDrag) return;
+    // event.end = $(e.target).closest('.day').attr('data-date');
 
-    buildEvent();
+    // buildEvent();
 });
 
 $(document).on('mouseup', '.day', e => {
@@ -451,6 +453,18 @@ let sortedPosition = {};
 let sortedOrigin = {};
 
 $(document).on('mousedown', '.sortable i[data-tool="sort"]', e => {
+    startSort(e);
+});
+
+$(document).on('mouseup', e => {
+    if ($sortedEl) stopSort(e);
+});
+
+$(document).on('mousemove', e => {
+    if ($sortedEl) sort(e);
+});
+
+function startSort(e) {
     const $icon = $(e.target);
     $sortedEl = $icon.closest('.sortable');
     
@@ -488,11 +502,35 @@ $(document).on('mousedown', '.sortable i[data-tool="sort"]', e => {
     $parent.children().each((id, el) => {
         $(el).css('position', 'absolute');
     });
-});
+}
 
-$(document).on('mouseup', e => {
-    if (!$sortedEl) return;
+function sort(e) {
+    const deltaX = e.clientX - sortedOrigin.x;
+    const deltaY = e.clientY - sortedOrigin.y;
 
+    $sortedEl.css({
+        'top': Math.min(Math.max(sortedPosition.top + deltaY, $sortedEl.parent().offset().top), $sortedEl.parent().offset().top + $sortedEl.parent().outerHeight() - $sortedEl.outerHeight()),
+        // 'left': sortedPosition.left + deltaX
+    });
+
+    $sortedEl.nextAll().each((id, el) => {
+        const $el = $(el);
+        if ($sortedEl.position().top > $el.position().top - 30) {
+            $el.css('top', $el.position().top - $sortedEl.outerHeight(true));
+            $sortedEl.before($el);
+        }
+    });
+
+    $sortedEl.prevAll().each((id, el) => {
+        const $el = $(el);
+        if ($sortedEl.position().top < $el.position().top + 30) {
+            $sortedEl.after($el);
+            $el.css('top', $el.position().top + $sortedEl.outerHeight(true));
+        }
+    });
+}
+
+function stopSort(e) {
     $sortedEl.css({
         'cursor': '',
         'zIndex': ''
@@ -520,35 +558,52 @@ $(document).on('mouseup', e => {
     });
 
     $sortedEl = null;
-});
+}
 
-$(document).on('mousemove', e => {
-    if (!$sortedEl) return;
+function dragSelect(e) {
+    if (e.which !== 1) return;
 
-    const deltaX = e.clientX - sortedOrigin.x;
-    const deltaY = e.clientY - sortedOrigin.y;
+    const $day = $(e.target).closest('.day');
+    const date = $day.attr('data-date');
 
-    $sortedEl.css({
-        'top': Math.min(Math.max(sortedPosition.top + deltaY, $sortedEl.parent().offset().top), $sortedEl.parent().offset().top + $sortedEl.parent().outerHeight() - $sortedEl.outerHeight()),
-        // 'left': sortedPosition.left + deltaX
-    });
+    const $selectedFirst = $('.calendar-wrap .day.selected-first').length ? $('.calendar-wrap .day.selected-first') : $('.calendar-wrap .day.selected').eq(0);
+    $selectedFirst.addClass('selected-first');
 
-    $sortedEl.nextAll().each((id, el) => {
-        const $el = $(el);
-        if ($sortedEl.position().top > $el.position().top - 30) {
-            $el.css('top', $el.position().top - $sortedEl.outerHeight(true));
-            $sortedEl.before($el);
-        }
-    });
 
-    $sortedEl.prevAll().each((id, el) => {
-        const $el = $(el);
-        if ($sortedEl.position().top < $el.position().top + 30) {
-            $sortedEl.after($el);
-            $el.css('top', $el.position().top + $sortedEl.outerHeight(true));
-        }
-    });
-});
+    let days = [];
+
+    if (e.metaKey) {
+        selectedDays.push(new Date(date));
+    } else {
+        const _selectedDays = [new Date($selectedFirst.attr('data-date')), new Date(date)];
+
+        const lowestWeekDay = Math.min(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+        const highestWeekDay = Math.max(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+    
+        const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date($day.attr('data-date'))].sort((a, b) => a > b ? 1 : -1);
+        
+        start.setDate(start.getDate() - (start.getDay() - lowestWeekDay % 7));
+        end.setDate(end.getDate() + (highestWeekDay % 7 - end.getDay()));
+        
+        days = [start];
+    
+        // Build array of all days from firstDay to end
+        while (days[days.length - 1] < end && days.length < 100) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+    
+        // Filter out days out of rectangle
+        if (!e.altKey) days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
+    }   
+
+    if (!$selectedFirst.hasClass('selected')) {
+        const date = $day.attr('data-date');
+        selectedDays = selectedDays.filter(d => d.getTime() !== new Date(date).getTime());
+    } else {
+        if (e.metaKey) selectedDays.push(...days);
+        else selectedDays = days;
+    }
+
+    highlightSelection();
+}
 
 function addEvents(array) {
     for (const event of array) {
