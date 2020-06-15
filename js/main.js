@@ -223,9 +223,13 @@ $(document).on('mousedown', '.calendar-wrap .day', e => {
 });
 
 $(document).on('keydown', e => {
-    // Arrow keys: move selection
-    if ([37, 38, 39, 40].includes(e.which)) moveSelection(e);
-    else if (e.which === 8) emptySelection();
+    const ctrlOrMeta = e.metaKey || e.ctrlKey;
+
+    if ([37, 38, 39, 40].includes(e.which)) moveSelection(e); // Arrow keys: move selection
+    else if (e.which === 8) emptySelection();  // Backspace
+    else if (ctrlOrMeta && e.which === 67) copySelection();  // C
+    else if (ctrlOrMeta && e.which === 88) cutSelection();   // X
+    else if (ctrlOrMeta && e.which === 86) pasteSelection(); // V
 });
 
 function moveSelection(e) {
@@ -352,6 +356,89 @@ function emptySelection() {
     }
 }
 
+let clipboard = [];
+
+function copySelection() {
+    clipboard = [];
+
+    const firstDayInSelection = new Date(Math.min(...selectedDays));
+    const lastDayInSelection = new Date(Math.max(...selectedDays));
+    const lowestWeekDay = Math.min(...selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+    const highestWeekDay = Math.max(...selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+
+    const [start, end] = [firstDayInSelection, lastDayInSelection];
+
+    start.setDate(start.getDate() - (start.getDay() - lowestWeekDay % 7));
+    end.setDate(end.getDate() + (highestWeekDay % 7 - end.getDay()));
+    
+    let days = [start];
+
+    // Build array of all days from firstDay to end
+    while (days[days.length - 1] < end && days.length < 100) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+
+    // Filter out days out of rectangle
+    days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
+
+    const events = [];
+    for (const day of days) {
+        // Ignore unselected days
+        if (!selectedDays.some(d => d.getTime() === day.getTime())) {
+            events.push(null);
+            continue;
+        };
+
+        const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
+        const $events = $(`.calendar-wrap .day[data-date="${date}"] .event`);
+
+        if ($events.length) {
+            $events.each((id, el) => {
+                const $el = $(el);
+    
+                const event = {
+                    // id: 
+                    type: $el.attr('data-type'),
+                    title: $el.find('.title').text(),
+                    color: $el.css('background-color'),
+                    // start: $el.attr('data-start'),
+                    // end: $el.attr('data-end')
+                }
+    
+                events.push(event);
+            });
+        } else {
+            events.push(null);
+        }
+    }
+
+    while (events.length) clipboard.push(events.splice(0, highestWeekDay - lowestWeekDay + 1));
+}
+
+function cutSelection() {
+    copySelection();
+    emptySelection();
+}
+
+function pasteSelection() {
+    const $selected = $('.calendar-wrap .day.selected-first');
+    const date = new Date($selected.attr('data-date'));
+
+    for (let j = 0; j < clipboard.length; j += 1) {
+        for (let i = 0; i < clipboard[0].length; i += 1) {
+            const _event = clipboard[j][i];
+            if (!_event) continue;
+
+            const target = new Date(new Date(date).setDate(date.getDate() + j * 7 + i));
+            const _date = `${target.getFullYear()}-${`${target.getMonth() + 1}`.padStart(2, '0')}-${`${target.getDate()}`.padStart(2, '0')}`;
+
+            event = { ..._event };
+            event.start = _date;
+            event.end = _date;
+    
+            buildEvent();
+        }
+    }
+}
+
 $(document).on('mouseenter', '.calendar-wrap .day', e => {
     if (selectedDays.length) dragSelect(e);
     // if (!event.title || !settings.spreadOnDrag) return;
@@ -402,6 +489,8 @@ $(document).on('click', '.events-wrap ul li', e => {
     }
 });
 function buildEvent() {
+    console.log(event);
+
     const [start, end] = [new Date(event.start), new Date(event.end)].sort((a, b) => a > b ? 1 : -1);
 
     const date = `${start.getFullYear()}-${`${start.getMonth() + 1}`.padStart(2, '0')}-${`${start.getDate()}`.padStart(2, '0')}`;
@@ -412,7 +501,7 @@ function buildEvent() {
 
     // Add event
     let classname = ' start end';
-    $el.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="background-color: ${event.color}">${classname.includes('start') ? `<span>${event.title}</span>` : ''}</div>`);
+    $el.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="background-color: ${event.color}">${classname.includes('start') ? `<span class="title">${event.title}</span>` : ''}</div>`);
 }
 
 function buildCalendar() {
