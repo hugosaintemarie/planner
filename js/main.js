@@ -182,9 +182,9 @@ $(document).on('mousedown', '.calendar-wrap .day', e => {
         const highestWeekDay = Math.max(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
 
         const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date($day.attr('data-date'))].sort((a, b) => a > b ? 1 : -1);
-        
-        start.setDate(start.getDate() - (start.getDay() - lowestWeekDay % 7));
-        end.setDate(end.getDate() + (highestWeekDay % 7 - end.getDay()));
+
+        start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
+        end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
         
         let days = [start];
 
@@ -285,8 +285,8 @@ function moveSelection(e) {
 
         const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date(target)].sort((a, b) => a > b ? 1 : -1);
 
-        start.setDate(start.getDate() - (start.getDay() - lowestWeekDay % 7));
-        end.setDate(end.getDate() + (highestWeekDay % 7 - end.getDay()));
+        start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
+        end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
         
         let days = [start];
 
@@ -368,9 +368,9 @@ function copySelection() {
 
     const [start, end] = [firstDayInSelection, lastDayInSelection];
 
-    start.setDate(start.getDate() - (start.getDay() - lowestWeekDay % 7));
-    end.setDate(end.getDate() + (highestWeekDay % 7 - end.getDay()));
-    
+    start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
+    end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
+
     let days = [start];
 
     // Build array of all days from firstDay to end
@@ -411,6 +411,8 @@ function copySelection() {
     }
 
     while (events.length) clipboard.push(events.splice(0, highestWeekDay - lowestWeekDay + 1));
+
+    console.log(clipboard);
 }
 
 function cutSelection() {
@@ -421,6 +423,8 @@ function cutSelection() {
 function pasteSelection() {
     const $selected = $('.calendar-wrap .day.selected-first');
     const date = new Date($selected.attr('data-date'));
+
+    console.log(clipboard);
 
     for (let j = 0; j < clipboard.length; j += 1) {
         for (let i = 0; i < clipboard[0].length; i += 1) {
@@ -489,8 +493,6 @@ $(document).on('click', '.events-wrap ul li', e => {
     }
 });
 function buildEvent() {
-    console.log(event);
-
     const [start, end] = [new Date(event.start), new Date(event.end)].sort((a, b) => a > b ? 1 : -1);
 
     const date = `${start.getFullYear()}-${`${start.getMonth() + 1}`.padStart(2, '0')}-${`${start.getDate()}`.padStart(2, '0')}`;
@@ -671,8 +673,8 @@ function dragSelect(e) {
     
         const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date($day.attr('data-date'))].sort((a, b) => a > b ? 1 : -1);
         
-        start.setDate(start.getDate() - (start.getDay() - lowestWeekDay % 7));
-        end.setDate(end.getDate() + (highestWeekDay % 7 - end.getDay()));
+        start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
+        end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
         
         days = [start];
     
