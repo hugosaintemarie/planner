@@ -1,4 +1,5 @@
 import calendars from './calendars';
+import dates from './dates';
 import selection from './selection';
 
 export default {
@@ -86,12 +87,9 @@ export default {
         if (end < start) return;
     
         // Find first day (first Monday)
-        const firstDay = new Date(new Date(start).setDate(start.getDate() - start.getDay() + (start.getDay() === 0 ? -6 : 1)));
-    
-        const days = [firstDay];
-        
-        // Build array of all days from firstDay to end
-        while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+        const first = dates.relativeFirstWeekDay(start);
+
+        const days = dates.range(first, end);
     
         // Fill last week
         while (days.length % 7 !== 0) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
@@ -99,7 +97,7 @@ export default {
         // Build HTML
         let html = '<div>';
         for (const day of days) {
-            const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
+            const date = dates.toString(day);
             day.setHours(0);
             const classname = day < start || day > end ? ' out' : '';
     

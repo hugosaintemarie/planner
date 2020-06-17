@@ -1,3 +1,4 @@
+import dates from './dates';
 import history from './history';
 import selection from './selection';
 import settings from './settings';
@@ -78,8 +79,7 @@ export default {
         if (selectedDaysEvents.every(e => e === type)) {
             // If same type, simply remove event and don't recreate one (toggle-like behavior)
             for (const day of selection.selectedDays) {
-                const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
-                
+                const date = dates.toString(day);
                 const $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
                 $events.remove();
             }
@@ -90,8 +90,7 @@ export default {
             };
     
             for (const day of selection.selectedDays) {
-                const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
-                
+                const date = dates.toString(day);
                 const $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
                 $events.remove();
                     

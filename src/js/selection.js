@@ -1,3 +1,5 @@
+import dates from './dates';
+
 export default {
     selectedDays: [],
     clipboard: [],
@@ -49,10 +51,7 @@ export default {
             start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
             end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
             
-            let days = [start];
-
-            // Build array of all days from firstDay to end
-            while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+            let days = dates.range(start, end);
 
             // Filter out days out of rectangle
             days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
@@ -65,10 +64,7 @@ export default {
 
             const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date($day.attr('data-date'))].sort((a, b) => a > b ? 1 : -1);
 
-            const days = [start];
-        
-            // Build array of all days from firstDay to end
-            while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+            const days = dates.range(start, end);
 
             if (e.metaKey) this.selectedDays.push(...days);
             else this.selectedDays = days;
@@ -111,10 +107,7 @@ export default {
             start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
             end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
             
-            days = [start];
-        
-            // Build array of all days from firstDay to end
-            while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+            days = dates.range(start, end);
         
             // Filter out days out of rectangle
             if (!e.altKey) days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
@@ -187,10 +180,7 @@ export default {
             start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
             end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
             
-            let days = [start];
-    
-            // Build array of all days from firstDay to end
-            while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+            let days = dates.range(start, end);
     
             // Filter out days out of rectangle
             days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
@@ -206,10 +196,7 @@ export default {
     
             const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date(target)].sort((a, b) => a > b ? 1 : -1);
     
-            const days = [start];
-        
-            // Build array of all days from firstDay to end
-            while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+            const days = dates.range(start, end);
     
             this.selectedDays = days;
         } else {
@@ -232,7 +219,7 @@ export default {
         };
     
         for (const day of selectedDays) {
-            const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
+            const date = dates.toString(day);
             
             const $event = $(`.calendar-wrap .day[data-date="${date}"] .event`);
             $event.remove();
@@ -259,10 +246,7 @@ export default {
         const start = new Date($('#start').val());
         const end = new Date($('#end').val());
     
-        let days = [start];
-    
-        // Build array of all days from start to end
-        while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+        let days = dates.range(start, end);
     
         this.selectedDays = days;
     
@@ -282,10 +266,7 @@ export default {
         start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
         end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
     
-        let days = [start];
-    
-        // Build array of all days from firstDay to end
-        while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+        let days = dates.range(start, end);
     
         // Filter out days out of rectangle
         days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
@@ -298,7 +279,7 @@ export default {
                 continue;
             };
     
-            const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
+            const date = dates.toString(day);
             const $events = $(`.calendar-wrap .day[data-date="${date}"] .event`);
     
             if ($events.length) {
@@ -354,15 +335,15 @@ export default {
         $('.day.selected').removeClass('selected');
 
         for (const day of this.selectedDays) {
-            const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
+            const date = dates.toString(day);
             const $el = $(`.day[data-date="${date}"]`);
             $el.addClass('selected');
             $el.removeClass('no-top no-right no-bottom no-left');
             
-            const dayBeforeSelected = this.selectedDays.some(d => d.getTime() === new Date(new Date(day).setDate(day.getDate() - 1)).getTime());
-            const dayAfterSelected = this.selectedDays.some(d => d.getTime() === new Date(new Date(day).setDate(day.getDate() + 1)).getTime());
-            const dayWeekBeforeSelected = this.selectedDays.some(d => d.getTime() === new Date(new Date(day).setDate(day.getDate() - 7)).getTime());
-            const dayWeekAfterSelected = this.selectedDays.some(d => d.getTime() === new Date(new Date(day).setDate(day.getDate() + 7)).getTime());
+            const dayBeforeSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, -1));
+            const dayAfterSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, 1));
+            const dayWeekBeforeSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, -7));
+            const dayWeekAfterSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, 7));
 
             if (dayWeekBeforeSelected) $el.addClass('no-top');
             if (dayAfterSelected && day.getDay() !== 0) $el.addClass('no-right');
