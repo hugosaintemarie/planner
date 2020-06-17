@@ -75,7 +75,7 @@ $(document).on('click', '.calendar .tools [data-tool="delete"]', e => {
 // Add new event
 $(document).on('click', '.events-wrap .add', e => {
     const type = parseInt($('.events-wrap ul li').length);
-    const event = `<li data-type="${type}" class="sortable" style="background-color: ${settings.eventsColors[type]}"><span contenteditable spellcheck="false"></span></li>`;
+    const event = `<li data-type="${type}" class="sortable" style="background-color: ${settings.eventsColors[type]}"><span class="title" contenteditable spellcheck="false"></span></li>`;
 
     const $ul = $(e.target).closest('.events-wrap').find('ul');
     $ul.append(event);
