@@ -1,0 +1,176 @@
+import calendars from './calendars';
+import selection from './selection';
+
+export default {
+    calendarID: 0,
+
+    init() {
+        // Update calendars start and end
+        $(document).on('change', '#start, #end', () => {
+            const calendar = this.buildCalendar();
+
+            $('.calendar-wrap .content').html(calendar);
+            $('.calendars-wrap .calendar .content').html(calendar);
+        });
+
+        // Switch calendar
+        $(document).on('mousedown', '.calendars-wrap .calendar .content', e => {
+            const $calendar = $(e.target).closest('.calendar');
+            calendars.selectCalendar($calendar);
+        });
+
+        // Add new calendar
+        $(document).on('click', '.calendars-wrap .add', () => {
+            calendars.addNewCalendar();
+        });
+
+        // Rename calendar in sidebar
+        $(document).on('input', '.calendars-wrap p span', e => {
+            const $calendar = $(e.target).closest('.calendar');
+            const val = $(e.target).text();
+            calendars.renameCalendar(val, $calendar);
+        });
+
+        // Rename selected calendar
+        $(document).on('input', '.calendar-wrap h2', e => {
+            const val = $(e.target).text();
+            calendars.renameCalendar(val);
+        });
+
+        // Toggle calendar visibility
+        $(document).on('click', '.calendars-wrap [data-tool="toggle"]', e => {
+            const $calendar = $(e.target).closest('.calendar');
+            calendars.toggleCalendar($calendar);
+        });
+
+        // Duplicate calendar
+        $(document).on('click', '.calendar .tools [data-tool="duplicate"]', e => {
+            const $calendar = $(e.target).closest('.calendar')
+            calendars.duplicateCalendar($calendar);
+        });
+
+        // Delete calendar
+        $(document).on('click', '.calendar .tools [data-tool="delete"]', e => {
+            const $calendar = $(e.target).closest('.calendar');
+            calendars.deleteCalendar($calendar);
+        });
+        
+        const calendar = calendars.buildCalendar();
+
+        $('.calendar-wrap .content').html(calendar);
+        $('.calendars-wrap .calendar .content').html(calendar);
+    },
+
+    addNewCalendar() {
+        const calendar = `<div class="calendar sortable" data-id="${++this.calendarID}">
+            <div class="tools">
+                <i data-tool="toggle" class="far fa-eye"></i>
+                <i data-tool="sort">⋮⋮</i>
+                <i data-tool="duplicate" class="far fa-clone"></i>
+                <i data-tool="delete" class="far fa-trash-alt"></i>
+            </div>
+            <div class="content">${ this.buildCalendar() }</div>
+            <p><span contenteditable spellcheck="false">Calendar ${$('.calendars-wrap .calendar').length + 1}</span></p>
+        </div>`;
+
+        $('.calendars-wrap .calendars').append(calendar);
+        const $calendar = $('.calendars-wrap .calendar:last-child');
+
+        this.selectCalendar($calendar);
+    },
+
+    buildCalendar() {
+        const start = new Date(new Date($('#start').val()).setHours(0));
+        const end = new Date(new Date($('#end').val()).setHours(0));
+    
+        if (end < start) return;
+    
+        // Find first day (first Monday)
+        const firstDay = new Date(new Date(start).setDate(start.getDate() - start.getDay() + (start.getDay() === 0 ? -6 : 1)));
+    
+        const days = [firstDay];
+        
+        // Build array of all days from firstDay to end
+        while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+    
+        // Fill last week
+        while (days.length % 7 !== 0) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+    
+        // Build HTML
+        let html = '<div>';
+        for (const day of days) {
+            const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
+            day.setHours(0);
+            const classname = day < start || day > end ? ' out' : '';
+    
+            html += `<div class="day${classname}" data-date="${date}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span></div>`;
+    
+            if (day.getDay() === 0) html += '</div><div>';
+        }
+        html += '</div>';
+    
+        return html;
+    },
+
+    selectCalendar($calendar) {
+        $('.calendars-wrap .calendar.selected').removeClass('selected');
+        $calendar.addClass('selected');
+    
+        // Update ID
+        $('.calendar-wrap .content').attr('data-id', $calendar.attr('data-id'));
+    
+        // Update title
+        $('.calendar-wrap h2').html($calendar.find('p span').html());
+    
+        // Update main calendar
+        $('.calendar-wrap .content').html($calendar.find('.content').html());
+    
+        // Unselect any selection
+        window.getSelection().removeAllRanges();
+    
+        selection.highlightSelection();
+    },
+
+    toggleCalendar($calendar) {
+        $calendar.toggleClass('hidden');
+        if ($calendar.hasClass('selected')) {
+            const $calendarToSelect = $calendar.nextAll(':not(.hidden)').eq(0).length ? $calendar.nextAll(':not(.hidden)').eq(0) : $calendar.prevAll(':not(.hidden)').length ? $calendar.prevAll(':not(.hidden)') : null;
+            if ($calendarToSelect) this.selectCalendar($calendarToSelect);
+        }
+    },
+
+    renameCalendar(val, $calendar = null) {
+        if ($calendar) {
+            if ($calendar.hasClass('selected')) {
+                $('.calendar-wrap h2').text(val);
+            }
+        } else {
+            $('.calendars-wrap .calendar.selected p span').text(val);
+        }
+    },
+
+    duplicateCalendar($calendar) {
+        const $new = $calendar.clone();
+
+        // Remove selected class and rename with 'copy'
+        $new.removeClass('selected');
+        $new.find('p span').append(' copy');
+
+        // Reindex new calendar
+        $new.attr('data-id', ++this.calendarID);
+
+        // Clone calendar
+        $calendar.after($new);
+
+        // Unselect any selection
+        window.getSelection().removeAllRanges();
+    },
+
+    deleteCalendar($calendar) {
+        if ($calendar.hasClass('selected')) {
+            const $calendarToSelect = $calendar.nextAll(':not(.hidden)').eq(0).length ? $calendar.nextAll(':not(.hidden)').eq(0) : $calendar.prevAll(':not(.hidden)').length ? $calendar.prevAll(':not(.hidden)').eq(0) : null;
+            if ($calendarToSelect) selectCalendar($calendarToSelect);
+        }
+        $calendar.remove();
+    }
+}
