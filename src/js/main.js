@@ -17,6 +17,7 @@ let calendarID = 0;
 
 // Add new calendar
 $(document).on('click', '.calendars-wrap .add', () => {
+    console.log('wow');
     const calendar = `<div class="calendar sortable" data-id="${++calendarID}">
         <div class="tools">
             <i data-tool="toggle" class="far fa-eye"></i>

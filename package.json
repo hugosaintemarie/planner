@@ -1,0 +1,24 @@
+{
+    "name": "planner",
+    "version": "1.0.0",
+    "description": "A tool to design schedules, compare calendars, and organize agendas",
+    "main": "index.js",
+    "dependencies": {},
+    "devDependencies": {
+        "webpack": "^4.43.0",
+        "webpack-cli": "^3.3.11"
+    },
+    "scripts": {
+        "dev": "webpack --config webpack.config.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ashugeo/planner.git"
+    },
+    "author": "Hugo Sainte-Marie <hugo.saintemarie@gmail.com> (https://ashugeo.com)",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ashugeo/planner/issues"
+    },
+    "homepage": "https://github.com/ashugeo/planner#readme"
+}
