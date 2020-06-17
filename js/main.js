@@ -175,7 +175,7 @@ $(document).on('mousedown', '.calendar-wrap .day', e => {
         if (selectedDays.some(d => d.getTime() === new Date(date).getTime())) {
             selectedDays = selectedDays.filter(d => d.getTime() !== new Date(date).getTime());
         } else {
-            selectedDays.push(new Date(date)); 
+            selectedDays.push(new Date(date));
         }
     } else if (e.shiftKey) {
         const $selectedFirst = $('.calendar-wrap .day.selected-first').length ? $('.calendar-wrap .day.selected-first') : $('.calendar-wrap .day.selected').eq(0);
@@ -194,7 +194,7 @@ $(document).on('mousedown', '.calendar-wrap .day', e => {
         let days = [start];
 
         // Build array of all days from firstDay to end
-        while (days[days.length - 1] < end && days.length < 100) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+        while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
 
         // Filter out days out of rectangle
         days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
@@ -232,6 +232,7 @@ $(document).on('keydown', e => {
 
     if ([37, 38, 39, 40].includes(e.which)) moveSelection(e); // Arrow keys: move selection
     else if (e.which === 8) emptySelection(); // Backspace
+    else if (ctrlOrMeta && e.which === 65) selectAll(); // A
     else if (ctrlOrMeta && e.which === 67) copySelection(); // C
     else if (ctrlOrMeta && e.which === 88) cutSelection(); // X
     else if (ctrlOrMeta && e.which === 86) pasteSelection(); // V
@@ -301,7 +302,7 @@ function moveSelection(e) {
         let days = [start];
 
         // Build array of all days from firstDay to end
-        while (days[days.length - 1] < end && days.length < 100) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+        while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
 
         // Filter out days out of rectangle
         days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
@@ -387,6 +388,20 @@ function emptySelection() {
     pushAction(action);
 }
 
+function selectAll() {
+    const start = new Date($('#start').val());
+    const end = new Date($('#end').val());
+
+    let days = [start];
+
+    // Build array of all days from start to end
+    while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+
+    selectedDays = days;
+
+    highlightSelection();
+}
+
 let clipboard = [];
 
 function copySelection() {
@@ -405,7 +420,7 @@ function copySelection() {
     let days = [start];
 
     // Build array of all days from firstDay to end
-    while (days[days.length - 1] < end && days.length < 100) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+    while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
 
     // Filter out days out of rectangle
     days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
@@ -723,7 +738,7 @@ function dragSelect(e) {
         days = [start];
     
         // Build array of all days from firstDay to end
-        while (days[days.length - 1] < end && days.length < 100) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+        while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
     
         // Filter out days out of rectangle
         if (!e.altKey) days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
