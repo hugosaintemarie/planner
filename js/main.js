@@ -156,7 +156,7 @@ $(document).on('input', '.events-wrap ul span', e => {
     $(`.event[data-type="${type}"] span`).text(val);
 });
 
-let event = {};
+let eventID = 0;
 let selectedDays = []; 
 
 $(document).on('mousedown', '.calendar-wrap .day', e => {
@@ -226,10 +226,15 @@ $(document).on('keydown', e => {
     const ctrlOrMeta = e.metaKey || e.ctrlKey;
 
     if ([37, 38, 39, 40].includes(e.which)) moveSelection(e); // Arrow keys: move selection
-    else if (e.which === 8) emptySelection();  // Backspace
-    else if (ctrlOrMeta && e.which === 67) copySelection();  // C
-    else if (ctrlOrMeta && e.which === 88) cutSelection();   // X
+    else if (e.which === 8) emptySelection(); // Backspace
+    else if (ctrlOrMeta && e.which === 67) copySelection(); // C
+    else if (ctrlOrMeta && e.which === 88) cutSelection(); // X
     else if (ctrlOrMeta && e.which === 86) pasteSelection(); // V
+    else if (ctrlOrMeta && e.which === 90) { // Z
+        e.preventDefault();
+        if (e.shiftKey) redo();
+        else undo();
+    }
 });
 
 function moveSelection(e) {
@@ -411,8 +416,6 @@ function copySelection() {
     }
 
     while (events.length) clipboard.push(events.splice(0, highestWeekDay - lowestWeekDay + 1));
-
-    console.log(clipboard);
 }
 
 function cutSelection() {
@@ -424,8 +427,6 @@ function pasteSelection() {
     const $selected = $('.calendar-wrap .day.selected-first');
     const date = new Date($selected.attr('data-date'));
 
-    console.log(clipboard);
-
     for (let j = 0; j < clipboard.length; j += 1) {
         for (let i = 0; i < clipboard[0].length; i += 1) {
             const _event = clipboard[j][i];
@@ -434,11 +435,11 @@ function pasteSelection() {
             const target = new Date(new Date(date).setDate(date.getDate() + j * 7 + i));
             const _date = `${target.getFullYear()}-${`${target.getMonth() + 1}`.padStart(2, '0')}-${`${target.getDate()}`.padStart(2, '0')}`;
 
-            event = { ..._event };
+            const event = { ..._event };
             event.start = _date;
             event.end = _date;
     
-            buildEvent();
+            buildEvent(event);
         }
     }
 }
@@ -471,8 +472,18 @@ $(document).on('click', '.events-wrap ul li', e => {
             
             const $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
             $events.remove();
+
+            // const action = {
+            //     type: 'remove',
+
+            // }
         }
     } else {
+        const action = {
+            type: 'addEvents',
+            events: []
+        };
+
         for (day of selectedDays) {
             const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
             
@@ -481,18 +492,22 @@ $(document).on('click', '.events-wrap ul li', e => {
                 
             const $day = $(`.calendar-wrap .day[data-date="${date}"]`);
             
-            // event = { id: event.id + 1 };
+            const event = { id: eventID++ };
             event.type = type;
             event.title = $event.find('.title').text();
             event.color = $event.css('background-color');
             event.start = $day.attr('data-date');
             event.end = $day.attr('data-date');
+
+            action.events.push(event);
     
-            buildEvent();
+            buildEvent(event);
         }
+
+        pushAction(action);
     }
 });
-function buildEvent() {
+function buildEvent(event) {
     const [start, end] = [new Date(event.start), new Date(event.end)].sort((a, b) => a > b ? 1 : -1);
 
     const date = `${start.getFullYear()}-${`${start.getMonth() + 1}`.padStart(2, '0')}-${`${start.getDate()}`.padStart(2, '0')}`;
@@ -709,4 +724,33 @@ function addEvents(array) {
         </li>`;
         $ul.append(li);
     }
+}
+
+const actions = [];
+let actionsIndex = 0;
+
+function pushAction(action) {
+    actions.length = actionsIndex;
+    actions.push(action);
+    actionsIndex += 1;
+}
+
+function undo() {
+    if (actionsIndex - 1 < 0) return;
+    actionsIndex -= 1;
+    const action = actions[actionsIndex];
+
+    if (action.type === 'addEvents') for (const event of action.events) removeEvent(event);
+}
+
+function removeEvent(event) {
+    $(`.event[data-id="${event.id}"]`).remove();
+}
+
+function redo() {
+    if (actionsIndex + 1 > actions.length) return;
+    const action = actions[actionsIndex];
+    if (action.type === 'addEvents') for (const event of action.events) buildEvent(event);
+
+    actionsIndex += 1;
 }
