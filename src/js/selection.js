@@ -1,4 +1,5 @@
 import dates from './dates';
+import events from './events';
 
 export default {
     selectedDays: [],
@@ -32,7 +33,7 @@ export default {
             $('.selected-first').removeClass('selected-first');
             $day.addClass('selected-first');
 
-            if (this.selectedDays.some(d => d.getTime() === new Date(date).getTime())) {
+            if (dates.isInArray(this.selectedDays, new Date(date))) {
                 this.selectedDays = this.selectedDays.filter(d => d.getTime() !== new Date(date).getTime());
             } else {
                 this.selectedDays.push(new Date(date));
@@ -218,14 +219,14 @@ export default {
             events: []
         };
     
-        for (const day of selectedDays) {
+        for (const day of this.selectedDays) {
             const date = dates.toString(day);
             
             const $event = $(`.calendar-wrap .day[data-date="${date}"] .event`);
             $event.remove();
     
             const event = {
-                id: eventID++,
+                id: events.eventID++,
                 calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
                 type: $event.attr('data-type'),
                 title: $event.find('.title').text(),
@@ -274,7 +275,7 @@ export default {
         const events = [];
         for (const day of days) {
             // Ignore unselected days
-            if (!this.selectedDays.some(d => d.getTime() === day.getTime())) {
+            if (!dates.isInArray(this.selectedDays, day)) {
                 events.push(null);
                 continue;
             };
