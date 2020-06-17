@@ -52,6 +52,9 @@ $(document).on('click', '.calendar .tools [data-tool="duplicate"]', e => {
     $new.removeClass('selected');
     $new.find('p span').append(' copy');
 
+    // Reindex new calendar
+    $new.attr('data-id', ++calendarID);
+
     // Clone calendar
     $calendar.after($new);
 
