@@ -358,12 +358,33 @@ function highlightSelection() {
 }
 
 function emptySelection() {
+    const action = {
+        type: 'removeEvents',
+        events: []
+    };
+
     for (day of selectedDays) {
         const date = `${day.getFullYear()}-${`${day.getMonth() + 1}`.padStart(2, '0')}-${`${day.getDate()}`.padStart(2, '0')}`;
         
-        const $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
-        $events.remove();
+        const $event = $(`.calendar-wrap .day[data-date="${date}"] .event`);
+        $event.remove();
+
+        const event = {
+            id: eventID++,
+            calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
+            type: $event.attr('data-type'),
+            title: $event.find('.title').text(),
+            color: $event.css('background-color'),
+            start: date,
+            end: date
+        };
+
+        action.events.push(event);
+
+        $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event`).remove();
     }
+
+    pushAction(action);
 }
 
 let clipboard = [];
