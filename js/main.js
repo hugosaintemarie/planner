@@ -13,9 +13,11 @@ $(document).ready(() => {
     addEvents(['Workout', 'Tennis', 'Jogging']);
 });
 
+let calendarID = 0;
+
 // Add new calendar
 $(document).on('click', '.calendars-wrap .add', () => {
-    const calendar = `<div class="calendar sortable">
+    const calendar = `<div class="calendar sortable" data-id="${++calendarID}">
         <div class="tools">
             <i data-tool="toggle" class="far fa-eye"></i>
             <i data-tool="sort">⋮⋮</i>
@@ -102,6 +104,9 @@ $(document).on('mousedown', '.calendars-wrap .calendar .content', e => {
 function selectCalendar($calendar) {
     $('.calendars-wrap .calendar.selected').removeClass('selected');
     $calendar.addClass('selected');
+
+    // Update ID
+    $('.calendar-wrap .content').attr('data-id', $calendar.attr('data-id'));
 
     // Update title
     $('.calendar-wrap h2').html($calendar.find('p span').html());
@@ -492,12 +497,15 @@ $(document).on('click', '.events-wrap ul li', e => {
                 
             const $day = $(`.calendar-wrap .day[data-date="${date}"]`);
             
-            const event = { id: eventID++ };
-            event.type = type;
-            event.title = $event.find('.title').text();
-            event.color = $event.css('background-color');
-            event.start = $day.attr('data-date');
-            event.end = $day.attr('data-date');
+            const event = {
+                id: eventID++,
+                calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
+                type: type,
+                title: $event.find('.title').text(),
+                color: $event.css('background-color'),
+                start: $day.attr('data-date'),
+                end: $day.attr('data-date')
+            };
 
             action.events.push(event);
     
@@ -514,7 +522,7 @@ function buildEvent(event) {
 
     const days = [start, end];
 
-    const $el = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"], .calendar-wrap .day[data-date="${date}"]`);
+    const $el = $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"]`);
 
     // Add event
     let classname = ' start end';
@@ -741,6 +749,7 @@ function undo() {
     const action = actions[actionsIndex];
 
     if (action.type === 'addEvents') for (const event of action.events) removeEvent(event);
+    else if (action.type === 'removeEvents') for (const event of action.events) buildEvent(event);
 }
 
 function removeEvent(event) {
@@ -751,6 +760,7 @@ function redo() {
     if (actionsIndex + 1 > actions.length) return;
     const action = actions[actionsIndex];
     if (action.type === 'addEvents') for (const event of action.events) buildEvent(event);
+    else if (action.type === 'removeEvents') for (const event of action.events) removeEvent(event);
 
     actionsIndex += 1;
 }
