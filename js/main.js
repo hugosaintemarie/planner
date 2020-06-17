@@ -66,7 +66,7 @@ $(document).on('click', '.calendar .tools [data-tool="duplicate"]', e => {
 $(document).on('click', '.calendar .tools [data-tool="delete"]', e => {
     const $calendar = $(e.target).closest('.calendar');
     if ($calendar.hasClass('selected')) {
-        const $calendarToSelect = $calendar.nextAll(':not(.hidden)').eq(0).length ? $calendar.nextAll(':not(.hidden)').eq(0) : $calendar.prevAll(':not(.hidden)').length ? $calendar.prevAll(':not(.hidden)') : null;
+        const $calendarToSelect = $calendar.nextAll(':not(.hidden)').eq(0).length ? $calendar.nextAll(':not(.hidden)').eq(0) : $calendar.prevAll(':not(.hidden)').length ? $calendar.prevAll(':not(.hidden)').eq(0) : null;
         if ($calendarToSelect) selectCalendar($calendarToSelect);
     }
     $calendar.remove();
