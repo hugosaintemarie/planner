@@ -122,7 +122,7 @@ export default {
 
         const days = [start, end];
 
-        const $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"]`) : $(`.calendar.selected .day[data-date="${date}"], .calendar-wrap .day[data-date="${date}"]`);
+        const $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"], .calendar-wrap .day[data-date="${date}"] .events`);
 
         // Add event
         let classname = ' start end';

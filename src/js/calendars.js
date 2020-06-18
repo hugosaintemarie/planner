@@ -86,7 +86,7 @@ export default {
             // Show day cell as out of bounds if necessary
             const classname = day < start || day > end ? ' out' : '';
     
-            html += `<div class="day${classname}" data-date="${date}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span></div>`;
+            html += `<div class="day${classname}" data-date="${date}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span><div class="events"></div></div>`;
     
             if (day.getDay() === 0) html += '</div><div>';
         }
