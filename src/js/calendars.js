@@ -176,7 +176,7 @@ export default {
     selectAnotherCalendar($calendar) {
         // Select next (or previous) visible calendar
         if ($calendar.hasClass('selected')) {
-            const $calendarToSelect = $calendar.nextAll(':not(.hidden)').eq(0).length ? $calendar.nextAll(':not(.hidden)').eq(0) : $calendar.prevAll(':not(.hidden)').length ? $calendar.prevAll(':not(.hidden)') : null;
+            const $calendarToSelect = $calendar.nextAll(':not(.hidden)').eq(0).length ? $calendar.nextAll(':not(.hidden)').eq(0) : $calendar.prevAll(':not(.hidden)').length ? $calendar.prevAll(':not(.hidden)').eq(0) : null;
             if ($calendarToSelect) this.selectCalendar($calendarToSelect);
         }
     }
