@@ -135,9 +135,9 @@ export default {
         const date = new Date($selected.attr('data-date'));
     
         if (e.which === 37) {
-            if (e.metaKey && e.shiftKey) {
-                // Meta + shift + left: beggining of week
-                target = new Date(date.setDate(date.getDate() - (date.getDay() === 0 ? 6 : date.getDay() + 1)));
+            if (e.metaKey) {
+                // Meta + left: beginning of week
+                target = dates.relativeFirstWeekDay(date);
             } else {
                 // Left: one day before
                 target = new Date(date.setDate(date.getDate() - 1));
@@ -149,9 +149,9 @@ export default {
             // Up: one week before
             target = new Date(date.setDate(date.getDate() - 7));
         } else if (e.which === 39) {
-            if (e.metaKey && e.shiftKey) {
-                // Meta + shift + right: end of week
-                target = new Date(date.setDate(date.getDate() + 7 - date.getDay()));
+            if (e.metaKey) {
+                // Meta + right: end of week
+                target = new Date(date.setDate(date.getDay() === 0 ? date.getDate() : (date.getDate() + 7 - date.getDay())));
             } else {
                 // Right: one day after
                 target = new Date(date.setDate(date.getDate() + 1));
@@ -172,7 +172,7 @@ export default {
             const $target = $(`.calendar-wrap .day[data-date="${targetDate}"]`);
             $target.addClass('selected-last');
     
-            this.selectedDays = [new Date($selectedFirst.attr('data-date')), new Date(date)];
+            this.selectedDays = [new Date($selectedFirst.attr('data-date')), new Date(targetDate)];
     
             const lowestWeekDay = Math.min(...this.selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
             const highestWeekDay = Math.max(...this.selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
