@@ -7,7 +7,10 @@ export default {
         $(document).on('keydown', e => {
             const ctrlOrMeta = e.metaKey || e.ctrlKey;
 
-            if ([37, 38, 39, 40].includes(e.which)) selection.moveSelection(e); // Arrow keys
+            if ([37, 38, 39, 40].includes(e.which)) {                           // Arrow keys
+                e.preventDefault();
+                selection.moveSelection(e);
+            }
             else if (e.which === 8) selection.emptySelection();                 // Backspace
             else if (ctrlOrMeta && e.which === 65) selection.selectAll();       // A
             else if (ctrlOrMeta && e.which === 67) selection.copySelection();   // C
