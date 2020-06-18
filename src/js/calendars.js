@@ -22,7 +22,7 @@ export default {
 
         // Add new calendar
         $(document).on('click', '.calendars-wrap .add', () => {
-            calendars.addNewCalendar();
+            calendars.newCalendar();
         });
 
         // Rename calendar in sidebar
@@ -56,39 +56,22 @@ export default {
             calendars.deleteCalendar($calendar);
         });
         
-        const calendar = calendars.buildCalendar();
-
+        // Initiate with first calendar
+        const calendar = this.buildCalendar();
         $('.calendar-wrap .content').html(calendar);
         $('.calendars-wrap .calendar .content').html(calendar);
     },
 
-    addNewCalendar() {
-        const calendar = `<div class="calendar sortable" data-id="${++this.calendarID}">
-            <div class="tools">
-                <i data-tool="toggle" class="far fa-eye"></i>
-                <i data-tool="sort">⋮⋮</i>
-                <i data-tool="duplicate" class="far fa-clone"></i>
-                <i data-tool="delete" class="far fa-trash-alt"></i>
-            </div>
-            <div class="content">${ this.buildCalendar() }</div>
-            <p><span contenteditable spellcheck="false">Calendar ${$('.calendars-wrap .calendar').length + 1}</span></p>
-        </div>`;
-
-        $('.calendars-wrap .calendars').append(calendar);
-        const $calendar = $('.calendars-wrap .calendar:last-child');
-
-        this.selectCalendar($calendar);
-    },
-
     buildCalendar() {
+        // Get start and end dates
         const start = new Date(new Date($('#start').val()).setHours(0));
         const end = new Date(new Date($('#end').val()).setHours(0));
-    
         if (end < start) return;
     
-        // Find first day (first Monday)
+        // Find first week day
         const first = dates.relativeFirstWeekDay(start);
 
+        // Create range from first day to end
         const days = dates.range(first, end);
     
         // Fill last week
@@ -99,6 +82,8 @@ export default {
         for (const day of days) {
             const date = dates.toString(day);
             day.setHours(0);
+
+            // Show day cell as out of bounds if necessary
             const classname = day < start || day > end ? ' out' : '';
     
             html += `<div class="day${classname}" data-date="${date}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span></div>`;
@@ -108,6 +93,43 @@ export default {
         html += '</div>';
     
         return html;
+    },
+
+    newCalendar() {
+        // Create HTML
+        const calendar = `<div class="calendar sortable" data-id="${++this.calendarID}">
+            <div class="tools">
+                <i data-tool="toggle" class="far fa-eye"></i>
+                <i data-tool="sort">⋮⋮</i>
+                <i data-tool="duplicate" class="far fa-clone"></i>
+                <i data-tool="delete" class="far fa-trash-alt"></i>
+            </div>
+            <div class="content">${ this.buildCalendar() }</div>
+            <p><span contenteditable spellcheck="false">Calendar ${$('.calendars-wrap .calendar').length + 1}</span></p>
+        </div>`;
+        
+        $('.calendars-wrap .calendars').append(calendar);
+
+        // Select new calendar
+        const $calendar = $('.calendars-wrap .calendar:last-child');
+        this.selectCalendar($calendar);
+    },
+
+    duplicateCalendar($calendar) {
+        const $new = $calendar.clone();
+
+        // Remove selected class and rename with 'copy'
+        $new.removeClass('selected');
+        $new.find('p span').append(' copy');
+
+        // Reindex new calendar
+        $new.attr('data-id', ++this.calendarID);
+
+        // Clone calendar
+        $calendar.after($new);
+
+        // Unselect any selection
+        window.getSelection().removeAllRanges();
     },
 
     selectCalendar($calendar) {
@@ -129,46 +151,33 @@ export default {
         selection.highlightSelection();
     },
 
-    toggleCalendar($calendar) {
-        $calendar.toggleClass('hidden');
-        if ($calendar.hasClass('selected')) {
-            const $calendarToSelect = $calendar.nextAll(':not(.hidden)').eq(0).length ? $calendar.nextAll(':not(.hidden)').eq(0) : $calendar.prevAll(':not(.hidden)').length ? $calendar.prevAll(':not(.hidden)') : null;
-            if ($calendarToSelect) this.selectCalendar($calendarToSelect);
-        }
-    },
-
     renameCalendar(val, $calendar = null) {
         if ($calendar) {
+            // Edited in sidebar, replace in main
             if ($calendar.hasClass('selected')) {
                 $('.calendar-wrap h2').text(val);
             }
         } else {
+            // Edited in main, replace in sidebar
             $('.calendars-wrap .calendar.selected p span').text(val);
         }
     },
 
-    duplicateCalendar($calendar) {
-        const $new = $calendar.clone();
-
-        // Remove selected class and rename with 'copy'
-        $new.removeClass('selected');
-        $new.find('p span').append(' copy');
-
-        // Reindex new calendar
-        $new.attr('data-id', ++this.calendarID);
-
-        // Clone calendar
-        $calendar.after($new);
-
-        // Unselect any selection
-        window.getSelection().removeAllRanges();
+    toggleCalendar($calendar) {
+        $calendar.toggleClass('hidden');
+        this.selectAnotherCalendar($calendar);
     },
 
     deleteCalendar($calendar) {
-        if ($calendar.hasClass('selected')) {
-            const $calendarToSelect = $calendar.nextAll(':not(.hidden)').eq(0).length ? $calendar.nextAll(':not(.hidden)').eq(0) : $calendar.prevAll(':not(.hidden)').length ? $calendar.prevAll(':not(.hidden)').eq(0) : null;
-            if ($calendarToSelect) selectCalendar($calendarToSelect);
-        }
+        this.selectAnotherCalendar($calendar);
         $calendar.remove();
+    },
+
+    selectAnotherCalendar($calendar) {
+        // Select next (or previous) visible calendar
+        if ($calendar.hasClass('selected')) {
+            const $calendarToSelect = $calendar.nextAll(':not(.hidden)').eq(0).length ? $calendar.nextAll(':not(.hidden)').eq(0) : $calendar.prevAll(':not(.hidden)').length ? $calendar.prevAll(':not(.hidden)') : null;
+            if ($calendarToSelect) this.selectCalendar($calendarToSelect);
+        }
     }
 }

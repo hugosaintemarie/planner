@@ -20,5 +20,13 @@ export default {
         const days = [start];
         while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
         return days;
+    },
+
+    findLowestWeekDay(arr) {
+        return Math.min(...arr.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+    },
+
+    findHighestWeekDay(arr) {
+        return Math.max(...arr.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
     }
 }

@@ -9,7 +9,7 @@ export default {
     init() {
         // Add new event
         $(document).on('click', '.events-wrap .add', () => {
-            this.addNewEvent();
+            this.newEvent();
         });
 
         // Rename event
@@ -48,7 +48,7 @@ export default {
         }
     },
 
-    addNewEvent() {
+    newEvent() {
         const type = parseInt($('.events-wrap ul li').length);
         const event = `<li data-type="${type}" class="sortable" style="background-color: ${settings.eventsColors[type]}"><span class="title" contenteditable spellcheck="false"></span></li>`;
 
@@ -72,7 +72,7 @@ export default {
         const type = $event.attr('data-type');
     
         const selectedDaysEvents = selection.selectedDays.map(d => {
-            const date = `${d.getFullYear()}-${`${d.getMonth() + 1}`.padStart(2, '0')}-${`${d.getDate()}`.padStart(2, '0')}`;
+            const date = dates.toString(d);
             return $(`.calendar-wrap .day[data-date="${date}"] .event`).attr('data-type');
         });
     
@@ -118,7 +118,7 @@ export default {
     buildEvent(event) {
         const [start, end] = [new Date(event.start), new Date(event.end)].sort((a, b) => a > b ? 1 : -1);
 
-        const date = `${start.getFullYear()}-${`${start.getMonth() + 1}`.padStart(2, '0')}-${`${start.getDate()}`.padStart(2, '0')}`;
+        const date = dates.toString(start);
 
         const days = [start, end];
 

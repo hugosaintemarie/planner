@@ -1,5 +1,6 @@
 import dates from './dates';
 import events from './events';
+import history from './history';
 
 export default {
     selectedDays: [],
@@ -167,7 +168,7 @@ export default {
             const $selectedFirst = $('.selected-first');
             $('.selected-last').removeClass('selected-last');
     
-            const targetDate = `${target.getFullYear()}-${`${target.getMonth() + 1}`.padStart(2, '0')}-${`${target.getDate()}`.padStart(2, '0')}`;
+            const targetDate = dates.toString(target);
             const $target = $(`.calendar-wrap .day[data-date="${targetDate}"]`);
             $target.addClass('selected-last');
     
@@ -191,7 +192,7 @@ export default {
             const $selectedFirst = $('.selected-first');
             $('.selected-last').removeClass('selected-last');
     
-            const targetDate = `${target.getFullYear()}-${`${target.getMonth() + 1}`.padStart(2, '0')}-${`${target.getDate()}`.padStart(2, '0')}`;
+            const targetDate = dates.toString(target);
             const $target = $(`.calendar-wrap .day[data-date="${targetDate}"]`);
             $target.addClass('selected-last');
     
@@ -201,7 +202,7 @@ export default {
     
             this.selectedDays = days;
         } else {
-            const date = `${target.getFullYear()}-${`${target.getMonth() + 1}`.padStart(2, '0')}-${`${target.getDate()}`.padStart(2, '0')}`;
+            const date = dates.toString(target);
             const $target = $(`.calendar-wrap .day[data-date="${date}"]`);
             $('.selected-first').removeClass('selected-first');
             $('.selected-last').removeClass('selected-last');
@@ -214,6 +215,7 @@ export default {
     },
 
     emptySelection() {
+        // Create action for history
         const action = {
             type: 'removeEvents',
             events: []
@@ -221,10 +223,9 @@ export default {
     
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
-            
             const $event = $(`.calendar-wrap .day[data-date="${date}"] .event`);
-            $event.remove();
-    
+
+            // Save event in action
             const event = {
                 id: events.eventID++,
                 calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
@@ -236,42 +237,47 @@ export default {
             };
     
             action.events.push(event);
+
+            // Remove event from main calendar
+            $event.remove();
     
+            // Remove event from thumbnail calendar
             $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event`).remove();
         }
     
+        // Save action in history
         history.pushAction(action);
     },
     
     selectAll() {
         const start = new Date($('#start').val());
         const end = new Date($('#end').val());
-    
-        let days = dates.range(start, end);
-    
-        this.selectedDays = days;
-    
+
+        this.selectedDays = dates.range(start, end);
+
         this.highlightSelection();
     },
         
     copySelection() {
         this.clipboard = [];
     
-        const firstDayInSelection = new Date(Math.min(...this.selectedDays));
-        const lastDayInSelection = new Date(Math.max(...this.selectedDays));
-        const lowestWeekDay = Math.min(...this.selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
-        const highestWeekDay = Math.max(...this.selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
-    
-        const [start, end] = [firstDayInSelection, lastDayInSelection];
+        // Find selection's bounding rectangle
+        let start = new Date(Math.min(...this.selectedDays));
+        let end = new Date(Math.max(...this.selectedDays));
+
+        const lowestWeekDay = dates.findLowestWeekDay(this.selectedDays);
+        const highestWeekDay = dates.findHighestWeekDay(this.selectedDays);
     
         start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
         end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
     
+        // Create range from start to end of bounding rectangle
         let days = dates.range(start, end);
     
-        // Filter out days out of rectangle
+        // Filter out days out of bounding rectangle
         days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
     
+        // Create array of events for selected days, keep null for an empty day
         const events = [];
         for (const day of days) {
             // Ignore unselected days
@@ -283,6 +289,7 @@ export default {
             const date = dates.toString(day);
             const $events = $(`.calendar-wrap .day[data-date="${date}"] .event`);
     
+            // Copy day events to clipboard
             if ($events.length) {
                 $events.each((id, el) => {
                     const $el = $(el);
@@ -303,6 +310,7 @@ export default {
             }
         }
     
+        // Convert 1D array of events to 2D array to mimic selection bounding rectangle layout
         while (events.length) this.clipboard.push(events.splice(0, highestWeekDay - lowestWeekDay + 1));
     },
     
@@ -312,17 +320,21 @@ export default {
     },
     
     pasteSelection() {
+        // Clipboard paste starts at selected day
         const $selected = $('.calendar-wrap .day.selected-first');
         const date = new Date($selected.attr('data-date'));
     
         for (let j = 0; j < this.clipboard.length; j += 1) {
             for (let i = 0; i < this.clipboard[0].length; i += 1) {
+                // Find event in clipboard if any
                 const _event = this.clipboard[j][i];
                 if (!_event) continue;
     
+                // Find target day
                 const target = new Date(new Date(date).setDate(date.getDate() + j * 7 + i));
-                const _date = `${target.getFullYear()}-${`${target.getMonth() + 1}`.padStart(2, '0')}-${`${target.getDate()}`.padStart(2, '0')}`;
+                const _date = dates.toString(target);
     
+                // Create event
                 const event = { ..._event };
                 event.start = _date;
                 event.end = _date;
@@ -333,14 +345,17 @@ export default {
     },
 
     highlightSelection() {
-        $('.day.selected').removeClass('selected');
+        // Reset all currently selected days
+        $('.day.selected').removeClass('selected no-top no-right no-bottom no-left');
 
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
             const $el = $(`.day[data-date="${date}"]`);
+
+            // Select day
             $el.addClass('selected');
-            $el.removeClass('no-top no-right no-bottom no-left');
             
+            // Add styles classes (for borders)
             const dayBeforeSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, -1));
             const dayAfterSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, 1));
             const dayWeekBeforeSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, -7));
