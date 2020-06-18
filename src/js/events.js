@@ -40,7 +40,7 @@ export default {
             const li = `<li data-type="${type}" style="background-color: ${settings.eventsColors[type]}" class="sortable">
                 <span class="title" contenteditable>${event}</span>
                 <span class="tools">
-                    <i class="fas fa-caret-down"></i>
+                    <i class="fas fa-angle-down"></i>
                     <i data-tool="sort">⋮⋮</i>
                 </span>
             </li>`;

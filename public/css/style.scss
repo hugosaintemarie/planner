@@ -449,6 +449,7 @@ main {
             // opacity: .3;
             cursor: pointer;
             background-color: grey;
+            margin-right: 32px;
 
             &:not(:last-child) {
                 margin-bottom: 12px;
@@ -475,15 +476,21 @@ main {
 
             .tools {
                 position: absolute;
-                right: 4px;
+                top: 0;
+                right: -36px;
                 
                 i {
                     width: 16px;
                     height: 16px;
-                    display: inline-flex;
+                    display: flex;
                     justify-content: center;
                     align-content: center;
                     opacity: 0;
+                    transition: opacity .1s ease;
+
+                    &:not(:last-child) {
+                        margin-bottom: 8px;
+                    }
 
                     &:not(.far) {
                         font-style: normal;
