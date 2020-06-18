@@ -224,6 +224,7 @@ export default {
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
             const $event = $(`.calendar-wrap .day[data-date="${date}"] .event`);
+            if (!$event.length) continue;
 
             // Save event in action
             const event = {
