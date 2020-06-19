@@ -8,5 +8,5 @@ module.exports = {
         filename: 'bundle.js'
     },
     watch: process.env.NODE_ENV === 'production' ? false : true,
-    // stats: 'errors-only'
+    stats: 'errors-only'
 }
