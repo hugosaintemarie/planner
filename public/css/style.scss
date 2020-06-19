@@ -462,6 +462,7 @@ main {
     ul {
         list-style: none;
         margin-top: 16px;
+        margin-right: 32px;
 
         li {
             position: relative;
@@ -471,7 +472,6 @@ main {
             // opacity: .3;
             cursor: pointer;
             background-color: grey;
-            margin-right: 32px;
 
             &:not(:last-child) {
                 margin-bottom: 12px;
@@ -481,7 +481,7 @@ main {
             //     opacity: 1;
             // }
 
-            span {
+            > span {
                 display: inline-block;
                 padding: 4px 8px;
                 border-radius: 4px;
@@ -521,6 +521,44 @@ main {
 
                     &[data-tool="sort"] {
                         cursor: grab;
+                    }
+                }
+
+                .dropdown {
+                    position: absolute;
+                    right: 0;
+                    top: 24px;
+                    z-index: 1;
+                    background-color: #1e1e1e;
+                    border: 1px solid #333;
+                    padding: 12px;
+                    border-radius: 8px;
+                    display: none;
+
+                    &.visible {
+                        display: block;
+                    }
+
+                    > span {
+                        display: inline-block;
+                        padding: 4px;
+                        color: #888;
+                        white-space: nowrap;
+                        font-size: .875rem;
+
+                        i {
+                            display: inline-block;
+                            margin-right: 4px;
+                            opacity: 1;
+                        }
+
+                        &:not(:last-child) {
+                            margin-bottom: 8px;
+                        }
+
+                        &:hover {
+                            color: white;
+                        }
                     }
                 }
             }

@@ -5,6 +5,9 @@ export default {
     init() {
         // Shortcuts
         $(document).on('keydown', e => {
+            // Disable custom shortcuts when editing a contenteditable
+            if ($(e.target).is('[contenteditable]')) return;
+
             const ctrlOrMeta = e.metaKey || e.ctrlKey;
 
             if ([37, 38, 39, 40].includes(e.which)) {                           // Arrow keys
@@ -23,11 +26,17 @@ export default {
             }
         });
 
-        // Enter key in contenteditable: prevent new line and blur
+        // Enter key in contenteditable: blur
         $(document).on('keypress', '[contenteditable]', e => {
             if (e.which === 13) {
-                $(e.target).blur();
-                return false;
+                const $el = $(e.target);
+                $el.blur();
+
+                // If leaving an event title, remove contenteditable
+                if ($el.is('.title')) $el.removeAttr('contenteditable');
+
+                // Remove selection if any
+                window.getSelection().removeAllRanges();
             }
         });
 

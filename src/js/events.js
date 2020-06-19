@@ -10,6 +10,7 @@ export default {
         // Add new event
         $(document).on('click', '.events-wrap .add', () => {
             this.newEvent();
+            return false;
         });
 
         // Rename event
@@ -20,8 +21,52 @@ export default {
 
         // Insert event instances
         $(document).on('click', '.events-wrap ul li', e => {
-            const $event = $(e.target).closest('li');
+            const $el = $(e.target);
+            if ($el.is('.tools') || $el.parents().is('.tools')) return;
+
+            const $event = $el.closest('li');
             this.insertEvent($event);
+        });
+
+        // Open dropdown menu
+        $(document).on('click', '.events-wrap ul li [data-tool="dropdown"]', e => {
+            const $dropdown = $(e.target).closest('li').find('.dropdown');
+            $dropdown.toggleClass('visible');
+            e.stopPropagation();
+        });
+
+        // Click outside
+        $(document).on('click', e => {
+            // Close dropdown menu
+            $('.dropdown.visible').removeClass('visible');
+
+            if ($(e.target).parents().is('[data-tool="dropdown"], .dropdown')) return;
+
+            // Remove contenteditable attr
+            $('.events-wrap ul li .title[contenteditable]').removeAttr('contenteditable');
+        });
+
+        // Rename event
+        $(document).on('click', '.events-wrap ul li [data-tool="rename"]', e => {
+            const $title = $(e.target).closest('li').find('span.title');
+            $title.attr('contenteditable', 'true').focus();
+
+            const setEndOfContenteditable = (contentEditableElement) => {
+                let range = document.createRange();
+                range.selectNodeContents(contentEditableElement);
+                range.collapse(false);
+                let selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+
+            setEndOfContenteditable($title[0]);
+
+            // Close dropdown menu
+            $('.dropdown.visible').removeClass('visible');
+
+            // Prevent li click
+            return false;
         });
 
         // // Selected event
@@ -30,35 +75,36 @@ export default {
         //     $(e.target).closest('li').addClass('selected');
         // });
 
-        this.addEvents(['Workout', 'Tennis', 'Jogging']);
+        this.newEvent(['Workout', 'Tennis', 'Jogging']);
     },
 
-    addEvents(array) {
-        for (const event of array) {
-            const $ul = $('.events-wrap ul');
-            const type = $ul.find('li').length;
-            const li = `<li data-type="${type}" style="background-color: ${settings.eventsColors[type]}" class="sortable">
-                <span class="title" contenteditable>${event}</span>
+    newEvent(events) {
+        if (!Array.isArray(events)) events = [events];
+
+        for (const event of events) {
+            const type = parseInt($('.events-wrap ul li').length);
+            const li = `<li data-type="${type}" class="sortable" style="background-color: ${settings.eventsColors[type]}">
+                <span class="title" ${!event ? 'contenteditable' : ''} spellcheck="false">${event ? event : ''}</span>
                 <span class="tools">
-                    <i class="fas fa-angle-down"></i>
+                    <i class="fas fa-angle-down" data-tool="dropdown"></i>
                     <i data-tool="sort">⋮⋮</i>
+                    <span class="dropdown">
+                        <span data-tool="rename"><i class="fas fa-pen"></i> Rename</span>
+                        <span data-tool="delete"><i class="far fa-trash-alt"></i> Delete</span>
+                    </span>
                 </span>
             </li>`;
+
+            const $ul = $('.events-wrap ul');
             $ul.append(li);
+
+            // Select new event
+            $ul.find('li.selected').removeClass('selected');
+            $ul.find('li:last-child').addClass('selected');
+
+            // Focus span if empty
+            if (!event) $ul.find('li:last-child .title').focus();
         }
-    },
-
-    newEvent() {
-        const type = parseInt($('.events-wrap ul li').length);
-        const event = `<li data-type="${type}" class="sortable" style="background-color: ${settings.eventsColors[type]}"><span class="title" contenteditable spellcheck="false"></span></li>`;
-
-        const $ul = $('.events-wrap ul');
-        $ul.append(event);
-
-        // Select new event and focus span
-        $ul.find('li.selected').removeClass('selected');
-        $ul.find('li:last-child').addClass('selected');
-        $ul.find('li:last-child span').focus();
     },
 
     renameEvent($el) {
