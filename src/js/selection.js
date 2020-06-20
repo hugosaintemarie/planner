@@ -141,28 +141,28 @@ export default {
                 target = dates.relativeFirstWeekDay(date);
             } else {
                 // Left: one day before
-                target = new Date(date.setDate(date.getDate() - 1));
+                target = dates.relativeDate(date, -1);
         
                 // Prevent changing week with shift key
                 if (target.getDay() === 0 && e.shiftKey) return;
             }
         } else if (e.which === 38) {
             // Up: one week before
-            target = new Date(date.setDate(date.getDate() - 7));
+            target = dates.relativeDate(date, -7);
         } else if (e.which === 39) {
             if (e.metaKey) {
                 // Meta + right: end of week
-                target = new Date(date.setDate(date.getDay() === 0 ? date.getDate() : (date.getDate() + 7 - date.getDay())));
+                target = dates.relativeLastWeekDay(date);
             } else {
                 // Right: one day after
-                target = new Date(date.setDate(date.getDate() + 1));
+                target = dates.relativeDate(date, 1);
         
                 // Prevent changing week with shift key
                 if (target.getDay() === 1 && e.shiftKey) return;
             }
         } else if (e.which === 40) {
             // Down: one week after
-            target = new Date(date.setDate(date.getDate() + 7));
+            target = dates.relativeDate(date, 7);
         }
     
         if (e.shiftKey) {

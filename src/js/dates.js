@@ -15,6 +15,10 @@ export default {
         return new Date(new Date(date).setDate(date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1)));
     },
 
+    relativeLastWeekDay(date) {
+        return new Date(new Date(date).setDate(date.getDay() === 0 ? date.getDate() : (date.getDate() + 7 - date.getDay())))
+    },
+
     // Build array of all days from start to end
     range(start, end) {
         const days = [start];
