@@ -1,3 +1,4 @@
+import calendars from './calendars';
 import dates from './dates';
 import history from './history';
 import selection from './selection';
@@ -168,14 +169,17 @@ export default {
 
         const days = [start, end];
 
-        const $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"], .calendar-wrap .day[data-date="${date}"] .events`);
+        const $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
 
         // Add event
         let classname = ' start end';
         $el.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="background-color: ${event.color}">${classname.includes('start') ? `<span class="title">${event.title}</span>` : ''}</div>`);
+
+        calendars.updateCalendarHeight();
     },
 
     removeEvent(event) {
         $(`.event[data-id="${event.id}"]`).remove();
-    },
+        calendars.updateCalendarHeight();
+    }
 }

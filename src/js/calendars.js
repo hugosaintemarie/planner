@@ -179,5 +179,10 @@ export default {
             const $calendarToSelect = $calendar.nextAll(':not(.hidden)').eq(0).length ? $calendar.nextAll(':not(.hidden)').eq(0) : $calendar.prevAll(':not(.hidden)').length ? $calendar.prevAll(':not(.hidden)').eq(0) : null;
             if ($calendarToSelect) this.selectCalendar($calendarToSelect);
         }
+    },
+
+    updateCalendarHeight() {
+        const mostEventsPerDay = Math.max(...$('.calendar-wrap .day .events').map((id, el) => $(el).find('.event').length));
+        $('.calendar-wrap .day').css('height', `${Math.max(40 + mostEventsPerDay * 32, 72)}px`);
     }
 }

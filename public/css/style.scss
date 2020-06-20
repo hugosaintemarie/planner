@@ -363,10 +363,12 @@ main {
             position: relative;
             flex: 1;
             border: 1px solid #444;
-            height: 140px;
+            height: 72px;
+            max-height: 240px;
             padding: 8px;
             margin-left: -1px;
             margin-top: -1px;
+            transition: height .5s ease;
 
             &.selected {
                 background-color: #61a0ff20;

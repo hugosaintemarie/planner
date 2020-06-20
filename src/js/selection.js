@@ -1,3 +1,4 @@
+import calendars from './calendars';
 import dates from './dates';
 import events from './events';
 import history from './history';
@@ -248,6 +249,8 @@ export default {
     
         // Save action in history
         history.pushAction(action);
+
+        calendars.updateCalendarHeight();
     },
     
     selectAll() {
