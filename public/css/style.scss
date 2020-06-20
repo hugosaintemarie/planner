@@ -647,8 +647,9 @@ main {
 
         .calendar-wrap {
             position: absolute;
-            left: 32px;
-            width: calc(100% - 64px);
+            left: 40px;
+            width: calc(100% - 80px);
+            height: inherit;
         }
     }
 }
