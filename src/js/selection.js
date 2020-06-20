@@ -277,15 +277,20 @@ export default {
     },
 
     narrowSelection() {
+        const $onlySelectedDay = $('.selected-first.selected-last.selected');
+
         // Keep only first selected day in selection
         const $selectedFirst = $('.selected-first');
         const date = new Date($selectedFirst.attr('data-date'));
 
         $('.selected-last').removeClass('selected-last');
         $selectedFirst.addClass('selected-last');
-
+        
         this.selectedDays = [date];
         this.highlightSelection();
+        
+        // If only one selected day, toggle it
+        $onlySelectedDay.removeClass('selected');
     },
         
     copySelection() {
