@@ -615,3 +615,40 @@ main {
         }
     }
 }
+
+@media screen and (max-width: 1120px) {
+    main {
+        .calendars-wrap,
+        .events-wrap {
+            position: absolute;
+            height: 100%;
+            background-color: #1f1f1f;
+            z-index: 10;
+            width: 240px;
+            transition: transform .2s ease, padding .2s ease;
+
+            &:hover {
+                transform: none;
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+
+        .calendars-wrap {
+            transform: translateX(-216px);
+            padding-right: 32px;
+        }
+
+        .events-wrap {
+            right: 0;
+            transform: translateX(216px);
+            padding-left: 32px;
+        }
+
+        .calendar-wrap {
+            position: absolute;
+            left: 32px;
+            width: calc(100% - 64px);
+        }
+    }
+}
