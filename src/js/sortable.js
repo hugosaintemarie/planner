@@ -68,7 +68,7 @@ export default {
     
         this.$sortedEl.nextAll().each((id, el) => {
             const $el = $(el);
-            if (this.$sortedEl.position().top > $el.position().top - 30) {
+            if (this.$sortedEl.position().top + this.$sortedEl.outerHeight() > $el.position().top + $el.outerHeight() / 2) {
                 $el.css('top', $el.position().top - this.$sortedEl.outerHeight(true));
                 this.$sortedEl.before($el);
             }
@@ -76,7 +76,7 @@ export default {
     
         this.$sortedEl.prevAll().each((id, el) => {
             const $el = $(el);
-            if (this.$sortedEl.position().top < $el.position().top + 30) {
+            if (this.$sortedEl.position().top < $el.position().top + $el.outerHeight() / 2) {
                 this.$sortedEl.after($el);
                 $el.css('top', $el.position().top + this.$sortedEl.outerHeight(true));
             }

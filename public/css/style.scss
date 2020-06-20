@@ -106,14 +106,14 @@ main {
 
             .tools {
                 position: absolute;
-                left: -4px;
+                left: -12px;
                 padding-top: 6px;
                 opacity: 0;
                 transition: opacity .1s ease;
 
                 i {
-                    width: 24px;
-                    height: 24px;
+                    width: 32px;
+                    height: 32px;
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -122,10 +122,6 @@ main {
                     right: 8px;
                     color: #999;
                     cursor: pointer;
-    
-                    &:not(:last-child) {
-                        margin-bottom: 8px;
-                    }
 
                     &:hover {
                         color: white;
@@ -249,7 +245,7 @@ main {
             p {
                 text-align: center;
                 color: #666;
-                margin-top: 8px;
+                padding-top: 8px;
                 position: relative;
 
                 span {
@@ -270,12 +266,22 @@ main {
             }
 
             &.hidden {
+                cursor: default;
+                
                 .content {
                     display: none;
                 }
 
+                p {
+                    color: #666;
+                    text-align: left;
+                    padding-top: 0;
+                }
+
                 span {
-                    margin-top: 4px;
+                    margin-top: 12px;
+                    pointer-events: none;
+                    padding: 0;
                 }
 
                 .tools {
@@ -512,19 +518,16 @@ main {
                 position: absolute;
                 top: 0;
                 right: -36px;
+                padding: 0;
                 
-                i {
-                    width: 16px;
-                    height: 16px;
+                > i {
+                    width: 24px;
+                    height: 24px;
                     display: flex;
                     justify-content: center;
-                    align-content: center;
+                    align-items: center;
                     opacity: 0;
                     transition: opacity .1s ease;
-
-                    &:not(:last-child) {
-                        margin-bottom: 8px;
-                    }
 
                     &:not(.far) {
                         font-style: normal;
@@ -565,8 +568,11 @@ main {
                         white-space: nowrap;
                         font-size: .875rem;
 
+                        &:not(:last-child) {
+                            margin-bottom: 8px;
+                        }
+
                         i {
-                            display: inline-block;
                             margin-right: 4px;
                             opacity: 1;
                         }
