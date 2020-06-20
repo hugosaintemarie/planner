@@ -8,18 +8,18 @@ export default {
     layouts: {
         default: `<ul>
             <li data-tool="add" class="selected"><i class="fas fa-plus"></i>Add event…</li>
-            <li data-tool="replace"><i class="fas fa-sync-alt"></i>Replace event…</li>
+            <li data-tool="replace"><i class="fas fa-exchange-alt"></i>Replace event…</li>
             <li data-tool="remove"><i class="far fa-trash-alt"></i>Remove event…</li>
             <li data-tool="fill" class="border-top" disabled><i class="far fa-calendar-plus"></i>Fill empty days…</li>
             <li data-tool="count" disabled><i class="fa fa-calculator"></i>Count occurences…</li>
         </ul>`,
         add: `<div>
-            <span>Add event…</span>
+            <span><i class="fas fa-plus"></i>Add event…</span>
             <ul></ul>
         </div>`,
         replace: `<div class="row">
             <div>
-                <span>Replace…</span>
+                <span><i class="fas fa-exchange-alt"></i>Replace…</span>
                 <ul class="from"></ul>
             </div>
             <div>
@@ -28,11 +28,11 @@ export default {
             </div>
         </div>`,
         remove: `<div>
-            <span>Remove event…</span>
+            <span><i class="far fa-trash-alt"></i>Remove event…</span>
             <ul></ul>
         </div>`,
         count: `<div>
-            <span>Count occurences of…</span>
+            <span><i class="fa fa-calculator"></i>Count occurences of…</span>
             <ul></ul>
         </div>`
     },
