@@ -108,7 +108,10 @@ export default {
             return `<li data-tool="${action}-event"><span class="event" data-type="${$el.attr('data-type')}" style="background-color: ${$el.css('background-color')}"><span class="title">${$el.find('.title').text()}</span></span></li>`;
         }).toArray();
 
-        if (filter) list = list.filter(li => filter.includes($(li).find('.event').attr('data-type')));
+        if (filter) {
+            const eventsInSelection = selection.selectedDays.map(day => $(`.calendar-wrap .day[data-date="${dates.toString(day)}"] .event`).map((id, el) => $(el).attr('data-type')).toArray()).flat();
+            list = list.filter(li => eventsInSelection.includes($(li).find('.event').attr('data-type')));
+        }
 
         return list;
     },
@@ -128,16 +131,27 @@ export default {
 
     replace(from, to) {
         if (!from) {
+            // Initiate replacement window
             const $html = $(this.layouts['replace']);
-            const eventsInSelection = selection.selectedDays.map(day => $(`.calendar-wrap .day[data-date="${dates.toString(day)}"] .event`).map((id, el) => $(el).attr('data-type')).toArray()).flat();
-            $html.find('ul.from').html(this.buildEventsList('from', eventsInSelection));
+
+            // Fill "from" list with options
+            $html.find('ul.from').html(this.buildEventsList('from', true));
             $html.find('ul.from li:first-child').addClass('selected');
             $('.panel').html($html);
         } else if (!to) {
+            // Fill "to" list with options
             $('.panel ul.to').html(this.buildEventsList('to'));
+
+            // Unselect selected "from" option but save it as picked
             $('.panel ul.from li.selected').addClass('picked').removeClass('selected');
+
+            // Don't show picked "from" option in "to" options list (don't replace an event with itself)
+            $(`.panel ul.to li .event[data-type="${$('.panel ul.from li.picked .event').attr('data-type')}"]`).parent('li').remove();
+
+            // Select first "to" option
             $('.panel ul.to li:first-child').addClass('selected');
         } else {
+            // Replace events
             const from = parseInt($('.panel ul.from li.picked .event').attr('data-type'));
             const to = parseInt($('.panel ul.to li.selected .event').attr('data-type'));
 
