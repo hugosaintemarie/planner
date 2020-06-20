@@ -15,6 +15,7 @@ export default {
                 selection.moveSelection(e);
             }
             else if (e.which === 8) selection.emptySelection();                 // Backspace
+            else if (e.which === 27) selection.narrowSelection();               // Esc
             else if (ctrlOrMeta && e.which === 65) selection.selectAll();       // A
             else if (ctrlOrMeta && e.which === 67) selection.copySelection();   // C
             else if (ctrlOrMeta && e.which === 86) selection.pasteSelection();  // V
