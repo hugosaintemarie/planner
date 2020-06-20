@@ -203,14 +203,22 @@ export default {
     
             this.selectedDays = days;
         } else {
-            const targetDate = dates.toString(target);
-            const $target = $(`.calendar-wrap .day[data-date="${targetDate}"]`);
-            $('.selected-first').removeClass('selected-first');
-            $('.selected-last').removeClass('selected-last');
-            $target.addClass('selected-first selected-last');
+            const diff = target - date;
+
+            // Move .selected-first and .selected-last classes
+            const $sF = $('.selected-first');
+            const dateSF = new Date($sF.attr('data-date'));
+            dateSF.setTime(dateSF.getTime() + diff);
+            $sF.removeClass('selected-first');
+            $(`.calendar-wrap .day[data-date=${dates.toString(dateSF)}]`).addClass('selected-first');
+
+            const $sL = $('.selected-last');
+            const dateSL = new Date($sL.attr('data-date'));
+            dateSL.setTime(dateSL.getTime() + diff);
+            $sL.removeClass('selected-last');
+            $(`.calendar-wrap .day[data-date=${dates.toString(dateSL)}]`).addClass('selected-last');
 
             // For each already selected day, move by diff between first selected day and target
-            const diff = target - date;
             this.selectedDays = this.selectedDays.map(date => new Date(date.getTime() + diff));
         }
     
