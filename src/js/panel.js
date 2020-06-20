@@ -1,5 +1,6 @@
-import selection from './selection';
+import dates from './dates';
 import events from './events';
+import selection from './selection';
 
 export default {
     isOpen: false,
@@ -63,6 +64,8 @@ export default {
     openPanel() {
         this.isOpen = true;
         $('.panel').html(this.layouts['default']);
+
+        if (selection.allDaysEmpty()) $('.panel li[data-tool="replace"]').attr('disabled', true);
         $('.panel-wrap').addClass('visible');
     },
 
@@ -73,16 +76,16 @@ export default {
 
     previous() {
         const $el = $('.panel ul li.selected');
+        $el.removeClass('selected');
         if ($el.prev('li:not([disabled])').length) $el.prev('li:not([disabled])').addClass('selected');
         else $el.parent('ul').find('li:not([disabled])').last().addClass('selected');
-        $el.removeClass('selected');
     },
 
     next() {
         const $el = $('.panel ul li.selected');
+        $el.removeClass('selected');
         if ($el.next('li:not([disabled])').length) $el.next('li:not([disabled])').addClass('selected');
         else $el.parent('ul').find('li:not([disabled])').first().addClass('selected');
-        $el.removeClass('selected');
     },
 
     confirm() {

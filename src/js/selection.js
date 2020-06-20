@@ -436,5 +436,9 @@ export default {
             $events.find('.title').text($event.find('.title').text());
             $events.attr('data-type', to);
         }
+    },
+
+    allDaysEmpty() {
+        return !this.selectedDays.some(day => $(`.day[data-date="${dates.toString(day)}"] .event`).length);
     }
 }
