@@ -133,6 +133,9 @@ export default {
     },
 
     selectCalendar($calendar) {
+        const $selectedFirst = $('.selected-first');
+        const $selectedLast = $('.selected-last');
+
         $('.calendars-wrap .calendar.selected').removeClass('selected');
         $calendar.addClass('selected');
     
@@ -149,6 +152,10 @@ export default {
         window.getSelection().removeAllRanges();
     
         selection.highlightSelection();
+
+        // Restore .selected-first and .selected-last classes
+        $(`.calendar-wrap .day[data-date="${$selectedFirst.attr('data-date')}"]`).addClass('selected-first');
+        $(`.calendar-wrap .day[data-date="${$selectedLast.attr('data-date')}"]`).addClass('selected-last');
     },
 
     renameCalendar(val, $calendar = null) {
