@@ -224,24 +224,28 @@ export default {
     
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
-            const $event = $(`.calendar-wrap .day[data-date="${date}"] .event`);
-            if (!$event.length) continue;
-
-            // Save event in action
-            const event = {
-                id: events.eventID++,
-                calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
-                type: $event.attr('data-type'),
-                title: $event.find('.title').text(),
-                color: $event.css('background-color'),
-                start: date,
-                end: date
-            };
+            const $events = $(`.calendar-wrap .day[data-date="${date}"] .event`);
+            if (!$events.length) continue;
     
-            action.events.push(event);
+            // Save events in action
+            $events.each((id, el) => {
+                const $el = $(el);
+    
+                const event = {
+                    id: events.eventID++,
+                    calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
+                    type: $el.attr('data-type'),
+                    title: $el.find('.title').text(),
+                    color: $el.css('background-color'),
+                    start: date,
+                    end: date
+                };
 
-            // Remove event from main calendar
-            $event.remove();
+                action.events.push(event);
+            });
+
+            // Remove events from main calendar
+            $events.remove();
     
             // Remove event from thumbnail calendar
             $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event`).remove();
