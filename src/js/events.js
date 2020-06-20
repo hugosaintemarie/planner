@@ -31,6 +31,9 @@ export default {
 
         // Open dropdown menu
         $(document).on('click', '.events-wrap ul li [data-tool="dropdown"]', e => {
+            // Close any open dropdown menu
+            $('.dropdown.visible').removeClass('visible');
+
             const $dropdown = $(e.target).closest('li').find('.dropdown');
             $dropdown.toggleClass('visible');
             e.stopPropagation();
