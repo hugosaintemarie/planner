@@ -203,13 +203,15 @@ export default {
     
             this.selectedDays = days;
         } else {
-            const date = dates.toString(target);
-            const $target = $(`.calendar-wrap .day[data-date="${date}"]`);
+            const targetDate = dates.toString(target);
+            const $target = $(`.calendar-wrap .day[data-date="${targetDate}"]`);
             $('.selected-first').removeClass('selected-first');
             $('.selected-last').removeClass('selected-last');
             $target.addClass('selected-first selected-last');
-            
-            this.selectedDays = [target];
+
+            // For each already selected day, move by diff between first selected day and target
+            const diff = target - date;
+            this.selectedDays = this.selectedDays.map(date => new Date(date.getTime() + diff));
         }
     
         this.highlightSelection();
