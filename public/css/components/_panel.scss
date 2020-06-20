@@ -35,6 +35,11 @@
                 border-radius: 4px;
                 cursor: pointer;
 
+                &[disabled] {
+                    color: #333333;
+                    cursor: default;
+                }
+
                 &.border-top {
                     margin-top: 24px;
 
@@ -56,9 +61,47 @@
                     margin-right: 12px;
                 }
 
-                &.selected {
+                &.selected,
+                &.picked {
                     color: white;
                     background-color: #292929;
+
+                    .event {
+                        opacity: 1;
+                    }
+                }
+
+                .event {
+                    display: inline-block;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    color: white;
+                    opacity: .3;
+                    width: 120px;
+                    margin-left: -4px;
+                }
+            }
+        }
+
+        div {
+            > span {
+                display: inline-block;
+                text-transform: uppercase;
+                font-size: .875rem;
+                color: #999999;
+                letter-spacing: .02rem;
+                padding: 12px 12px 0 16px;
+            }
+        }
+
+        .row {
+            > div {
+                &:not(:last-child) {
+                    margin-right: 0;
+                }
+
+                &:not(:first-child) {
+                    border-left: 1px solid #333333;
                 }
             }
         }

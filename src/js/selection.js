@@ -423,5 +423,18 @@ export default {
             if (dayWeekAfterSelected) $el.addClass('no-bottom');
             if (dayBeforeSelected && day.getDay() !== 1) $el.addClass('no-left');
         }
+    },
+
+    replaceEvents(from, to) {
+        const $event = $(`.events-wrap ul li[data-type="${to}"]`);
+
+        for (const day of this.selectedDays) {
+            const date = dates.toString(day);
+            const $events = $(`.day[data-date="${date}"] .event[data-type="${from}"]`);
+            
+            $events.css('background-color', $event.css('background-color'));
+            $events.find('.title').text($event.find('.title').text());
+            $events.attr('data-type', to);
+        }
     }
 }
