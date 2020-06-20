@@ -99,11 +99,15 @@ export default {
         $('.panel').html($html);
     },
 
-    buildEventsList(action) {
-        return $('.events-wrap ul li').map((id, el) => {
+    buildEventsList(action, filter = false) {
+        let list = $('.events-wrap ul li').map((id, el) => {
             const $el = $(el);
             return `<li data-tool="${action}-event"><span class="event" data-type="${$el.attr('data-type')}" style="background-color: ${$el.css('background-color')}"><span class="title">${$el.find('.title').text()}</span></span></li>`;
         }).toArray();
+
+        if (filter) list = list.filter(li => filter.includes($(li).find('.event').attr('data-type')));
+
+        return list;
     },
 
     addEvent(eventSelected = false) {
@@ -122,7 +126,8 @@ export default {
     replace(from, to) {
         if (!from) {
             const $html = $(this.layouts['replace']);
-            $html.find('ul.from').html(this.buildEventsList('from'));
+            const eventsInSelection = selection.selectedDays.map(day => $(`.calendar-wrap .day[data-date="${dates.toString(day)}"] .event`).map((id, el) => $(el).attr('data-type')).toArray()).flat();
+            $html.find('ul.from').html(this.buildEventsList('from', eventsInSelection));
             $html.find('ul.from li:first-child').addClass('selected');
             $('.panel').html($html);
         } else if (!to) {
