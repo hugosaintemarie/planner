@@ -1,3 +1,4 @@
+
 import dates from './dates';
 import events from './events';
 import selection from './selection';
@@ -8,8 +9,9 @@ export default {
         default: `<ul>
             <li data-tool="add" class="selected"><i class="fas fa-plus"></i>Add event…</li>
             <li data-tool="replace"><i class="fas fa-sync-alt"></i>Replace event…</li>
-            <li data-tool="fill" disabled><i class="far fa-calendar-plus"></i>Fill empty days…</li>
-            <li data-tool="count" class="border-top" disabled><i class="fa fa-calculator"></i>Count occurences…</li>
+            <li data-tool="remove"><i class="far fa-trash-alt"></i>Remove event…</li>
+            <li data-tool="fill" class="border-top" disabled><i class="far fa-calendar-plus"></i>Fill empty days…</li>
+            <li data-tool="count" disabled><i class="fa fa-calculator"></i>Count occurences…</li>
         </ul>`,
         add: `<div>
             <span>Add event…</span>
@@ -24,6 +26,10 @@ export default {
                 <span>With…</span>
                 <ul class="to"></ul>
             </div>
+        </div>`,
+        remove: `<div>
+            <span>Remove event…</span>
+            <ul></ul>
         </div>`,
         count: `<div>
             <span>Count occurences of…</span>
@@ -65,7 +71,8 @@ export default {
         this.isOpen = true;
         $('.panel').html(this.layouts['default']);
 
-        if (selection.allDaysEmpty()) $('.panel li[data-tool="replace"]').attr('disabled', true);
+        // Disable replace and remove if selection is empty
+        if (selection.allDaysEmpty()) $('.panel li[data-tool="replace"], .panel li[data-tool="remove"]').attr('disabled', true);
         $('.panel-wrap').addClass('visible');
     },
 
@@ -95,9 +102,11 @@ export default {
 
         if (tool === 'add') this.addEvent();
         else if (tool === 'add-event') this.addEvent(true);
-        else if (tool === 'replace') this.replace();
-        else if (tool === 'from-event') this.replace(true);
-        else if (tool === 'to-event') this.replace(true, true);
+        else if (tool === 'replace') this.replaceEvent();
+        else if (tool === 'from-event') this.replaceEvent(true);
+        else if (tool === 'to-event') this.replaceEvent(true, true);
+        else if (tool === 'remove') this.removeEvent();
+        else if (tool === 'remove-event') this.removeEvent(true);
 
         $('.panel').html($html);
     },
@@ -129,7 +138,7 @@ export default {
         }
     },
 
-    replace(from, to) {
+    replaceEvent(from, to) {
         if (!from) {
             // Initiate replacement window
             const $html = $(this.layouts['replace']);
@@ -156,6 +165,20 @@ export default {
             const to = parseInt($('.panel ul.to li.selected .event').attr('data-type'));
 
             selection.replaceEvents(from, to);
+            this.closePanel();
+        }
+    },
+
+    removeEvent(eventSelected = false) {
+        if (!eventSelected) {
+            const $html = $(this.layouts['remove']);
+            $html.find('ul').html(this.buildEventsList('remove', true));
+            $html.find('li:first-child').addClass('selected');
+            $('.panel').html($html);
+        } else {
+            // Remove events
+            const type = parseInt($('.panel ul li.selected .event').attr('data-type'));
+            selection.removeEvents(type);
             this.closePanel();
         }
     }

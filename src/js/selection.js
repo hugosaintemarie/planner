@@ -438,6 +438,16 @@ export default {
         }
     },
 
+    removeEvents(type) {
+        for (const day of this.selectedDays) {
+            const date = dates.toString(day);
+            const $events = $(`.day[data-date="${date}"] .event[data-type="${type}"]`);
+            $events.remove();
+        }
+
+        calendars.updateCalendarHeight();
+    },
+
     allDaysEmpty() {
         return !this.selectedDays.some(day => $(`.day[data-date="${dates.toString(day)}"] .event`).length);
     }
