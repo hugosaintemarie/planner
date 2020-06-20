@@ -426,26 +426,76 @@ export default {
     },
 
     replaceEvents(from, to) {
-        const $event = $(`.events-wrap ul li[data-type="${to}"]`);
+        // Create action for history
+        const action = {
+            type: 'replaceEvents',
+            events: []
+        };
 
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
-            const $events = $(`.day[data-date="${date}"] .event[data-type="${from}"]`);
-            
-            $events.css('background-color', $event.css('background-color'));
-            $events.find('.title').text($event.find('.title').text());
-            $events.attr('data-type', to);
+            const $events = $(`.calendar-wrap .day[data-date="${date}"] .event[data-type="${from}"]`);
+
+            $events.each((id, el) => {
+                const $el = $(el);
+
+                const event = {
+                    id: $el.attr('data-id'),
+                    calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
+                    type: to,
+                    from,
+                    title: $el.find('.title').text(),
+                    color: $el.css('background-color'),
+                    start: date,
+                    end: date
+                };
+
+                // Replace event
+                events.replaceEvent(event);
+
+                // Save event in action
+                action.events.push(event);
+            });
         }
+
+        // Save action in history
+        history.pushAction(action);
     },
 
     removeEvents(type) {
+        // Create action for history
+        const action = {
+            type: 'removeEvents',
+            events: []
+        };
+
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
-            const $events = $(`.day[data-date="${date}"] .event[data-type="${type}"]`);
-            $events.remove();
+            const $events = $(`.calendar-wrap .day[data-date="${date}"] .event[data-type="${type}"]`);
+
+            $events.each((id, el) => {
+                const $el = $(el);
+
+                const event = {
+                    id: $el.attr('data-id'),
+                    calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
+                    type: $el.attr('data-type'),
+                    title: $el.find('.title').text(),
+                    color: $el.css('background-color'),
+                    start: date,
+                    end: date
+                };
+
+                // Remove event
+                events.removeEvent(event);
+
+                // Save event in action
+                action.events.push(event);
+            });
         }
 
-        calendars.updateCalendarHeight();
+        // Save action in history
+        history.pushAction(action);
     },
 
     allDaysEmpty() {

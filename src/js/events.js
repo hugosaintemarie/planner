@@ -168,11 +168,7 @@ export default {
     },
 
     buildEvent(event) {
-        const [start, end] = [new Date(event.start), new Date(event.end)].sort((a, b) => a > b ? 1 : -1);
-
-        const date = dates.toString(start);
-
-        const days = [start, end];
+        const date = dates.toString(new Date(event.start));
 
         const $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
 
@@ -181,6 +177,18 @@ export default {
         $el.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="background-color: ${event.color}">${classname.includes('start') ? `<span class="title">${event.title}</span>` : ''}</div>`);
 
         calendars.updateCalendarHeight();
+    },
+
+    replaceEvent(event, undo = false) {
+        const $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .event[data-id="${event.id}"]`) : $(`.calendar.selected .event[data-id="${event.id}"], .calendar-wrap .event[data-id="${event.id}"]`);
+
+        let $target;
+        if (!undo) $target = $(`.events-wrap ul li[data-type="${event.type}"]`);
+        else $target = $(`.events-wrap ul li[data-type="${event.from}"]`);
+
+        $el.css('background-color', $target.css('background-color'));
+        $el.find('.title').text($target.find('.title').text());
+        $el.attr('data-type', $target.attr('data-type'));
     },
 
     removeEvent(event) {
