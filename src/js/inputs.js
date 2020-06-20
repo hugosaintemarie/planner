@@ -38,6 +38,9 @@ export default {
 
                 // Remove selection if any
                 window.getSelection().removeAllRanges();
+
+                // Prevent panel opening
+                return false;
             }
         });
 
