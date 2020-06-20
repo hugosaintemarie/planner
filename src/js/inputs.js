@@ -1,4 +1,5 @@
 import history from './history';
+import panel from './panel';
 import selection from './selection';
 
 export default {
@@ -10,7 +11,8 @@ export default {
 
             const ctrlOrMeta = e.metaKey || e.ctrlKey;
 
-            if ([37, 38, 39, 40].includes(e.which)) {                           // Arrow keys
+            if ([37, 38, 39, 40].includes(e.which)) {         // Arrow keys
+                if (panel.isOpen) return;
                 e.preventDefault();
                 selection.moveSelection(e);
             }
