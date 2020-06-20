@@ -123,8 +123,8 @@ export default {
             return $(`.calendar-wrap .day[data-date="${date}"] .event`).attr('data-type');
         });
     
-        if (selectedDaysEvents.every(e => e === type)) {
-            // If same type, simply remove event and don't recreate one (toggle-like behavior)
+        if (settings.oneEventPerDay && selectedDaysEvents.every(e => e === type)) {
+            // If only one event per day and same type, remove event and don't recreate one
             for (const day of selection.selectedDays) {
                 const date = dates.toString(day);
                 const $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
@@ -139,7 +139,9 @@ export default {
             for (const day of selection.selectedDays) {
                 const date = dates.toString(day);
                 const $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
-                $events.remove();
+
+                // Remove existing event if one event per day only
+                if (settings.oneEventPerDay) $events.remove();
                     
                 const $day = $(`.calendar-wrap .day[data-date="${date}"]`);
                 
@@ -170,6 +172,8 @@ export default {
         const days = [start, end];
 
         const $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
+
+        console.log($el);
 
         // Add event
         let classname = ' start end';
