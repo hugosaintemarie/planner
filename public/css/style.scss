@@ -65,7 +65,7 @@ main {
     }
 }
 
-.calendars-wrap {
+.calendars-wrap {    
     .calendars {
         margin-top: 16px;
 
@@ -317,6 +317,7 @@ main {
 }
 
 .calendar-wrap {
+    min-width: 600px;
     padding: 16px 0;
 
     h2 {
@@ -367,7 +368,7 @@ main {
         
         .day {
             position: relative;
-            flex: 1;
+            width: calc(100% / 7 + 1px);
             border: 1px solid #444;
             height: 72px;
             max-height: 240px;
@@ -437,6 +438,7 @@ main {
             }
 
             .events {
+                overflow-x: hidden;
                 overflow-y: auto;
                 max-height: calc(100% - 20px);
                 margin-top: 8px;
@@ -453,6 +455,7 @@ main {
                     margin-right: -8px;
                     margin-left: -8px;
                     padding: 2px 6px;
+                    white-space: nowrap;
 
                     &:not(:last-child) {
                         margin-bottom: 8px;
