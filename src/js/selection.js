@@ -284,6 +284,8 @@ export default {
         // Create array of events for selected days, keep null for an empty day
         const events = [];
         for (const day of days) {
+            const eventsThatDay = [];
+
             // Ignore unselected days
             if (!dates.isInArray(this.selectedDays, day)) {
                 events.push(null);
@@ -307,8 +309,10 @@ export default {
                         // end: $el.attr('data-end')
                     }
         
-                    events.push(event);
+                    eventsThatDay.push(event);
                 });
+                events.push(eventsThatDay);
+
             } else {
                 events.push(null);
             }
@@ -324,6 +328,12 @@ export default {
     },
     
     pasteSelection() {
+        // Push action in history
+        const action = {
+            type: 'addEvents',
+            events: []
+        };
+
         // Clipboard paste starts at selected day
         const $selected = $('.calendar-wrap .day.selected-first');
         const date = new Date($selected.attr('data-date'));
@@ -331,21 +341,33 @@ export default {
         for (let j = 0; j < this.clipboard.length; j += 1) {
             for (let i = 0; i < this.clipboard[0].length; i += 1) {
                 // Find event in clipboard if any
-                const _event = this.clipboard[j][i];
-                if (!_event) continue;
-    
-                // Find target day
-                const target = new Date(new Date(date).setDate(date.getDate() + j * 7 + i));
-                const _date = dates.toString(target);
-    
-                // Create event
-                const event = { ..._event };
-                event.start = _date;
-                event.end = _date;
+                const eventsThatDay = this.clipboard[j][i];
+                if (!eventsThatDay) continue;
+
+                for (const _event of eventsThatDay) {
+                    // Find target day
+                    const target = new Date(new Date(date).setDate(date.getDate() + j * 7 + i));
+                    const eventDate = dates.toString(target);
+
+                    // Create event
+                    const event = {
+                        ..._event,
+                        id: events.eventID++,
+                        start: eventDate,
+                        end: eventDate
+                    };
+            
+                    // Build event
+                    events.buildEvent(event);
         
-                events.buildEvent(event);
+                    // Save event in action
+                    action.events.push(event);
+                }
             }
         }
+
+        // Save action in history
+        history.pushAction(action);
     },
 
     highlightSelection() {
