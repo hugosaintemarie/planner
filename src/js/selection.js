@@ -236,7 +236,12 @@ export default {
     
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
-            const $events = $(`.calendar-wrap .day[data-date="${date}"] .event`);
+            let $events;
+            if ($('.calendars-wrap').hasClass('edit-all')) {
+                $events = $(`.calendars-wrap .day[data-date="${date}"] .event`);
+            } else {
+                $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event`);
+            }
             if (!$events.length) continue;
     
             // Save events in action
@@ -245,7 +250,7 @@ export default {
     
                 const event = {
                     id: events.eventID++,
-                    calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
+                    calendar: parseInt($el.parents('.calendar').attr('data-id')),
                     type: $el.attr('data-type'),
                     title: $el.find('.title').text(),
                     color: $el.css('background-color'),
@@ -256,11 +261,11 @@ export default {
                 action.events.push(event);
             });
 
-            // Remove events from main calendar
+            // Remove events from minicals
             $events.remove();
     
-            // Remove event from thumbnail calendar
-            $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event`).remove();
+            // Remove events from main calendar
+            $(`.calendar-wrap .day[data-date="${date}"] .event`).remove();
         }
     
         // Save action in history
