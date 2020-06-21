@@ -1,6 +1,7 @@
 import history from './history';
 import panel from './panel';
 import selection from './selection';
+import calendars from './calendars';
 
 export default {
     capsLockIsDown: false,
@@ -30,6 +31,10 @@ export default {
             }
             else if (ctrlOrMeta && e.which === 65) selection.selectAll();       // A
             else if (ctrlOrMeta && e.which === 67) selection.copySelection();   // C
+            else if (e.which === 72) {                                          // H
+                const $calendar = $('.calendars-wrap .calendar.selected');
+                calendars.toggleCalendar($calendar);
+            }
             else if (ctrlOrMeta && e.which === 86) selection.pasteSelection();  // V
             else if (ctrlOrMeta && e.which === 88) selection.cutSelection();    // X
             else if (ctrlOrMeta && e.which === 90) {                            // Z
