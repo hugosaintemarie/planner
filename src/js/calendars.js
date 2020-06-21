@@ -57,9 +57,8 @@ export default {
         });
 
         // Toggle edit all
-        $(document).on('click', '.edit-all', e => {
-            const $button = $(e.target).closest('.edit-all');
-            $button.toggleClass('active');
+        $(document).on('click', '.toggle-edit-all', () => {
+            $('.calendars-wrap').toggleClass('edit-all');
         });
         
         // Initiate with first calendar

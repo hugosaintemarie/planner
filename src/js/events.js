@@ -130,7 +130,15 @@ export default {
             // If only one event per day and same type, remove event and don't recreate one
             for (const day of selection.selectedDays) {
                 const date = dates.toString(day);
-                const $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
+
+                // Edit all calendars or only selected one
+                let $events;
+                if ($('.calendars-wrap').hasClass('edit-all')) {
+                    $events = $(`.day[data-date="${date}"] .event`);
+                } else {
+                    $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
+                }
+
                 $events.remove();
             }
         } else {
@@ -141,7 +149,14 @@ export default {
     
             for (const day of selection.selectedDays) {
                 const date = dates.toString(day);
-                const $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
+
+                // Edit all calendars or only selected one
+                let $events;
+                if ($('.calendars-wrap').hasClass('edit-all')) {
+                    $events = $(`.day[data-date="${date}"] .event`);
+                } else {
+                    $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
+                }
 
                 // Remove existing event if one event per day only
                 if (settings.oneEventPerDay) $events.remove();
@@ -170,7 +185,13 @@ export default {
     buildEvent(event) {
         const date = dates.toString(new Date(event.start));
 
-        const $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
+        // Edit all calendars or only selected one
+        let $el;
+        if ($('.calendars-wrap').hasClass('edit-all')) {
+            $el = $(`.day[data-date="${date}"] .events`);
+        } else {
+            $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
+        }
 
         // Add event
         let classname = ' start end';
@@ -180,7 +201,13 @@ export default {
     },
 
     replaceEvent(event, undo = false) {
-        const $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .event[data-id="${event.id}"]`) : $(`.calendar.selected .event[data-id="${event.id}"], .calendar-wrap .event[data-id="${event.id}"]`);
+        // Edit all calendars or only selected one
+        let $el;
+        if ($('.calendars-wrap').hasClass('edit-all')) {
+            $el = $(`.event[data-id="${event.id}"]`);
+        } else {
+            $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .event[data-id="${event.id}"]`) : $(`.calendar.selected .event[data-id="${event.id}"], .calendar-wrap .event[data-id="${event.id}"]`);
+        }
 
         let $target;
         if (!undo) $target = $(`.events-wrap ul li[data-type="${event.type}"]`);

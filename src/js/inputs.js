@@ -76,7 +76,7 @@ export default {
         // Save status
         this.capsLockIsDown = isDown;
 
-        if (isDown) $('.edit-all').addClass('active');
-        else $('.edit-all').removeClass('active');
+        if (isDown) $('.calendars-wrap').addClass('edit-all');
+        else $('.calendars-wrap').removeClass('edit-all');
     }
 }
