@@ -18,10 +18,10 @@
                 .content {
                     .day {
                         &.selected {
-                            background-color: #61a0ff10;
+                            background-color: #61a0ff20;
     
                             &::after {
-                                border-color: #61a0ff80;
+                                border-color: #61a0ffcc;
                             }
                         }
                     }
@@ -83,10 +83,10 @@
 
                     .day {
                         &.selected {
-                            background-color: #61a0ff10;
+                            background-color: #61a0ff20;
 
                             &::after {
-                                border-color: #61a0ff80;
+                                border-color: #61a0ffcc;
                             }
                         }
                     }
