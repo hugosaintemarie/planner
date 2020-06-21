@@ -58,11 +58,11 @@ export default {
     },
     
     sort(e) {
-        const deltaX = e.clientX - this.sortedOrigin.x;
+        // const deltaX = e.clientX - this.sortedOrigin.x;
         const deltaY = e.clientY - this.sortedOrigin.y;
     
         this.$sortedEl.css({
-            'top': Math.min(Math.max(this.sortedPosition.top + deltaY, this.$sortedEl.parent().offset().top), this.$sortedEl.parent().offset().top + this.$sortedEl.parent().outerHeight() - this.$sortedEl.outerHeight()),
+            'top': Math.min(Math.max(this.sortedPosition.top + deltaY, this.$sortedEl.parent().position().top + parseInt(this.$sortedEl.parent().css('marginTop'), 10)), this.$sortedEl.parent().position().top + parseInt(this.$sortedEl.parent().css('marginTop'), 10) + this.$sortedEl.parent().outerHeight() - this.$sortedEl.outerHeight(true)),
             // 'left': this.sortedPosition.left + deltaX
         });
     
@@ -84,6 +84,8 @@ export default {
     },
     
     stopSort(e) {
+        $(e.target).css('cursor', '');
+
         this.$sortedEl.css({
             'cursor': '',
             'zIndex': ''

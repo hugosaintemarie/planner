@@ -44,6 +44,7 @@ main {
 
     .calendars-wrap,
     .events-wrap {
+        position: relative;
         flex: 0 0 240px;
         padding: 16px;
         overflow-y: auto;
