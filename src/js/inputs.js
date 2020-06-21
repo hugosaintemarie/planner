@@ -22,7 +22,13 @@ export default {
                 e.preventDefault();
 
                 if (panel.isOpen) return;
-                selection.moveSelection(e);
+
+                if (ctrlOrMeta && [38, 40].includes(e.which)) {
+                    if (e.which === 38) calendars.selectPreviousCalendar();
+                    if (e.which === 40) calendars.selectNextCalendar();
+                } else {
+                    selection.moveSelection(e);
+                }
             }
             else if (e.which === 8) selection.emptySelection();                 // Backspace
             else if (e.which === 27) {                                          // Esc

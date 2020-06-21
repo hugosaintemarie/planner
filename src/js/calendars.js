@@ -185,6 +185,38 @@ export default {
         $calendar.remove();
     },
 
+    selectPreviousCalendar() {
+        // Find selected calendar
+        let $calendar = $('.calendars-wrap .calendar.selected');
+
+        // Unselect it
+        $calendar.removeClass('selected');
+
+        // Select previous visible calendar
+        if ($calendar.prevAll('.calendar:not(.hidden)').length) $calendar = $calendar.prevAll('.calendar:not(.hidden)').eq(0)
+
+        // Else, select last visible calendar
+        else $calendar = $('.calendars-wrap .calendar:not(.hidden)').last();
+
+        this.selectCalendar($calendar);
+    },
+
+    selectNextCalendar() {
+        // Find selected calendar
+        let $calendar = $('.calendars-wrap .calendar.selected');
+
+        // Unselect it
+        $calendar.removeClass('selected');
+
+        // Select next visible calendar
+        if ($calendar.nextAll('.calendar:not(.hidden)').length) $calendar = $calendar.nextAll('.calendar:not(.hidden)').eq(0);
+
+        // Else, select first visible calendar
+        else $calendar = $('.calendars-wrap .calendar:not(.hidden)').first();
+
+        this.selectCalendar($calendar);
+    },
+
     selectAnotherCalendar($calendar) {
         // Select next (or previous) visible calendar
         if ($calendar.hasClass('selected')) {
