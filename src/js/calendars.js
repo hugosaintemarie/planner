@@ -55,6 +55,12 @@ export default {
             const $calendar = $(e.target).closest('.calendar');
             calendars.deleteCalendar($calendar);
         });
+
+        // Toggle edit all
+        $(document).on('click', '.edit-all', e => {
+            const $button = $(e.target).closest('.edit-all');
+            $button.toggleClass('active');
+        });
         
         // Initiate with first calendar
         const calendar = this.buildCalendar();

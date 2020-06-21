@@ -3,15 +3,20 @@ import panel from './panel';
 import selection from './selection';
 
 export default {
+    capsLockIsDown: false,
+
     init() {
         // Shortcuts
         $(document).on('keydown', e => {
+            // Capture caps lock
+            if (e.which === 20) this.capsLock(e.originalEvent.getModifierState('CapsLock'));
+
             // Disable custom shortcuts when editing a contenteditable
             if ($(e.target).is('[contenteditable]')) return;
 
             const ctrlOrMeta = e.metaKey || e.ctrlKey;
 
-            if ([37, 38, 39, 40].includes(e.which)) {         // Arrow keys
+            if ([37, 38, 39, 40].includes(e.which)) {                           // Arrow keys
                 // Prevent scroll
                 e.preventDefault();
 
@@ -51,6 +56,11 @@ export default {
             }
         });
 
+        $(document).on('keyup', e => {
+            // Capture caps lock (unlock)
+            if (e.which === 20) this.capsLock(e.originalEvent.getModifierState('CapsLock'));
+        });
+
         // // Click on contenteditable: select all
         // $(document).on('click', '[contenteditable]', e => {
         //     document.execCommand('selectAll', false, null);
@@ -60,5 +70,13 @@ export default {
         // $(document).on('keyup', '[contenteditable]', e => {
         //     if (e.which === 9) document.execCommand('selectAll', false, null);
         // });
+    },
+
+    capsLock(isDown) {
+        // Save status
+        this.capsLockIsDown = isDown;
+
+        if (isDown) $('.edit-all').addClass('active');
+        else $('.edit-all').removeClass('active');
     }
 }

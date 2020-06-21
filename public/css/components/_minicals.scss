@@ -1,4 +1,42 @@
-.calendars-wrap {    
+.calendars-wrap {
+    .edit-all {
+        flex: 0 0 32px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 32px;
+        border-radius: 4px;
+        cursor: pointer;
+        color: #666666;
+        border: 1px solid #292929;
+        box-shadow: 0 8px 8px #00000020;
+        margin-top: -4px;
+        margin-right: -4px;
+        margin-bottom: 4px;
+        
+        &:hover {
+            transition: all .1s ease;
+        }
+        
+        &:hover,
+        &.active {
+            background-color: #292929;
+            color: white;
+            border-color: #393939;
+        }
+
+        &.active {
+            color: white;
+
+            i {
+                &::before {
+                    content: "\f274";
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+
     .calendars {
         margin-top: 16px;
 
