@@ -94,7 +94,6 @@ export default {
         const $selectedFirst = $('.calendar-wrap .day.selected-first').length ? $('.calendar-wrap .day.selected-first') : $('.calendar-wrap .day.selected').eq(0);
         $selectedFirst.addClass('selected-first');
 
-
         let days = [];
 
         if (e.metaKey) {
@@ -107,8 +106,11 @@ export default {
         
             const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date($day.attr('data-date'))].sort((a, b) => a > b ? 1 : -1);
             
-            start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
-            end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
+            if (!e.altKey) {
+                // Rectangle mode, move start date to top left corner and end date to bottom right corner
+                start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
+                end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
+            }
             
             days = dates.range(start, end);
         
