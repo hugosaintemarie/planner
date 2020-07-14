@@ -2,6 +2,7 @@ import calendars from './calendars';
 import dates from './dates';
 import events from './events';
 import history from './history';
+import stats from './stats';
 
 export default {
     selectedDays: [],
@@ -272,6 +273,7 @@ export default {
         history.pushAction(action);
 
         calendars.updateCalendarHeight();
+        stats.update();
     },
     
     selectAll() {
@@ -406,6 +408,8 @@ export default {
 
         // Save action in history
         history.pushAction(action);
+
+        stats.update();
     },
 
     highlightSelection() {

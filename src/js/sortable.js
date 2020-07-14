@@ -1,3 +1,5 @@
+import stats from "./stats";
+
 export default {
     $sortedEl: null,
     sortedPosition: {},
@@ -113,5 +115,7 @@ export default {
         });
     
         this.$sortedEl = null;
+
+        stats.update();
     }
 }

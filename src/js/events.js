@@ -3,6 +3,7 @@ import dates from './dates';
 import history from './history';
 import selection from './selection';
 import settings from './settings';
+import stats from './stats';
 
 export default {
     eventID: 0,
@@ -109,6 +110,8 @@ export default {
             // Focus span if empty
             if (!event) $ul.find('li:last-child .title').focus();
         }
+
+        stats.update();
     },
 
     renameEvent($el) {
@@ -116,6 +119,8 @@ export default {
         const type = $el.closest('li').attr('data-type');
 
         $(`.event[data-type="${type}"] span`).text(val);
+
+        stats.update();
     },
 
     insertEvent($event) {
@@ -180,6 +185,8 @@ export default {
     
             history.pushAction(action);
         }
+
+        stats.update();
     },
 
     buildEvent(event) {
@@ -216,10 +223,13 @@ export default {
         $el.css('background-color', $target.css('background-color'));
         $el.find('.title').text($target.find('.title').text());
         $el.attr('data-type', $target.attr('data-type'));
+
+        stats.update();
     },
 
     removeEvent(event) {
         $(`.event[data-id="${event.id}"]`).remove();
         calendars.updateCalendarHeight();
+        stats.update();
     }
 }

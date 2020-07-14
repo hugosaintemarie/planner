@@ -43,31 +43,34 @@ header {
 main {
     height: calc(100vh - 64px);
 
-    .calendars-wrap,
-    .events-wrap {
+    .col-left,
+    .col-right {
         position: relative;
         flex: 0 0 240px;
-        padding: 16px;
         overflow-y: auto;
+        
+        > * {
+            padding: 16px;
+        }
 
         &::-webkit-scrollbar {
             width: 0;
         }
     }
 
-    .calendars-wrap {
+    .col-left {
         border-right: 1px solid #333;
     }
 
-    .events-wrap {
+    .col-right {
         border-left: 1px solid #333;
     }
 }
 
 @media screen and (max-width: 1120px) {
     main {
-        .calendars-wrap,
-        .events-wrap {
+        .col-left,
+        .col-right {
             position: absolute;
             height: 100%;
             background-color: #1f1f1f;
@@ -77,20 +80,29 @@ main {
 
             &:hover {
                 transform: none;
-                padding-left: 16px;
-                padding-right: 16px;
+
+                > * {
+                    padding-left: 16px;
+                    padding-right: 16px;
+                }
             }
         }
 
-        .calendars-wrap {
+        .col-left {
             transform: translateX(-216px);
-            padding-right: 32px;
+
+            > * {
+                padding-right: 32px;
+            }
         }
 
-        .events-wrap {
+        .col-right {
             right: 0;
             transform: translateX(216px);
-            padding-left: 32px;
+            
+            > * {
+                padding-left: 32px;
+            }
         }
 
         .calendar-wrap {

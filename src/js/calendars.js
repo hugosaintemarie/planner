@@ -1,6 +1,7 @@
 import calendars from './calendars';
 import dates from './dates';
 import selection from './selection';
+import stats from './stats';
 
 export default {
     calendarID: 0,
@@ -161,6 +162,8 @@ export default {
         // Restore .selected-first and .selected-last classes
         $(`.calendar-wrap .day[data-date="${$selectedFirst.attr('data-date')}"]`).addClass('selected-first');
         $(`.calendar-wrap .day[data-date="${$selectedLast.attr('data-date')}"]`).addClass('selected-last');
+
+        stats.update();
     },
 
     renameCalendar(val, $calendar = null) {

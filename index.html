@@ -20,28 +20,30 @@
     </header>
 
     <main class="row">
-        <div class="calendars-wrap">
-            <div class="row">
-                <h2>Calendars</h2>
-                <div class="toggle-edit-all">
-                    <i class="far fa-calendar"></i>
-                </div>
-            </div>
-
-            <div class="calendars">
-                <div class="calendar sortable selected" data-id="0">
-                    <div class="tools">
-                        <i data-tool="toggle" class="far fa-eye"></i>
-                        <i data-tool="sort">⋮⋮</i>
-                        <i data-tool="duplicate" class="far fa-clone"></i>
-                        <i data-tool="delete" class="far fa-trash-alt"></i>
+        <div class="col-left">
+            <div class="calendars-wrap">
+                <div class="row">
+                    <h2>Calendars</h2>
+                    <div class="toggle-edit-all">
+                        <i class="far fa-calendar"></i>
                     </div>
-                    <div class="content"></div>
-                    <p><span contenteditable>Calendar 1</span></p>
                 </div>
-            </div>
-            <div class="add">
-                <p>+ Add new calendar…</p>
+
+                <div class="calendars">
+                    <div class="calendar sortable selected" data-id="0">
+                        <div class="tools">
+                            <i data-tool="toggle" class="far fa-eye"></i>
+                            <i data-tool="sort">⋮⋮</i>
+                            <i data-tool="duplicate" class="far fa-clone"></i>
+                            <i data-tool="delete" class="far fa-trash-alt"></i>
+                        </div>
+                        <div class="content"></div>
+                        <p><span contenteditable>Calendar 1</span></p>
+                    </div>
+                </div>
+                <div class="add">
+                    <p>+ Add new calendar…</p>
+                </div>
             </div>
         </div>
         <div class="calendar-wrap">
@@ -57,13 +59,20 @@
             </div>
             <div class="content calendar" data-id="0"></div>
         </div>
-        <div class="events-wrap">
-            <h2>Events</h2>
+        <div class="col-right">
+            <div class="events-wrap">
+                <h2>Events</h2>
+    
+                <ul></ul>
+    
+                <div class="add">
+                    <p>+ Add new event…</p>
+                </div>
+            </div>
+            <div class="stats-wrap">
+                <h2>Statistics</h2>
 
-            <ul></ul>
-
-            <div class="add">
-                <p>+ Add new event…</p>
+                <div class="stats"></div>
             </div>
         </div>
     </main>
