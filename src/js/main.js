@@ -5,6 +5,7 @@ import panel from './panel';
 import selection from './selection';
 import sortable from './sortable';
 import stats from './stats';
+import ui from './ui';
 
 $(document).ready(() => {
     calendars.init();
@@ -14,4 +15,5 @@ $(document).ready(() => {
     selection.init();
     sortable.init();
     stats.init();
+    ui.init();
 });
