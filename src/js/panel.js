@@ -96,7 +96,6 @@ export default {
 
     confirm() {
         const tool = $('.panel ul li.selected').attr('data-tool');
-        // console.log(tool);
         let $html;
 
         if (tool === 'add') this.addEvent();

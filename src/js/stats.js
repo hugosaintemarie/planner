@@ -27,7 +27,6 @@ export default {
         let html = '';
         for (const event of events) {
             const count = $(`.calendar-wrap .event[data-type="${event.type}"]`).length;
-            console.log(count);
 
             html += `<div class="stat" data-type="${event.type}">
                 <p>

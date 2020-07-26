@@ -1,5 +1,6 @@
 import calendars from './calendars';
 import dates from './dates';
+import events from './events';
 import history from './history';
 import selection from './selection';
 import settings from './settings';
@@ -72,6 +73,14 @@ export default {
 
             // Prevent li click
             return false;
+        });
+
+        // Rename event
+        $(document).on('click', '.events-wrap ul li [data-tool="delete"]', e => {
+            const $el = $(e.target).closest('li');
+            const type = $el.attr('data-type');
+            $el.remove();
+            this.removeEventsByType(type);
         });
 
         // // Selected event
@@ -231,5 +240,40 @@ export default {
         $(`.event[data-id="${event.id}"]`).remove();
         calendars.updateCalendarHeight();
         stats.update();
+    },
+
+    removeEventsByType(type) {
+        // Create action for history
+        const action = {
+            type: 'removeEvents',
+            events: []
+        };
+
+        for (const minical of $('.calendars-wrap .calendar').toArray()) {
+            const $events = $(minical).find(`.event[data-type="${type}"]`);
+
+            $events.each((id, el) => {
+                const $el = $(el);
+
+                const event = {
+                    id: $el.attr('data-id'),
+                    calendar: parseInt($(minical).attr('data-id')),
+                    type: $el.attr('data-type'),
+                    title: $el.find('.title').text(),
+                    color: $el.css('background-color'),
+                    start: $el.closest('.day').attr('data-date'),
+                    end: $el.closest('.day').attr('data-date')
+                };
+
+                // Remove event
+                events.removeEvent(event);
+
+                // Save event in action
+                action.events.push(event);
+            });
+        }
+
+        // Save action in history
+        history.pushAction(action);
     }
 }
