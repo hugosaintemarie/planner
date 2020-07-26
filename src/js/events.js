@@ -35,6 +35,7 @@ export default {
         $(document).on('click', '.events-wrap ul li [data-tool="dropdown"]', e => {
             // Close any open dropdown menu
             $('.dropdown.visible').removeClass('visible');
+            $('#color-swatch').removeClass('visible');
 
             const $dropdown = $(e.target).closest('li').find('.dropdown');
             $dropdown.toggleClass('visible');
@@ -43,8 +44,11 @@ export default {
 
         // Click outside
         $(document).on('click', e => {
+            if ($(e.target).is('#color-swatch')) return;
+
             // Close dropdown menu
             $('.dropdown.visible').removeClass('visible');
+            $('#color-swatch').removeClass('visible');
 
             if ($(e.target).parents().is('[data-tool="dropdown"], .dropdown')) return;
 
@@ -75,6 +79,44 @@ export default {
             return false;
         });
 
+        // Open color swatch
+        $(document).on('click', '.events-wrap ul li [data-tool="color"]', e => {
+            const $el = $(e.target.closest('li'));
+
+            // Select current event color
+            $('#color-swatch .color.selected').removeClass('selected');
+            $($('#color-swatch .color').toArray().find(c => $(c).css('background-color') === $el.css('background-color'))).addClass('selected');
+
+            // Open swatch
+            $('#color-swatch')
+            .css({
+                'top': $el.position().top + $el.outerHeight(),
+                'left': $el.position().left
+            })
+            .addClass('visible')
+            .attr('data-type', $el.attr('data-type'));
+
+            // Close dropdown
+            $('.dropdown.visible').removeClass('visible');
+
+            return false;
+        });
+
+        // Change event color
+        $(document).on('click', '#color-swatch .color', e => {
+            const $color = $(e.target);
+            const eventType = $('#color-swatch').attr('data-type');
+
+            $('#color-swatch .color.selected').removeClass('selected');
+            $color.addClass('selected');
+
+            const color = $color.css('background-color')
+            $(`.events-wrap ul li[data-type="${eventType}"], .event[data-type="${eventType}"]`).css('background-color', color);
+            $(`.stat[data-type="${eventType}"] .event-icon`).css('background-color', color);
+
+            return false;
+        });
+
         // Rename event
         $(document).on('click', '.events-wrap ul li [data-tool="delete"]', e => {
             const $el = $(e.target).closest('li');
@@ -89,7 +131,34 @@ export default {
         //     $(e.target).closest('li').addClass('selected');
         // });
 
-        this.newEvent(['Workout', 'Tennis', 'Jogging']);
+        this.newEvent([{ title: 'Workout', color: 5 }, { title: 'Tennis', color: 13 }, { title: 'Jogging', color: 9 }]);
+
+        for (const color of settings.eventsColors) {
+            $('#color-swatch').append(`<div class="color" style="background-color: ${color}"></div>`);
+        }
+
+        // this.newEvent([
+        //     { title: 'A', color: 0 },
+        //     { title: 'B', color: 1 },
+        //     { title: 'C', color: 2 },
+        //     { title: 'D', color: 3 },
+        //     { title: 'E', color: 4 },
+        //     { title: 'F', color: 5 },
+        //     { title: 'G', color: 6 },
+        //     { title: 'H', color: 7 },
+        //     { title: 'I', color: 8 },
+        //     { title: 'J', color: 9 },
+        //     { title: 'K', color: 10 },
+        //     { title: 'L', color: 11 },
+        //     { title: 'M', color: 12 },
+        //     { title: 'N', color: 13 },
+        //     { title: 'O', color: 14 },
+        //     { title: 'P', color: 15 },
+        //     { title: 'Q', color: 16 },
+        //     { title: 'R', color: 17 },
+        //     { title: 'S', color: 18 },
+        //     { title: 'T', color: 19 }
+        // ]);
     },
 
     newEvent(events) {
@@ -97,13 +166,14 @@ export default {
 
         for (const event of events) {
             const type = parseInt($('.events-wrap ul li').length);
-            const li = `<li data-type="${type}" class="sortable" style="background-color: ${settings.eventsColors[type]}">
-                <span class="title" ${!event ? 'contenteditable' : ''} spellcheck="false">${event ? event : ''}</span>
+            const li = `<li data-type="${type}" class="sortable" style="background-color: ${event && event.color ? settings.eventsColors[event.color] : settings.eventsColors[type]}">
+                <span class="title" ${!event ? 'contenteditable' : ''} spellcheck="false">${event && event.title ? event.title : ''}</span>
                 <span class="tools">
                     <i class="fas fa-angle-down" data-tool="dropdown"></i>
                     <i data-tool="sort">⋮⋮</i>
                     <span class="dropdown">
                         <span data-tool="rename"><i class="fas fa-pen"></i> Rename</span>
+                        <span data-tool="color"><i class="fas fa-palette"></i> Change color</span>
                         <span data-tool="delete"><i class="far fa-trash-alt"></i> Delete</span>
                     </span>
                 </span>
