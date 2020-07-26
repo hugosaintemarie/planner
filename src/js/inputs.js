@@ -5,8 +5,13 @@ import calendars from './calendars';
 
 export default {
     capsLockIsDown: false,
+    isMouseDown: false,
 
     init() {
+        // Store mouseclick status
+        $(document).on('mousedown', () => { this.isMouseDown = true; });
+        $(document).on('mouseup', () => { this.isMouseDown = false; });
+
         // Shortcuts
         $(document).on('keydown', e => {
             // Capture caps lock
@@ -30,6 +35,7 @@ export default {
                     selection.moveSelection(e);
                 }
             }
+            else if (e.which === 18 && this.isMouseDown) selection.dragSelect(e);
             else if (e.which === 8) selection.emptySelection();                 // Backspace
             else if (e.which === 27) {                                          // Esc
                 if (panel.isOpen) panel.closePanel();
@@ -68,8 +74,10 @@ export default {
         });
 
         $(document).on('keyup', e => {
+            if (e.which === 18 && this.isMouseDown) selection.dragSelect(e);
+
             // Capture caps lock (unlock)
-            if (e.which === 20) this.capsLock(e.originalEvent.getModifierState('CapsLock'));
+            else if (e.which === 20) this.capsLock(e.originalEvent.getModifierState('CapsLock'));
         });
 
         // // Click on contenteditable: select all

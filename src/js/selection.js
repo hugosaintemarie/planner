@@ -16,6 +16,9 @@ export default {
 
         // Mouse enters a day on calendar
         $(document).on('mouseenter', '.calendar-wrap .day', e => {
+            const date = $(e.target).attr('data-date');
+            this.lastHoveredDate = date;
+
             if (this.selectedDays.length) this.dragSelect(e);
             // if (!event.title || !settings.spreadOnDrag) return;
             // event.end = $(e.target).closest('.day').attr('data-date');
@@ -87,10 +90,11 @@ export default {
     },
 
     dragSelect(e) {
-        if (e.which !== 1) return;
+        if (!(e.which === 1 || e.which === 18)) return;
 
-        const $day = $(e.target).closest('.day');
-        const date = $day.attr('data-date');
+        let date;
+        if (e.which === 18) date = this.lastHoveredDate;
+        else if (e.which === 1) date = $(e.currentTarget).attr('data-date');
 
         const $selectedFirst = $('.calendar-wrap .day.selected-first').length ? $('.calendar-wrap .day.selected-first') : $('.calendar-wrap .day.selected').eq(0);
         $selectedFirst.addClass('selected-first');
@@ -105,7 +109,7 @@ export default {
             const lowestWeekDay = Math.min(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
             const highestWeekDay = Math.max(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
         
-            const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date($day.attr('data-date'))].sort((a, b) => a > b ? 1 : -1);
+            const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date(date)].sort((a, b) => a > b ? 1 : -1);
             
             if (!e.altKey) {
                 // Rectangle mode, move start date to top left corner and end date to bottom right corner
@@ -120,7 +124,6 @@ export default {
         }   
 
         if (!$selectedFirst.hasClass('selected')) {
-            const date = $day.attr('data-date');
             this.selectedDays = this.selectedDays.filter(d => d.getTime() !== new Date(date).getTime());
         } else {
             if (e.metaKey) this.selectedDays.push(...days);
