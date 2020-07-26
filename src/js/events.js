@@ -8,6 +8,7 @@ import stats from './stats';
 
 export default {
     eventID: 0,
+    type: 0,
 
     init() {
         // Add new event
@@ -123,6 +124,7 @@ export default {
             const type = $el.attr('data-type');
             $el.remove();
             this.removeEventsByType(type);
+            stats.update();
         });
 
         // // Selected event
@@ -165,7 +167,7 @@ export default {
         if (!Array.isArray(events)) events = [events];
 
         for (const event of events) {
-            const type = parseInt($('.events-wrap ul li').length);
+            const type = ++this.type;
             const li = `<li data-type="${type}" class="sortable" style="background-color: ${event && event.color ? settings.eventsColors[event.color] : settings.eventsColors[type]}">
                 <span class="title" ${!event ? 'contenteditable' : ''} spellcheck="false">${event && event.title ? event.title : ''}</span>
                 <span class="tools">
