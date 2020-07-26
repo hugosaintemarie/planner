@@ -163,6 +163,7 @@ export default {
         $(`.calendar-wrap .day[data-date="${$selectedFirst.attr('data-date')}"]`).addClass('selected-first');
         $(`.calendar-wrap .day[data-date="${$selectedLast.attr('data-date')}"]`).addClass('selected-last');
 
+        this.updateCalendarHeight();
         stats.update();
     },
 
