@@ -61,8 +61,15 @@ export default {
             $el.addClass('selected');
         });
 
-        $(document).on('click', '.panel ul li', () => {
+        $(document).on('click', '.panel ul li', e => {
+            if ($(e.currentTarget).is('[disabled]')) return false;
+
             this.confirm();
+            return false;
+        });
+
+        $(document).on('click', '', () => {
+            this.closePanel();
         });
     },
 
