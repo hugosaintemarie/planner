@@ -19,7 +19,11 @@ export default {
         });
 
         $(document).on('click', 'header nav>ul>li li:not(.disabled)', e => {
-            // console.log(e);
+            const $target = $(e.currentTarget);
+            if ($target.attr('data-checkable') === '') {
+                if ($target.attr('data-radio')) this.onRadioChange($target);
+                else $target.toggleClass('checked');
+            }
 
             return false;
         });
@@ -27,5 +31,15 @@ export default {
         $(document).on('click', '', e => {
             $('header ul li.open').removeClass('open');
         });
+    },
+
+    onRadioChange($target) {
+        const radio = $target.attr('data-radio');
+        $(`nav [data-radio="${radio}"]`).removeClass('checked');
+        $target.addClass('checked');
+
+        if (radio === 'view') {
+            console.log($target.attr('data-value'));
+        }
     }
 }
