@@ -64,12 +64,6 @@ export default {
         $(document).on('click', '.toggle-edit-all', () => {
             $('.calendars-wrap').toggleClass('edit-all');
         });
-        
-        // Initiate with first calendar
-        this.getStartEnd();
-        const calendar = this.buildCalendar();
-        $('.calendar-wrap .content').html(calendar);
-        $('.calendars-wrap .calendar .content').html(calendar);
     },
 
     // Get start and end dates

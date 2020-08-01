@@ -5,6 +5,7 @@ import panel from './panel';
 import selection from './selection';
 import sortable from './sortable';
 import stats from './stats';
+import templates from './templates';
 import ui from './ui';
 
 $(document).ready(() => {
@@ -15,5 +16,6 @@ $(document).ready(() => {
     selection.init();
     sortable.init();
     stats.init();
+    templates.init();
     ui.init();
 });

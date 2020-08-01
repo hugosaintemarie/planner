@@ -22,5 +22,6 @@ export default {
         'hsl(0, 0%, 52%)',     // R
         'hsl(0, 0%, 38%)',     // S
         'hsl(0, 0%, 23%)',     // T
-    ]
+    ],
+    template: 'filled'
 }

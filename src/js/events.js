@@ -133,34 +133,9 @@ export default {
         //     $(e.target).closest('li').addClass('selected');
         // });
 
-        this.newEvent([{ title: 'Workout', color: 5 }, { title: 'Tennis', color: 13 }, { title: 'Jogging', color: 9 }]);
-
         for (const color of settings.eventsColors) {
             $('#color-swatch').append(`<div class="color" style="background-color: ${color}"></div>`);
         }
-
-        // this.newEvent([
-        //     { title: 'A', color: 0 },
-        //     { title: 'B', color: 1 },
-        //     { title: 'C', color: 2 },
-        //     { title: 'D', color: 3 },
-        //     { title: 'E', color: 4 },
-        //     { title: 'F', color: 5 },
-        //     { title: 'G', color: 6 },
-        //     { title: 'H', color: 7 },
-        //     { title: 'I', color: 8 },
-        //     { title: 'J', color: 9 },
-        //     { title: 'K', color: 10 },
-        //     { title: 'L', color: 11 },
-        //     { title: 'M', color: 12 },
-        //     { title: 'N', color: 13 },
-        //     { title: 'O', color: 14 },
-        //     { title: 'P', color: 15 },
-        //     { title: 'Q', color: 16 },
-        //     { title: 'R', color: 17 },
-        //     { title: 'S', color: 18 },
-        //     { title: 'T', color: 19 }
-        // ]);
     },
 
     newEvent(events) {
