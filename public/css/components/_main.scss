@@ -16,6 +16,10 @@ body {
     user-select: none;
 }
 
+h2 {
+    font-size: 1.25rem;
+}
+
 .row {
     display: flex;
     position: relative;
@@ -188,8 +192,10 @@ main {
     }
 }
 
-h2 {
-    font-size: 1.25rem;
+main.linear {
+    .col-left {
+        margin-right: 0;
+    }
 }
 
 @media screen and (max-width: 1120px) {

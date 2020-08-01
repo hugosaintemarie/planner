@@ -5,10 +5,13 @@ import stats from './stats';
 
 export default {
     calendarID: 0,
+    start: null,
+    end: null,
 
     init() {
         // Update calendars start and end
         $(document).on('change', '#start, #end', () => {
+            this.getStartEnd();
             const calendar = this.buildCalendar();
 
             $('.calendar-wrap .content').html(calendar);
@@ -63,15 +66,21 @@ export default {
         });
         
         // Initiate with first calendar
+        this.getStartEnd();
         const calendar = this.buildCalendar();
         $('.calendar-wrap .content').html(calendar);
         $('.calendars-wrap .calendar .content').html(calendar);
     },
 
+    // Get start and end dates
+    getStartEnd() {
+        this.start = new Date(new Date($('#start').val()).setHours(0));
+        this.end = new Date(new Date($('#end').val()).setHours(0));
+    },
+    
     buildCalendar() {
-        // Get start and end dates
-        const start = new Date(new Date($('#start').val()).setHours(0));
-        const end = new Date(new Date($('#end').val()).setHours(0));
+        const start = this.start;
+        const end = this.end;
         if (end < start) return;
     
         // Find first week day

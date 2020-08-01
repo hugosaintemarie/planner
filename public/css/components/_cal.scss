@@ -161,3 +161,43 @@
         }
     }
 }
+
+main.linear {
+    .calendar-wrap {
+        margin-right: 0;
+        padding-left: 16px;
+        overflow: auto;
+    
+        > h2 {
+            display: none;
+        }
+    
+        .head {
+            div {
+                flex: 0 0 139px;
+            }
+        }
+    
+        .calendar {
+            display: flex;
+            width: fit-content;
+            padding-right: 16px;
+    
+            .day {
+                width: 140px;
+    
+                &.out {
+                    display: none;
+                }
+    
+                > span {
+                    display: none;
+                }
+    
+                > .events {
+                    margin-top: 0;
+                }
+            }
+        }
+    }
+}
