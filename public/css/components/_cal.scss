@@ -182,6 +182,8 @@ main.linear {
             display: flex;
             width: fit-content;
             padding-right: 16px;
+            padding-bottom: 0;
+            margin-top: -1px;
     
             .day {
                 width: 140px;
@@ -196,6 +198,7 @@ main.linear {
     
                 > .events {
                     margin-top: 0;
+                    max-height: none;
                 }
             }
         }

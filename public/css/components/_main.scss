@@ -243,4 +243,11 @@ main.linear {
             height: inherit;
         }
     }
+
+    main.linear {
+        .calendar-wrap {
+            left: 24px;
+            width: calc(100% - 48px);
+        }
+    }
 }
