@@ -1,5 +1,5 @@
 export default {
-    spreadOnDrag: false,
+    // spreadOnDrag: false,
     oneEventPerDay: false,
     eventsColors: [
         'hsl(0, 55%, 45%)',    // A

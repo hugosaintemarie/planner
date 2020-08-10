@@ -9,10 +9,17 @@ export default {
         const template = settings.template;
 
         if (template === 'default') {
+            // 1 calendar
+            // 3 events
+            
             this.createCalendars(1);
             events.newEvent([{ title: 'Workout', color: 5 }, { title: 'Tennis', color: 13 }, { title: 'Jogging', color: 9 }]);
 
         } else if (template === 'filled') {
+            // 3 calendars
+            // 3 events
+            // 30 random occurences
+
             this.createCalendars(3);
             events.newEvent([{ title: 'Workout', color: 5 }, { title: 'Tennis', color: 13 }, { title: 'Jogging', color: 9 }]);
 
@@ -31,13 +38,16 @@ export default {
                     title: $event.find('.title').text(),
                     color: $event.css('background-color'),
                     start: date,
-                    end: date
+                    end: new Date(new Date(date).setDate(date.getDate() + Math.floor(Math.random() * 3)))
                 });
             }
 
             stats.update();
 
         } else if (template === 'events') {
+            // 1 calendar
+            // 20 events (for events colors testing)
+
             this.createCalendars(1);
             events.newEvent([
                 { title: 'A', color: 0 },

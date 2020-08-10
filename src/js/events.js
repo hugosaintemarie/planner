@@ -246,19 +246,29 @@ export default {
     },
 
     buildEvent(event) {
-        const date = dates.toString(new Date(event.start));
+        const range = dates.range(event.start, event.end);
 
-        // Edit all calendars or only selected one
-        let $el;
-        if ($('.calendars-wrap').hasClass('edit-all')) {
-            $el = $(`.day[data-date="${date}"] .events`);
-        } else {
-            $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
+        for (const day of range) {
+            const date = dates.toString(new Date(day));
+
+            // Edit all calendars or only selected one
+            let $el;
+            if ($('.calendars-wrap').hasClass('edit-all')) {
+                $el = $(`.day[data-date="${date}"] .events`);
+            } else {
+                $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
+            }
+    
+            // Count events already on that day for top position
+            const count = $el.eq(0).find('.event').length;
+    
+            // Add event
+            let classname = '';
+            if (day.valueOf() === event.start.valueOf() || day.getDay() === 1) classname += ' start';
+            if (day.valueOf() === event.end.valueOf() || day.getDay() === 0) classname += ' end';
+
+            $el.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="top: ${count * 32}px; background-color: ${event.color}">${classname.includes('start') ? `<span class="title">${event.title}</span>` : ''}</div>`);
         }
-
-        // Add event
-        let classname = ' start end';
-        $el.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="background-color: ${event.color}">${classname.includes('start') ? `<span class="title">${event.title}</span>` : ''}</div>`);
 
         calendars.updateCalendarHeight();
     },
