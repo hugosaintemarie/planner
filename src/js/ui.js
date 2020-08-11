@@ -34,6 +34,13 @@ export default {
         $(document).on('click', '', e => {
             $('header ul li.open').removeClass('open');
         });
+
+        // Keep scroll in sync in linear mode
+        $(document).on('mousewheel', '.calendar-wrap, .col-left', e => {
+            if (!$('main').hasClass('linear')) return;
+            const scroll = e.currentTarget.scrollTop;
+            $('.calendar-wrap, .col-left').scrollTop(scroll);
+        });
     },
 
     onRadioChange($target) {
