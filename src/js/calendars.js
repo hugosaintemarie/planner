@@ -20,7 +20,7 @@ export default {
         });
 
         // Switch calendar
-        $(document).on('mousedown', '.calendars-wrap .calendar .content', e => {
+        $(document).on('click', '.calendars-wrap .calendar:not(.selected)', e => {
             const $calendar = $(e.target).closest('.calendar');
             calendars.selectCalendar($calendar);
         });
@@ -47,18 +47,21 @@ export default {
         $(document).on('click', '.calendars-wrap [data-tool="toggle"]', e => {
             const $calendar = $(e.target).closest('.calendar');
             calendars.toggleCalendar($calendar);
+            return false;
         });
 
         // Duplicate calendar
         $(document).on('click', '.calendar .tools [data-tool="duplicate"]', e => {
             const $calendar = $(e.target).closest('.calendar')
             calendars.duplicateCalendar($calendar);
+            return false;
         });
 
         // Delete calendar
         $(document).on('click', '.calendar .tools [data-tool="delete"]', e => {
             const $calendar = $(e.target).closest('.calendar');
             calendars.deleteCalendar($calendar);
+            return false;
         });
 
         // Toggle edit all
@@ -150,16 +153,18 @@ export default {
 
         $('.calendars-wrap .calendar.selected').removeClass('selected');
         $calendar.addClass('selected');
-    
-        // Update ID
-        $('.calendar-wrap .content').attr('data-id', $calendar.attr('data-id'));
-    
-        // Update title
-        $('.calendar-wrap h2').html($calendar.find('p span').html());
-    
-        // Update main calendar
-        $('.calendar-wrap .content').html($calendar.find('.content').html());
-    
+
+        if (!$('main').hasClass('linear')) {
+            // Update ID
+            $('.calendar-wrap .content').attr('data-id', $calendar.attr('data-id'));
+        
+            // Update title
+            $('.calendar-wrap h2').html($calendar.find('p span').html());
+        
+            // Update main calendar
+            $('.calendar-wrap .content').html($calendar.find('.content').html());
+        }
+
         // Unselect any selection
         window.getSelection().removeAllRanges();
     
