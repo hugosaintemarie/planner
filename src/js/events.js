@@ -276,7 +276,7 @@ export default {
             if (day.valueOf() === event.end.valueOf()) classname += ' end';
 
             // Add event
-            $events.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="top: ${top * 32}px; background-color: ${event.color}">${classname.includes('start') || day.getDay() === 1 ? `<span class="title${!classname.includes('start') ? ' not-linear' : ''}">${event.id}</span>` : ''}</div>`);
+            $events.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="top: ${top * 32}px; background-color: ${event.color}">${classname.includes('start') || day.getDay() === 1 ? `<span class="title${!classname.includes('start') ? ' not-linear' : ''}">${event.title}</span>` : ''}</div>`);
         }
 
         calendars.updateCalendarHeight();
