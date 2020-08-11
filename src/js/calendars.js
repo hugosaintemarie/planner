@@ -2,6 +2,7 @@ import calendars from './calendars';
 import dates from './dates';
 import selection from './selection';
 import stats from './stats';
+import ui from './ui';
 
 export default {
     calendarID: 0,
@@ -139,6 +140,8 @@ export default {
 
         // Unselect any selection
         window.getSelection().removeAllRanges();
+
+        if ($('main').hasClass('linear')) ui.linearView();
     },
 
     selectCalendar($calendar) {
@@ -190,6 +193,8 @@ export default {
     deleteCalendar($calendar) {
         this.selectAnotherCalendar($calendar);
         $calendar.remove();
+
+        if ($('main').hasClass('linear')) ui.linearView();
     },
 
     selectPreviousCalendar() {
@@ -234,6 +239,10 @@ export default {
 
     updateCalendarHeight() {
         const mostEventsPerDay = Math.max(...$('.calendar-wrap .day .events').map((id, el) => $(el).find('.event').length));
-        $('.calendar-wrap .day').css('height', `${Math.max(40 + mostEventsPerDay * 32, 72)}px`);
+        const height = `${Math.max(40 + mostEventsPerDay * 32, 72)}px`;
+        $('.calendar-wrap .day').css('height', height);
+
+        if ($('main').hasClass('linear')) $('.calendars-wrap .calendar').css('height', height);
+        else $('.calendars-wrap .calendar').css('height', '');
     }
 }

@@ -106,7 +106,8 @@
                 left: -12px;
                 padding-top: 6px;
                 opacity: 0;
-                transition: opacity .1s ease;
+                transition: opacity .2s ease;
+                z-index: 1;
 
                 i {
                     width: 32px;
@@ -310,6 +311,46 @@
 
         &:hover {
             opacity: .7;
+        }
+    }
+}
+
+main.linear {
+    .calendars-wrap {
+        .calendar {
+            margin: -1px -16px 0 -16px;
+            padding-left: 0;
+            border-top: 1px solid #444444;
+            border-bottom: 1px solid #444444;
+            background-color: #1e1e1e;
+            
+            &:not(:last-child) {
+                margin-bottom: 0;
+            }
+
+            p {
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding-top: 0;
+                transition: height .2s ease;
+            }
+
+            .tools {
+                left: 48px;
+                bottom: 8px;
+
+                i {
+                    display: inline-flex;
+                }
+            }
+
+            &:hover {
+                p {
+                    height: calc(100% - 24px);
+                }
+            }
         }
     }
 }

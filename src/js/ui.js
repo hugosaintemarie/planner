@@ -44,12 +44,12 @@ export default {
         if (radio === 'view') {
             const view = $target.attr('data-value');
             if (view === 'full') this.fullView()
-            else if (view === 'linear') this.linearView();       
+            else if (view === 'linear') this.linearView();
         }
     },
 
     fullView() {
-        $('.calendars-wrap').find('.calendars, .add').show();
+        $('.calendars-wrap').find('.calendars .content, .add').show();
         $('main').removeClass('linear');
 
         $('.calendar-wrap .head').html(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => `<div>${d}</div>`).join(''));
@@ -58,29 +58,29 @@ export default {
         $('.calendar-wrap .calendar').slice(1).remove();
         const $selectedCalendar = $('.calendars-wrap .calendar.selected');
         calendars.selectCalendar($selectedCalendar);
+
+        calendars.updateCalendarHeight();
     },
 
     linearView() {
-        $('.calendars-wrap').find('.calendars, .add').hide();
+        $('.calendars-wrap').find('.calendars .content, .add').hide();
         $('main').addClass('linear');
 
-        // Get start and end dates
-        const start = calendars.start;
-        const end = calendars.end;
-        if (end < start) return;
-
         // Create range from first day to end
-        const days = dates.range(start, end);
+        const days = dates.range(calendars.start, calendars.end);
 
+        // Update timeline
         $('.calendar-wrap .head').html(days.map(day => `<div>${day.toLocaleDateString('en-US', { weekday: 'short' })} ${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</div>`));
 
         $('.calendar-wrap .calendar').remove();
 
+        // Duplicate every minical
         $('.calendars-wrap .calendar').each((id, el) => {
             const $el = $(el);
             const content = $el.find('.content').html();
-            
             $('.calendar-wrap').append(`<div class="content calendar" data-id="${$el.attr('data-id')}">${content}</div>`);
         });
+
+        calendars.updateCalendarHeight();
     }
 }
