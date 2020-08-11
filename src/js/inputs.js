@@ -56,7 +56,7 @@ export default {
                 else history.undo();
             }
             else if (e.which === 70) ui.fullView();                               // F
-            else if (e.which === 86) ui.linearView();                             // V
+            else if (e.which === 76) ui.linearView();                             // L
         });
 
         // Enter key in contenteditable: blur
