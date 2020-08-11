@@ -272,11 +272,11 @@ export default {
     
             // Build classname
             let classname = '';
-            if (day.valueOf() === event.start.valueOf() || day.getDay() === 1) classname += ' start';
-            if (day.valueOf() === event.end.valueOf() || day.getDay() === 0) classname += ' end';
+            if (day.valueOf() === event.start.valueOf()) classname += ' start';
+            if (day.valueOf() === event.end.valueOf()) classname += ' end';
 
             // Add event
-            $events.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="top: ${top * 32}px; background-color: ${event.color}">${classname.includes('start') ? `<span class="title">${event.title}</span>` : ''}</div>`);
+            $events.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="top: ${top * 32}px; background-color: ${event.color}">${classname.includes('start') || day.getDay() === 1 ? `<span class="title${!classname.includes('start') ? ' not-linear' : ''}">${event.title}</span>` : ''}</div>`);
         }
 
         calendars.updateCalendarHeight();

@@ -206,7 +206,7 @@ main.linear {
     
                 > .events {
                     margin-top: 0;
-                    max-height: none;
+                    height: calc(100% + 8px);
                 }
             }
         }
