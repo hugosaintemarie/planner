@@ -246,28 +246,37 @@ export default {
     },
 
     buildEvent(event) {
-        const range = dates.range(event.start, event.end);
-
-        for (const day of range) {
+        const getEventsWrap = (day) => {
             const date = dates.toString(new Date(day));
-
-            // Edit all calendars or only selected one
             let $el;
             if ($('.calendars-wrap').hasClass('edit-all')) {
                 $el = $(`.day[data-date="${date}"] .events`);
             } else {
                 $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
             }
+            return $el;
+        }
+
+        const range = dates.range(event.start, event.end);
+
+        // Get first available top coordinate for multi-days event
+        const top = Math.max(...range.map(day => {
+            for (let i = 0; i < 32; i += 1) {
+                const events = getEventsWrap(day).eq(0).find('.event').toArray();
+                if (events.every(ev => parseInt($(ev).css('top')) !== i * 32)) return i;
+            }
+        }));
+
+        for (const day of range) {
+            const $events = getEventsWrap(day);
     
-            // Count events already on that day for top position
-            const count = $el.eq(0).find('.event').length;
-    
-            // Add event
+            // Build classname
             let classname = '';
             if (day.valueOf() === event.start.valueOf() || day.getDay() === 1) classname += ' start';
             if (day.valueOf() === event.end.valueOf() || day.getDay() === 0) classname += ' end';
 
-            $el.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="top: ${count * 32}px; background-color: ${event.color}">${classname.includes('start') ? `<span class="title">${event.title}</span>` : ''}</div>`);
+            // Add event
+            $events.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="top: ${top * 32}px; background-color: ${event.color}">${classname.includes('start') ? `<span class="title">${event.title}</span>` : ''}</div>`);
         }
 
         calendars.updateCalendarHeight();
