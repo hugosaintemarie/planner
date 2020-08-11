@@ -60,6 +60,10 @@ export default {
         calendars.selectCalendar($selectedCalendar);
 
         calendars.updateCalendarHeight();
+
+        // Check option in menu (when switched from shorcut)
+        $(`nav [data-radio="view"]`).removeClass('checked');
+        $(`nav [data-radio="view"][data-value="full"]`).addClass('checked');
     },
 
     linearView() {
@@ -82,5 +86,9 @@ export default {
         });
 
         calendars.updateCalendarHeight();
+
+        // Check option in menu (when switched from shorcut)
+        $(`nav [data-radio="view"]`).removeClass('checked');
+        $(`nav [data-radio="view"][data-value="linear"]`).addClass('checked');
     }
 }

@@ -1,7 +1,8 @@
+import calendars from './calendars';
 import history from './history';
 import panel from './panel';
 import selection from './selection';
-import calendars from './calendars';
+import ui from './ui';
 
 export default {
     capsLockIsDown: false,
@@ -22,38 +23,40 @@ export default {
 
             const ctrlOrMeta = e.metaKey || e.ctrlKey;
 
-            if ([37, 38, 39, 40].includes(e.which)) {                           // Arrow keys
+            if ([37, 38, 39, 40].includes(e.which)) {                             // Arrow keys
                 // Prevent scroll
                 e.preventDefault();
 
                 if (panel.isOpen) return;
 
                 if (ctrlOrMeta && [38, 40].includes(e.which)) {
-                    if (e.which === 38) calendars.selectPreviousCalendar();
-                    if (e.which === 40) calendars.selectNextCalendar();
+                    if (e.which === 38) calendars.selectPreviousCalendar();       // Cmd + up
+                    if (e.which === 40) calendars.selectNextCalendar();           // Cmd + down
                 } else {
-                    selection.moveSelection(e);
+                    selection.moveSelection(e);                                   // Cmd + right/left
                 }
             }
-            else if (e.which === 18 && this.isMouseDown) selection.dragSelect(e);
-            else if (e.which === 8) selection.emptySelection();                 // Backspace
-            else if (e.which === 27) {                                          // Esc
+            else if (e.which === 18 && this.isMouseDown) selection.dragSelect(e); // Alt + click
+            else if (e.which === 8) selection.emptySelection();                   // Backspace
+            else if (e.which === 27) {                                            // Esc
                 if (panel.isOpen) panel.closePanel();
                 else selection.narrowSelection();
             }
-            else if (ctrlOrMeta && e.which === 65) selection.selectAll();       // A
-            else if (ctrlOrMeta && e.which === 67) selection.copySelection();   // C
-            else if (e.which === 72) {                                          // H
+            else if (ctrlOrMeta && e.which === 65) selection.selectAll();         // Cmd + A
+            else if (ctrlOrMeta && e.which === 67) selection.copySelection();     // Cmd + C
+            else if (e.which === 72) {                                            // Cmd + H
                 const $calendar = $('.calendars-wrap .calendar.selected');
                 calendars.toggleCalendar($calendar);
             }
-            else if (ctrlOrMeta && e.which === 86) selection.pasteSelection();  // V
-            else if (ctrlOrMeta && e.which === 88) selection.cutSelection();    // X
-            else if (ctrlOrMeta && e.which === 90) {                            // Z
+            else if (ctrlOrMeta && e.which === 86) selection.pasteSelection();    // Cmd + V
+            else if (ctrlOrMeta && e.which === 88) selection.cutSelection();      // Cmd + X
+            else if (ctrlOrMeta && e.which === 90) {                              // Cmd + Z
                 e.preventDefault();
                 if (e.shiftKey) history.redo();
                 else history.undo();
             }
+            else if (e.which === 70) ui.fullView();                               // F
+            else if (e.which === 86) ui.linearView();                             // V
         });
 
         // Enter key in contenteditable: blur
