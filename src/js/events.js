@@ -260,12 +260,12 @@ export default {
         const range = dates.range(event.start, event.end);
 
         // Get first available top coordinate for multi-days event
-        const top = Math.max(...range.map(day => {
-            for (let i = 0; i < 32; i += 1) {
+        const top = new Array(32).fill(0).map(d => d).findIndex((_, i) => {
+            return range.map(day => {
                 const events = getEventsWrap(day).eq(0).find('.event').toArray();
-                if (events.every(ev => parseInt($(ev).css('top')) !== i * 32)) return i;
-            }
-        }));
+                return events.every(ev => parseInt($(ev).css('top')) !== i * 32);
+            }).every(d => d);
+        });
 
         for (const day of range) {
             const $events = getEventsWrap(day);
@@ -276,7 +276,7 @@ export default {
             if (day.valueOf() === event.end.valueOf()) classname += ' end';
 
             // Add event
-            $events.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="top: ${top * 32}px; background-color: ${event.color}">${classname.includes('start') || day.getDay() === 1 ? `<span class="title${!classname.includes('start') ? ' not-linear' : ''}">${event.title}</span>` : ''}</div>`);
+            $events.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="top: ${top * 32}px; background-color: ${event.color}">${classname.includes('start') || day.getDay() === 1 ? `<span class="title${!classname.includes('start') ? ' not-linear' : ''}">${event.id}</span>` : ''}</div>`);
         }
 
         calendars.updateCalendarHeight();
