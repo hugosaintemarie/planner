@@ -35,6 +35,9 @@ export default {
         const $day = $(e.target).closest('.day');
         const date = $day.attr('data-date');
 
+        $('.calendar.selected').removeClass('selected');
+        $(`.calendar[data-id="${$day.closest('.calendar').attr('data-id')}"]`).addClass('selected');
+
         if (e.metaKey && !e.shiftKey && !e.altKey) {
             $('.selected-first').removeClass('selected-first');
             $day.addClass('selected-first');
@@ -76,14 +79,14 @@ export default {
             if (e.metaKey) this.selectedDays.push(...days);
             else this.selectedDays = days;
         } else {
-            if (this.selectedDays.length && this.selectedDays[0].getTime() === new Date(date).getTime()) {
-                this.selectedDays = []; 
-            } else {
+            // if (this.selectedDays.length && this.selectedDays[0].getTime() === new Date(date).getTime()) {
+            //     this.selectedDays = []; 
+            // } else {
                 this.selectedDays = [new Date(date)]; 
                 $('.calendar-wrap .day.selected-first').removeClass('selected-first');
                 $('.calendar-wrap .day.selected-last').removeClass('selected-last');
                 $day.addClass('selected-first selected-last');
-            }
+            // }
         }
 
         this.highlightSelection();
@@ -421,7 +424,7 @@ export default {
 
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
-            const $el = $(`.day[data-date="${date}"]`);
+            const $el = $(`.calendar.selected .day[data-date="${date}"]`);
 
             // Select day
             $el.addClass('selected');
