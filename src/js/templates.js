@@ -79,7 +79,7 @@ export default {
         const calendar = calendars.buildCalendar();
 
         $('.calendars-wrap .calendars').append(this.sidebarCalendars(calendar, n));
-        $('.calendar-wrap .content').html(calendar);
+        $('.calendar-wrap .content').html(calendar).addClass('selected');
     },
 
     sidebarCalendars(calendar, n = 1) {
