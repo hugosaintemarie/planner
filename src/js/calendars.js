@@ -154,7 +154,11 @@ export default {
         $('.calendars-wrap .calendar.selected').removeClass('selected');
         $calendar.addClass('selected');
 
-        if (!$('main').hasClass('linear')) {
+        if ($('main').hasClass('linear')) {
+            // Select calendar
+            $('.calendar-wrap .calendar.selected').removeClass('selected');
+            $(`.calendar-wrap .calendar[data-id="${$calendar.attr('data-id')}"]`).addClass('selected');
+        } else {
             // Update ID
             $('.calendar-wrap .content').attr('data-id', $calendar.attr('data-id'));
         
@@ -171,8 +175,8 @@ export default {
         selection.highlightSelection();
 
         // Restore .selected-first and .selected-last classes
-        $(`.calendar-wrap .day[data-date="${$selectedFirst.attr('data-date')}"]`).addClass('selected-first');
-        $(`.calendar-wrap .day[data-date="${$selectedLast.attr('data-date')}"]`).addClass('selected-last');
+        $(`.calendar-wrap .calendar.selected .day[data-date="${$selectedFirst.attr('data-date')}"]`).addClass('selected-first');
+        $(`.calendar-wrap .calendar.selected .day[data-date="${$selectedLast.attr('data-date')}"]`).addClass('selected-last');
 
         this.updateCalendarHeight();
         stats.update();

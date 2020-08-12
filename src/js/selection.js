@@ -141,8 +141,9 @@ export default {
         const $selected = $('.calendar-wrap .day.selected-last');
         if (!$selected.length) return;
     
-        let target;
+        // Target set to same date by default (for linear mode)
         const date = new Date($selected.attr('data-date'));
+        let target = date;
     
         if (e.which === 37) {
             if (e.metaKey) {
@@ -156,8 +157,13 @@ export default {
                 if (target.getDay() === 0 && e.shiftKey) return;
             }
         } else if (e.which === 38) {
-            // Up: one week before
-            target = dates.relativeDate(date, -7);
+            if ($('main').hasClass('linear')) {
+                // Up (linear): calendar above
+                calendars.selectPreviousCalendar();
+            } else {
+                // Up: one week before
+                target = dates.relativeDate(date, -7);
+            }
         } else if (e.which === 39) {
             if (e.metaKey) {
                 // Meta + right: end of week
@@ -170,8 +176,13 @@ export default {
                 if (target.getDay() === 1 && e.shiftKey) return;
             }
         } else if (e.which === 40) {
-            // Down: one week after
-            target = dates.relativeDate(date, 7);
+            if ($('main').hasClass('linear')) {
+                // Up (linear): calendar under
+                calendars.selectNextCalendar();
+            } else {
+                // Down: one week after
+                target = dates.relativeDate(date, 7);
+            }
         }
     
         if (e.shiftKey) {
