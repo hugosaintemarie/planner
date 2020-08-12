@@ -470,13 +470,20 @@ export default {
             // Add styles classes (for borders)
             const dayBeforeSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, -1));
             const dayAfterSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, 1));
-            const dayWeekBeforeSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, -7));
-            const dayWeekAfterSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, 7));
 
-            if (dayWeekBeforeSelected) $el.addClass('no-top');
-            if (dayAfterSelected && day.getDay() !== 0) $el.addClass('no-right');
-            if (dayWeekAfterSelected) $el.addClass('no-bottom');
-            if (dayBeforeSelected && day.getDay() !== 1) $el.addClass('no-left');
+            if (ui.viewIs('full')) {
+                const dayWeekBeforeSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, -7));
+                const dayWeekAfterSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, 7));
+                
+                if (dayBeforeSelected && day.getDay() !== 1) $el.addClass('no-left');
+                if (dayAfterSelected && day.getDay() !== 0) $el.addClass('no-right');
+                if (dayWeekBeforeSelected) $el.addClass('no-top');
+                if (dayWeekAfterSelected) $el.addClass('no-bottom');
+            }
+            else if (ui.viewIs('linear')) {
+                if (dayBeforeSelected) $el.addClass('no-left');
+                if (dayAfterSelected) $el.addClass('no-right');
+            }
         }
     },
 
