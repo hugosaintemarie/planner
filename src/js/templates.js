@@ -80,6 +80,8 @@ export default {
 
         $('.calendars-wrap .calendars').append(this.sidebarCalendars(calendar, n));
         $('.calendar-wrap .content').html(calendar).addClass('selected');
+
+        calendars.calendarID = n - 1;
     },
 
     sidebarCalendars(calendar, n = 1) {
