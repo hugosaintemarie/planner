@@ -323,6 +323,10 @@ main.linear {
             border-top: 1px solid #444444;
             border-bottom: 1px solid #444444;
             background-color: #1e1e1e;
+
+            .content {
+                display: none;
+            }
             
             &:not(:last-child) {
                 margin-bottom: 0;

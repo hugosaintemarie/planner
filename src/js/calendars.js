@@ -126,6 +126,9 @@ export default {
         // Select new calendar
         const $calendar = $('.calendars-wrap .calendar:last-child');
         this.selectCalendar($calendar);
+
+        // Update linear view
+        if (ui.viewIs('linear')) ui.linearView();
     },
 
     duplicateCalendar($calendar) {

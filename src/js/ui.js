@@ -62,7 +62,6 @@ export default {
         this.view = 'full';
 
         // Update UI
-        $('.calendars-wrap').find('.calendars .content, .add').show();
         $('main').removeClass('linear');
 
         // Update timeline
@@ -92,7 +91,6 @@ export default {
         const selectedLast = $('.selected-last').attr('data-date');
 
         // Update UI
-        $('.calendars-wrap').find('.calendars .content, .add').hide();
         $('main').addClass('linear');
 
         // Create range from first day to end
