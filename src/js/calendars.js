@@ -144,7 +144,7 @@ export default {
         // Unselect any selection
         window.getSelection().removeAllRanges();
 
-        if ($('main').hasClass('linear')) ui.linearView();
+        if (ui.viewIs('linear')) ui.linearView();
     },
 
     selectCalendar($calendar) {
@@ -154,7 +154,7 @@ export default {
         $('.calendars-wrap .calendar.selected').removeClass('selected');
         $calendar.addClass('selected');
 
-        if ($('main').hasClass('linear')) {
+        if (ui.viewIs('linear')) {
             // Select calendar
             $('.calendar-wrap .calendar.selected').removeClass('selected');
             $(`.calendar-wrap .calendar[data-id="${$calendar.attr('data-id')}"]`).addClass('selected');
@@ -166,7 +166,7 @@ export default {
             $('.calendar-wrap h2').html($calendar.find('p span').html());
         
             // Update main calendar
-            $('.calendar-wrap .content').html($calendar.find('.content').html());
+            $('.calendar-wrap .content').html($calendar.find('.content').html()).addClass('selected');
         }
 
         // Unselect any selection
@@ -203,7 +203,7 @@ export default {
         this.selectAnotherCalendar($calendar);
         $calendar.remove();
 
-        if ($('main').hasClass('linear')) ui.linearView();
+        if (ui.viewIs('linear')) ui.linearView();
     },
 
     selectPreviousCalendar() {
@@ -251,7 +251,7 @@ export default {
         const height = `${Math.max(40 + mostEventsPerDay * 32, 72)}px`;
         $('.calendar-wrap .day').css('height', height);
 
-        if ($('main').hasClass('linear')) $('.calendars-wrap .calendar').css('height', height);
+        if (ui.viewIs('linear')) $('.calendars-wrap .calendar').css('height', height);
         else $('.calendars-wrap .calendar').css('height', '');
     }
 }

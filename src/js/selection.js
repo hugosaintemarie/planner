@@ -3,6 +3,7 @@ import dates from './dates';
 import events from './events';
 import history from './history';
 import stats from './stats';
+import ui from './ui';
 
 export default {
     selectedDays: [],
@@ -146,43 +147,54 @@ export default {
         let target = date;
     
         if (e.which === 37) {
-            if (e.metaKey) {
-                // Meta + left: beginning of week
-                target = dates.relativeFirstWeekDay(date);
-            } else {
-                // Left: one day before
+            if (e.metaKey) { // Meta + left
+                // Full: beginning of week
+                if (ui.viewIs('full')) target = dates.relativeFirstWeekDay(date);
+
+                // Linear: one week before
+                else if (ui.viewIs('linear')) target = dates.relativeDate(date, -7);
+
+            } else { // Left
+
+                // One day before
                 target = dates.relativeDate(date, -1);
-        
+                
                 // Prevent changing week with shift key
                 if (target.getDay() === 0 && e.shiftKey) return;
             }
-        } else if (e.which === 38) {
-            if ($('main').hasClass('linear')) {
-                // Up (linear): calendar above
-                calendars.selectPreviousCalendar();
-            } else {
-                // Up: one week before
-                target = dates.relativeDate(date, -7);
-            }
+
+        } else if (e.which === 38) { // Up
+
+            // Full: one week before
+            if (ui.viewIs('full')) target = dates.relativeDate(date, -7);
+
+            // Linear: calendar above
+            else if (ui.viewIs('linear')) calendars.selectPreviousCalendar();
+
         } else if (e.which === 39) {
-            if (e.metaKey) {
-                // Meta + right: end of week
-                target = dates.relativeLastWeekDay(date);
-            } else {
-                // Right: one day after
+            if (e.metaKey) { // Meta + right
+
+                // Full: end of week
+                if (ui.viewIs('full')) target = dates.relativeLastWeekDay(date);
+
+                // Linear: one week after
+                else if (ui.viewIs('linear')) target = dates.relativeDate(date, 7);
+
+            } else { // Right
+                
+                // One day after
                 target = dates.relativeDate(date, 1);
         
                 // Prevent changing week with shift key
                 if (target.getDay() === 1 && e.shiftKey) return;
             }
-        } else if (e.which === 40) {
-            if ($('main').hasClass('linear')) {
-                // Up (linear): calendar under
-                calendars.selectNextCalendar();
-            } else {
-                // Down: one week after
-                target = dates.relativeDate(date, 7);
-            }
+
+        } else if (e.which === 40) { // Down
+            // Full: one week after
+            if (ui.viewIs('full')) target = dates.relativeDate(date, 7);
+            
+            // Linear: move to calendar under
+            else if (ui.viewIs('linear')) calendars.selectNextCalendar();
         }
     
         if (e.shiftKey) {

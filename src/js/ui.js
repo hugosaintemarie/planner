@@ -1,7 +1,10 @@
 import calendars from './calendars';
 import dates from './dates';
+import selection from './selection';
 
 export default {
+    view: 'full',
+
     init() {
         $(document).on('click', 'header nav>ul>li', e => {
             const $el = $(e.currentTarget);
@@ -37,7 +40,7 @@ export default {
 
         // Keep scroll in sync in linear mode
         $(document).on('mousewheel', '.calendar-wrap, .col-left', e => {
-            if (!$('main').hasClass('linear')) return;
+            if (this.viewIs('full')) return;
             const scroll = e.currentTarget.scrollTop;
             $('.calendar-wrap, .col-left').scrollTop(scroll);
         });
@@ -56,6 +59,8 @@ export default {
     },
 
     fullView() {
+        this.view = 'full';
+
         $('.calendars-wrap').find('.calendars .content, .add').show();
         $('main').removeClass('linear');
 
@@ -74,6 +79,8 @@ export default {
     },
 
     linearView() {
+        this.view = 'linear';
+
         $('.calendars-wrap').find('.calendars .content, .add').hide();
         $('main').addClass('linear');
 
@@ -92,10 +99,17 @@ export default {
             $('.calendar-wrap').append(`<div class="content calendar" data-id="${$el.attr('data-id')}">${content}</div>`);
         });
 
+        const $selectedCalendar = $('.calendars-wrap .calendar.selected');
+        calendars.selectCalendar($selectedCalendar);
+
         calendars.updateCalendarHeight();
 
         // Check option in menu (when switched from shorcut)
         $(`nav [data-radio="view"]`).removeClass('checked');
         $(`nav [data-radio="view"][data-value="linear"]`).addClass('checked');
+    },
+
+    viewIs(view) {
+        return this.view === view;
     }
 }
