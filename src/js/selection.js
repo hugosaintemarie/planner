@@ -160,7 +160,7 @@ export default {
                 target = dates.relativeDate(date, -1);
                 
                 // Prevent changing week with shift key
-                if (target.getDay() === 0 && e.shiftKey) return;
+                if (ui.viewIs('full') && target.getDay() === 0 && e.shiftKey) return;
             }
 
         } else if (e.which === 38) { // Up
@@ -186,7 +186,7 @@ export default {
                 target = dates.relativeDate(date, 1);
         
                 // Prevent changing week with shift key
-                if (target.getDay() === 1 && e.shiftKey) return;
+                if (ui.viewIs('full') && target.getDay() === 1 && e.shiftKey) return;
             }
 
         } else if (e.which === 40) { // Down
