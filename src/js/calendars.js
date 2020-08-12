@@ -147,10 +147,12 @@ export default {
         if (ui.viewIs('linear')) ui.linearView();
     },
 
-    selectCalendar($calendar) {
-        const $selectedFirst = $('.selected-first');
-        const $selectedLast = $('.selected-last');
+    selectCalendar($calendar, selectedFirst, selectedLast) {
+        // Store .selected-first and .selected-last dates if not passed
+        if (!selectedFirst) selectedFirst = $('.selected-first').attr('data-date');
+        if (!selectedLast) selectedLast = $('.selected-last').attr('data-date');
 
+        // Update minicals UI
         $('.calendars-wrap .calendar.selected').removeClass('selected');
         $calendar.addClass('selected');
 
@@ -175,8 +177,9 @@ export default {
         selection.highlightSelection();
 
         // Restore .selected-first and .selected-last classes
-        $(`.calendar-wrap .calendar.selected .day[data-date="${$selectedFirst.attr('data-date')}"]`).addClass('selected-first');
-        $(`.calendar-wrap .calendar.selected .day[data-date="${$selectedLast.attr('data-date')}"]`).addClass('selected-last');
+        $('.selected-first, .selected-last').removeClass('selected-first selected-last');
+        $(`.calendar-wrap .calendar.selected .day[data-date="${selectedFirst}"]`).addClass('selected-first');
+        $(`.calendar-wrap .calendar.selected .day[data-date="${selectedLast}"]`).addClass('selected-last');
 
         this.updateCalendarHeight();
         stats.update();

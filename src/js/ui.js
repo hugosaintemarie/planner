@@ -61,16 +61,22 @@ export default {
     fullView() {
         this.view = 'full';
 
+        // Update UI
         $('.calendars-wrap').find('.calendars .content, .add').show();
         $('main').removeClass('linear');
 
+        // Update timeline
         $('.calendar-wrap .head').html(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => `<div>${d}</div>`).join(''));
 
+        // Keep only one calendar
         $('.calendar-wrap .calendar').eq(1).empty();
         $('.calendar-wrap .calendar').slice(1).remove();
+
+        // Select current calendar
         const $selectedCalendar = $('.calendars-wrap .calendar.selected');
         calendars.selectCalendar($selectedCalendar);
 
+        // Update height
         calendars.updateCalendarHeight();
 
         // Check option in menu (when switched from shorcut)
@@ -81,6 +87,11 @@ export default {
     linearView() {
         this.view = 'linear';
 
+        // Store .selected-first and .selected-last dates
+        const selectedFirst = $('.selected-first').attr('data-date');
+        const selectedLast = $('.selected-last').attr('data-date');
+
+        // Update UI
         $('.calendars-wrap').find('.calendars .content, .add').hide();
         $('main').addClass('linear');
 
@@ -90,18 +101,19 @@ export default {
         // Update timeline
         $('.calendar-wrap .head').html(days.map(day => `<div>${day.toLocaleDateString('en-US', { weekday: 'short' })} ${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</div>`));
 
-        $('.calendar-wrap .calendar').remove();
-
         // Duplicate every minical
+        $('.calendar-wrap .calendar').remove();
         $('.calendars-wrap .calendar').each((id, el) => {
             const $el = $(el);
             const content = $el.find('.content').html();
             $('.calendar-wrap').append(`<div class="content calendar" data-id="${$el.attr('data-id')}">${content}</div>`);
         });
 
+        // Select current calendar and restore .selected-first and .selected-last classes
         const $selectedCalendar = $('.calendars-wrap .calendar.selected');
-        calendars.selectCalendar($selectedCalendar);
+        calendars.selectCalendar($selectedCalendar, selectedFirst, selectedLast);
 
+        // Update height
         calendars.updateCalendarHeight();
 
         // Check option in menu (when switched from shorcut)
