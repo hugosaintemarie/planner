@@ -35,6 +35,7 @@
 
     .content {
         max-height: calc(100% - 64px);
+        max-height: -webkit-fill-available;
         padding-bottom: 16px;
         overflow-y: auto;
         padding-left: 1px;
