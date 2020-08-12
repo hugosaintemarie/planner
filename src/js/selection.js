@@ -52,20 +52,26 @@ export default {
             const $selectedFirst = $('.calendar-wrap .day.selected-first').length ? $('.calendar-wrap .day.selected-first') : $('.calendar-wrap .day.selected').eq(0);
             $selectedFirst.addClass('selected-first');
 
-            const _selectedDays = [new Date($selectedFirst.attr('data-date')), new Date(date)];
-
-            const lowestWeekDay = Math.min(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
-            const highestWeekDay = Math.max(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
-
+            let days = [];
             const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date($day.attr('data-date'))].sort((a, b) => a > b ? 1 : -1);
 
-            start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
-            end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
-            
-            let days = dates.range(start, end);
-
-            // Filter out days out of rectangle
-            days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
+            if (ui.viewIs('full')) {
+                const _selectedDays = [new Date($selectedFirst.attr('data-date')), new Date(date)];
+    
+                const lowestWeekDay = Math.min(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+                const highestWeekDay = Math.max(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+    
+    
+                start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
+                end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
+                
+                days = dates.range(start, end);
+    
+                // Filter out days out of rectangle
+                days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
+            } else {
+                days = dates.range(start, end);
+            }
 
             if (e.metaKey) this.selectedDays.push(...days);
             else this.selectedDays = days;
@@ -108,23 +114,27 @@ export default {
         if (e.metaKey) {
             this.selectedDays.push(new Date(date));
         } else {
-            const _selectedDays = [new Date($selectedFirst.attr('data-date')), new Date(date)];
-
-            const lowestWeekDay = Math.min(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
-            const highestWeekDay = Math.max(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
-        
             const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date(date)].sort((a, b) => a > b ? 1 : -1);
-            
-            if (!e.altKey) {
-                // Rectangle mode, move start date to top left corner and end date to bottom right corner
-                start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
-                end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
+
+            if (ui.viewIs('full')) {
+                const _selectedDays = [new Date($selectedFirst.attr('data-date')), new Date(date)];
+    
+                const lowestWeekDay = Math.min(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+                const highestWeekDay = Math.max(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+                
+                if (!e.altKey) {
+                    // Rectangle mode, move start date to top left corner and end date to bottom right corner
+                    start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
+                    end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
+                }
+                
+                days = dates.range(start, end);
+
+                // Filter out days out of rectangle
+                if (!e.altKey) days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
+            } else {
+                days = dates.range(start, end);
             }
-            
-            days = dates.range(start, end);
-        
-            // Filter out days out of rectangle
-            if (!e.altKey) days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
         }   
 
         if (!$selectedFirst.hasClass('selected')) {
@@ -206,19 +216,24 @@ export default {
             $target.addClass('selected-last');
     
             this.selectedDays = [new Date($selectedFirst.attr('data-date')), new Date(targetDate)];
-    
-            const lowestWeekDay = Math.min(...this.selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
-            const highestWeekDay = Math.max(...this.selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
-    
+
             const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date(target)].sort((a, b) => a > b ? 1 : -1);
-    
-            start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
-            end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
-            
-            let days = dates.range(start, end);
-    
-            // Filter out days out of rectangle
-            days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
+            let days = [];
+
+            if (ui.viewIs('full')) {
+                const lowestWeekDay = Math.min(...this.selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+                const highestWeekDay = Math.max(...this.selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+        
+                start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
+                end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
+                
+                days = dates.range(start, end);
+        
+                // Filter out days out of rectangle
+                days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
+            } else {
+                days = dates.range(start, end);
+            }
     
             this.selectedDays = days;
         } else if (e.altKey) {
