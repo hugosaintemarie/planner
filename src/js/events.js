@@ -191,11 +191,15 @@ export default {
 
     renameEvent($el) {
         const val = $el.text();
-        const type = $el.closest('li').attr('data-type');
+        const type = parseInt($el.closest('li').attr('data-type'));
 
         $(`.event[data-type="${type}"] span`).text(val);
 
+        // Update data
+        this.data.find(e => e.type === type).title = val;
+
         stats.update();
+        data.save();
     },
 
     insertEvent($event) {
