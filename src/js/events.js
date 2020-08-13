@@ -155,7 +155,7 @@ export default {
         if (!Array.isArray(events)) events = [events];
 
         for (const event of events) {
-            const type = event.type || this.type++;
+            const type = event && event.type ? event.type : this.type++;
             const li = `<li data-type="${type}" class="sortable" style="background-color: ${event && event.color ? settings.eventsColors[event.color] : settings.eventsColors[type]}">
                 <span class="title" ${!event ? 'contenteditable' : ''} spellcheck="false">${event && event.title ? event.title : ''}</span>
                 <span class="tools">
