@@ -9,6 +9,7 @@ import ui from './ui';
 export default {
     data: [],
     calendarID: 0,
+    selected: 0,
     start: null,
     end: null,
 
@@ -181,6 +182,8 @@ export default {
     },
 
     selectCalendar($calendar, selectedFirst, selectedLast) {
+        this.selected = parseInt($calendar.attr('data-id'));
+
         // Store .selected-first and .selected-last dates if not passed
         if (!selectedFirst) selectedFirst = $('.selected-first').attr('data-date');
         if (!selectedLast) selectedLast = $('.selected-last').attr('data-date');
@@ -216,6 +219,7 @@ export default {
 
         this.updateCalendarHeight();
         stats.update();
+        data.save();
     },
 
     renameCalendar(val, $calendar = null) {
@@ -251,7 +255,7 @@ export default {
         // Update data
         const calendar = this.data.find(e => e.id === parseInt($calendar.attr('data-id')));
         this.data.splice(this.data.indexOf(calendar), 1);
-        
+
         this.reorder();
         data.save();
     },

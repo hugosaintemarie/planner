@@ -22,7 +22,7 @@ export default {
         // Add calendars
         for (const calendar of data.calendars.sort((a, b) => a.order < b.order ? -1 : 1)) calendars.newCalendar(calendar);
 
-        calendars.selectFirstCalendar();
+        calendars.selectCalendar($(`.calendars-wrap .calendar[data-id="${data.selectedCalendar}"]`));
 
         // Save current ids
         calendars.calendarID = Math.max(...data.calendars.map(c => c.id));
@@ -33,8 +33,9 @@ export default {
 
     save(manual = false) {
         const data = {
+            events: [...events.data],
             calendars: [...calendars.data],
-            events: [...events.data]
+            selectedCalendar: calendars.selected
         }
 
         if (manual) {
