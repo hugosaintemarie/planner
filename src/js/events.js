@@ -1,4 +1,5 @@
 import calendars from './calendars';
+import data from './data';
 import dates from './dates';
 import events from './events';
 import history from './history';
@@ -107,14 +108,20 @@ export default {
         // Change event color
         $(document).on('click', '#color-swatch .color', e => {
             const $color = $(e.target);
-            const eventType = $('#color-swatch').attr('data-type');
+            const eventType = parseInt($('#color-swatch').attr('data-type'));
 
+            // Select color
             $('#color-swatch .color.selected').removeClass('selected');
             $color.addClass('selected');
 
+            // Update event, occurences and stats
             const color = $color.css('background-color')
             $(`.events-wrap ul li[data-type="${eventType}"], .event[data-type="${eventType}"]`).css('background-color', color);
             $(`.stat[data-type="${eventType}"] .event-icon`).css('background-color', color);
+
+            // Update data
+            this.data.find(e => e.type === eventType).color = parseInt($color.attr('data-color'));
+            data.save();
 
             return false;
         });
@@ -139,8 +146,8 @@ export default {
         //     $(e.target).closest('li').addClass('selected');
         // });
 
-        for (const color of settings.eventsColors) {
-            $('#color-swatch').append(`<div class="color" style="background-color: ${color}"></div>`);
+        for (const [i, color] of settings.eventsColors.entries()) {
+            $('#color-swatch').append(`<div class="color" data-color="${i}" style="background-color: ${color}"></div>`);
         }
     },
 
