@@ -217,15 +217,22 @@ export default {
     },
 
     renameCalendar(val, $calendar = null) {
+        let id;
         if ($calendar) {
             // Edited in sidebar, replace in main
             if ($calendar.hasClass('selected')) {
                 $('.calendar-wrap h2').text(val);
             }
+            id = parseInt($calendar.attr('data-id'));
         } else {
             // Edited in main, replace in sidebar
             $('.calendars-wrap .calendar.selected p span').text(val);
+            id = parseInt($('.calendars-wrap .calendar.selected').attr('data-id'));
         }
+
+        // Save data
+        this.data.find(c => c.id === id).title = val;
+        data.save();
     },
 
     toggleCalendar($calendar) {
