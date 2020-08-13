@@ -539,7 +539,7 @@ export default {
                 const $el = $(el);
 
                 const event = {
-                    id: $el.attr('data-id'),
+                    id: parseInt($el.attr('data-id')),
                     calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
                     type: parseInt($el.attr('data-type')),
                     // title: $el.find('.title').text(),
@@ -558,6 +558,8 @@ export default {
 
         // Save action in history
         history.pushAction(action);
+
+        data.save();
     },
 
     allDaysEmpty() {
