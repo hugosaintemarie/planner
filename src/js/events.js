@@ -119,13 +119,18 @@ export default {
             return false;
         });
 
-        // Rename event
+        // Delete event
         $(document).on('click', '.events-wrap ul li [data-tool="delete"]', e => {
             const $el = $(e.target).closest('li');
-            const type = $el.attr('data-type');
+            const type = parseInt($el.attr('data-type'));
             $el.remove();
             this.removeEventsByType(type);
             stats.update();
+
+            // Update data
+            const event = this.data.find(e => e.type === type);
+            this.data.splice(this.data.indexOf(event), 1);
+            data.save();
         });
 
         // // Selected event
