@@ -1,3 +1,6 @@
+import calendars from './calendars';
+import data from './data';
+import events from './events';
 import stats from './stats';
 
 export default {
@@ -106,16 +109,19 @@ export default {
                 'top': '',
                 'left': '',
                 'width': '',
-                'height': ''
+                'height': '',
+                'position': ''
             });
+
+            $el.attr('data-order', id);
         });
-    
-        $parent.children().each((id, el) => {
-            $(el).css('position', '');
-        });
+
+        if ($parent.parents('.calendars-wrap').length) calendars.reorder();
+        else if ($parent.parents('.events-wrap').length) events.reorder();
     
         this.$sortedEl = null;
 
         stats.update();
+        data.save();
     }
 }

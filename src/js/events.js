@@ -383,5 +383,9 @@ export default {
 
         // Save action in history
         history.pushAction(action);
+    },
+
+    reorder() {
+        this.data.forEach(e => e.order = parseInt($(`.events-wrap ul li[data-type="${e.type}"]`).attr('data-order')));
     }
 }

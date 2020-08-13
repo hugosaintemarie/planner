@@ -5,27 +5,30 @@ export default {
     loaded: false,
 
     init() {
+        this.load();
+    },
+
+    load() {
         let data = localStorage.getItem('data');
+        if (!data) return;
 
-        if (data) {
-            data = JSON.parse(data);
+        data = JSON.parse(data);
 
-            calendars.getStartEnd();
+        calendars.getStartEnd();
 
-            // Add events
-            for (const event of data.events) events.newEvent(event);
+        // Add events
+        for (const event of data.events.sort((a, b) => a.order < b.order ? -1 : 1)) events.newEvent(event);
+        
+        // Add calendars
+        for (const calendar of data.calendars.sort((a, b) => a.order < b.order ? -1 : 1)) calendars.newCalendar(calendar);
 
-            // Add calendars
-            for (const calendar of data.calendars) calendars.newCalendar(calendar);
+        calendars.selectFirstCalendar();
 
-            calendars.selectFirstCalendar();
+        // Save current ids
+        calendars.calendarID = Math.max(...data.calendars.map(c => c.id));
+        events.eventID = Math.max(...data.calendars.map(c => c.events.map(e => e.id)).flat());
 
-            // Save current ids
-            calendars.calendarID = Math.max(...data.calendars.map(c => c.id));
-            events.eventID = Math.max(...data.calendars.map(c => c.events.map(e => e.id)).flat());
-
-            this.loaded = true;
-        }
+        this.loaded = true;
     },
 
     save(manual = false) {

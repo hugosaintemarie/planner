@@ -114,6 +114,7 @@ export default {
     newCalendar(calendar) {
         const id = calendar ? calendar.id : this.calendarID++;
         const title = calendar ? calendar.title : `Calendar ${$('.calendars-wrap .calendar').length + 1}`;
+        const order = calendar ? calendar.order : id;
 
         // Create HTML
         const html = `<div class="calendar sortable" data-id="${id}">
@@ -128,9 +129,9 @@ export default {
         </div>`;
         
         let $calendar;
-        if (calendar && !isNaN(calendar.order)) {
-            $('.calendars-wrap .calendar').eq(calendar.order - 1).after(html);
-            $calendar = $(`.calendars-wrap .calendar:nth-child(${calendar.order + 1})`);
+        if (order) {
+            $('.calendars-wrap .calendar').eq(order - 1).after(html);
+            $calendar = $(`.calendars-wrap .calendar:nth-child(${order + 1})`);
         } else {
             $('.calendars-wrap .calendars').append(html);
             $calendar = $('.calendars-wrap .calendar:last-child');
@@ -146,6 +147,7 @@ export default {
         this.data.push({
             id,
             title,
+            order,
             events: []
         });
 
@@ -249,6 +251,8 @@ export default {
         // Update data
         const calendar = this.data.find(e => e.id === parseInt($calendar.attr('data-id')));
         this.data.splice(this.data.indexOf(calendar), 1);
+        
+        this.reorder();
         data.save();
     },
 
@@ -308,5 +312,9 @@ export default {
 
     getEventsById(id) {
         return this.data.find(c => c.id === id).events;
+    },
+
+    reorder() {
+        this.data.forEach(c => c.order = parseInt($(`.calendars-wrap .calendar[data-id="${c.id}"]`).attr('data-order')));
     }
 }
