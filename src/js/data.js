@@ -43,11 +43,9 @@ export default {
             // TODO: display message to explain auto-save
         }
 
-        console.log(JSON.stringify(data));
-
         localStorage.setItem('data', JSON.stringify(data));
 
-        // Prevent default browser save
+        // Prevent default browser save window (Cmd + S)
         return false;
     }
 }
