@@ -336,6 +336,9 @@ export default {
         $el.find('.title').text($target.find('.title').text());
         $el.attr('data-type', $target.attr('data-type'));
 
+        // Update data
+        calendars.data.find(c => c.id === event.calendar).events.find(e => e.id === event.id).type = event.type;
+
         stats.update();
     },
 
