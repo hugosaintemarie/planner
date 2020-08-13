@@ -1,4 +1,5 @@
 import calendars from './calendars';
+import data from './data';
 import dates from './dates';
 import selection from './selection';
 import stats from './stats';
@@ -221,6 +222,11 @@ export default {
         $calendar.remove();
 
         if (ui.viewIs('linear')) ui.linearView();
+
+        // Update data
+        const calendar = this.data.find(e => e.id === parseInt($calendar.attr('data-id')));
+        this.data.splice(this.data.indexOf(calendar), 1);
+        data.save();
     },
 
     selectPreviousCalendar() {
