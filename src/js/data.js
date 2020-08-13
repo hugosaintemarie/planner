@@ -27,7 +27,11 @@ export default {
                 }
             }
 
-            calendars.selectNextCalendar();
+            calendars.selectFirstCalendar();
+
+            // Save current ids
+            calendars.calendarID = Math.max(...data.calendars.map(c => c.id));
+            events.eventID = Math.max(...data.calendars.map(c => c.events.map(e => e.id)).flat());
 
             this.loaded = true;
         }
