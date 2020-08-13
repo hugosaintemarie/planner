@@ -1,4 +1,5 @@
 import calendars from './calendars';
+import data from './data';
 import history from './history';
 import panel from './panel';
 import selection from './selection';
@@ -48,6 +49,7 @@ export default {
                 const $calendar = $('.calendars-wrap .calendar.selected');
                 calendars.toggleCalendar($calendar);
             }
+            else if (ctrlOrMeta && e.which === 83) return data.save(true);        // Cmd + S
             else if (ctrlOrMeta && e.which === 86) selection.pasteSelection();    // Cmd + V
             else if (ctrlOrMeta && e.which === 88) selection.cutSelection();      // Cmd + X
             else if (ctrlOrMeta && e.which === 90) {                              // Cmd + Z

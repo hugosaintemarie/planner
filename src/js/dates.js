@@ -21,8 +21,8 @@ export default {
 
     // Build array of all days from start to end
     range(start, end) {
-        const days = [start];
-        while (days[days.length - 1] < end) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+        const days = [new Date(start)];
+        while (days[days.length - 1] < new Date(end)) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
         return days;
     },
 

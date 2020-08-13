@@ -296,9 +296,9 @@ export default {
                 const event = {
                     id: events.eventID++,
                     calendar: parseInt($el.parents('.calendar').attr('data-id')),
-                    type: $el.attr('data-type'),
-                    title: $el.find('.title').text(),
-                    color: $el.css('background-color'),
+                    type: parseInt($el.attr('data-type')),
+                    // title: $el.find('.title').text(),
+                    // color: $el.css('background-color'),
                     start: date,
                     end: date
                 };
@@ -386,9 +386,9 @@ export default {
         
                     const event = {
                         // id: 
-                        type: $el.attr('data-type'),
-                        title: $el.find('.title').text(),
-                        color: $el.css('background-color'),
+                        type: parseInt($el.attr('data-type')),
+                        // title: $el.find('.title').text(),
+                        // color: $el.css('background-color'),
                         // start: $el.attr('data-start'),
                         // end: $el.attr('data-end')
                     }
@@ -506,8 +506,8 @@ export default {
                     calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
                     type: to,
                     from,
-                    title: $el.find('.title').text(),
-                    color: $el.css('background-color'),
+                    // title: $el.find('.title').text(),
+                    // color: $el.css('background-color'),
                     start: date,
                     end: date
                 };
@@ -541,9 +541,9 @@ export default {
                 const event = {
                     id: $el.attr('data-id'),
                     calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
-                    type: $el.attr('data-type'),
-                    title: $el.find('.title').text(),
-                    color: $el.css('background-color'),
+                    type: parseInt($el.attr('data-type')),
+                    // title: $el.find('.title').text(),
+                    // color: $el.css('background-color'),
                     start: date,
                     end: date
                 };

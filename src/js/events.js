@@ -7,6 +7,7 @@ import settings from './settings';
 import stats from './stats';
 
 export default {
+    data: [],
     eventID: 0,
     type: 0,
 
@@ -142,7 +143,7 @@ export default {
         if (!Array.isArray(events)) events = [events];
 
         for (const event of events) {
-            const type = ++this.type;
+            const type = this.type++;
             const li = `<li data-type="${type}" class="sortable" style="background-color: ${event && event.color ? settings.eventsColors[event.color] : settings.eventsColors[type]}">
                 <span class="title" ${!event ? 'contenteditable' : ''} spellcheck="false">${event && event.title ? event.title : ''}</span>
                 <span class="tools">
@@ -165,6 +166,12 @@ export default {
 
             // Focus span if empty
             if (!event) $ul.find('li:last-child .title').focus();
+
+            // Save data
+            this.data.push({
+                ...event,
+                type
+            });
         }
 
         stats.update();
@@ -180,7 +187,7 @@ export default {
     },
 
     insertEvent($event) {
-        const type = $event.attr('data-type');
+        const type = parseInt($event.attr('data-type'));
     
         const selectedDaysEvents = selection.selectedDays.map(d => {
             const date = dates.toString(d);
@@ -228,8 +235,8 @@ export default {
                     id: this.eventID++,
                     calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
                     type: type,
-                    title: $event.find('.title').text(),
-                    color: $event.css('background-color'),
+                    // title: $event.find('.title').text(),
+                    // color: $event.css('background-color'),
                     start: $day.attr('data-date'),
                     end: $day.attr('data-date')
                 };
@@ -272,12 +279,25 @@ export default {
     
             // Build classname
             let classname = '';
-            if (day.valueOf() === event.start.valueOf()) classname += ' start';
-            if (day.valueOf() === event.end.valueOf()) classname += ' end';
+            if (day.valueOf() === new Date(event.start).valueOf()) classname += ' start';
+            if (day.valueOf() === new Date(event.end).valueOf()) classname += ' end';
+
+            // Find title and color from event
+            const eventType = this.data.find(e => e.type === event.type);
+            const { title, color } = eventType;
 
             // Add event
-            $events.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="top: ${top * 32}px; background-color: ${event.color}">${classname.includes('start') || day.getDay() === 1 ? `<span class="title${!classname.includes('start') ? ' not-linear' : ''}">${event.title}</span>` : ''}</div>`);
+            $events.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="top: ${top * 32}px; background-color: ${settings.eventsColors[color]}">${classname.includes('start') || day.getDay() === 1 ? `<span class="title${!classname.includes('start') ? ' not-linear' : ''}">${title}</span>` : ''}</div>`);
         }
+
+        // Save data
+        const { id, type, start, end } = event;
+        calendars.data.find(c => c.id === event.calendar).events.push({
+            id,
+            type,
+            start,
+            end
+        });
 
         calendars.updateCalendarHeight();
     },
@@ -325,8 +345,8 @@ export default {
                     id: $el.attr('data-id'),
                     calendar: parseInt($(minical).attr('data-id')),
                     type: $el.attr('data-type'),
-                    title: $el.find('.title').text(),
-                    color: $el.css('background-color'),
+                    // title: $el.find('.title').text(),
+                    // color: $el.css('background-color'),
                     start: $el.closest('.day').attr('data-date'),
                     end: $el.closest('.day').attr('data-date')
                 };

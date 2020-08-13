@@ -1,4 +1,5 @@
 import calendars from './calendars';
+import data from './data';
 import events from './events';
 import inputs from './inputs';
 import panel from './panel';
@@ -10,6 +11,7 @@ import ui from './ui';
 
 $(document).ready(() => {
     calendars.init();
+    data.init();
     events.init();
     inputs.init();
     panel.init();

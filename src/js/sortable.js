@@ -1,4 +1,4 @@
-import stats from "./stats";
+import stats from './stats';
 
 export default {
     $sortedEl: null,

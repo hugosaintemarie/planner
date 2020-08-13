@@ -5,6 +5,7 @@ import stats from './stats';
 import ui from './ui';
 
 export default {
+    data: [],
     calendarID: 0,
     start: null,
     end: null,
@@ -108,9 +109,12 @@ export default {
         return html;
     },
 
-    newCalendar() {
+    newCalendar(calendar) {
+        const id = calendar ? calendar.id : this.calendarID++;
+        const title = calendar ? calendar.title : `Calendar ${$('.calendars-wrap .calendar').length + 1}`;
+
         // Create HTML
-        const calendar = `<div class="calendar sortable" data-id="${this.calendarID++}">
+        const html = `<div class="calendar sortable" data-id="${id}">
             <div class="tools">
                 <i data-tool="toggle" class="far fa-eye"></i>
                 <i data-tool="sort">⋮⋮</i>
@@ -118,10 +122,10 @@ export default {
                 <i data-tool="delete" class="far fa-trash-alt"></i>
             </div>
             <div class="content">${ this.buildCalendar() }</div>
-            <p><span contenteditable spellcheck="false">Calendar ${$('.calendars-wrap .calendar').length + 1}</span></p>
+            <p><span contenteditable spellcheck="false">${title}</span></p>
         </div>`;
         
-        $('.calendars-wrap .calendars').append(calendar);
+        $('.calendars-wrap .calendars').append(html);
 
         // Select new calendar
         const $calendar = $('.calendars-wrap .calendar:last-child');
@@ -129,6 +133,13 @@ export default {
 
         // Update linear view
         if (ui.viewIs('linear')) ui.linearView();
+
+        // Save data
+        this.data.push({
+            id,
+            title,
+            events: []
+        });
     },
 
     duplicateCalendar($calendar) {
@@ -241,6 +252,11 @@ export default {
         // Else, select first visible calendar
         else $calendar = $('.calendars-wrap .calendar:not(.hidden)').first();
 
+        this.selectCalendar($calendar);
+    },
+
+    selectFirstCalendar() {
+        const $calendar = $('.calendars-wrap .calendar').eq(0);
         this.selectCalendar($calendar);
     },
 

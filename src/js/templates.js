@@ -1,4 +1,5 @@
 import calendars from './calendars';
+import data from './data';
 import dates from './dates';
 import events from './events';
 import settings from './settings';
@@ -6,6 +7,8 @@ import stats from './stats';
 
 export default {
     init() {
+        if (data.loaded) return;
+
         const template = settings.template;
 
         if (template === 'default') {
@@ -34,9 +37,7 @@ export default {
                 events.buildEvent({
                     id: events.eventID++,
                     calendar: Math.floor(Math.random() * 3),
-                    type: $event.attr('data-type'),
-                    title: $event.find('.title').text(),
-                    color: $event.css('background-color'),
+                    type: Math.floor(Math.random() * 3),
                     start: date,
                     end: new Date(new Date(date).setDate(date.getDate() + Math.floor(Math.random() * 3)))
                 });
@@ -78,7 +79,6 @@ export default {
         calendars.getStartEnd();
         for (let i = 0; i < n; i += 1) calendars.newCalendar();
 
-        // Select first calendar
-        calendars.selectNextCalendar();
+        calendars.selectFirstCalendar();
     }
 }
