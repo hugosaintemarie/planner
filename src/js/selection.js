@@ -1,4 +1,5 @@
 import calendars from './calendars';
+import data from './data';
 import dates from './dates';
 import events from './events';
 import history from './history';
@@ -294,7 +295,7 @@ export default {
                 const $el = $(el);
     
                 const event = {
-                    id: events.eventID++,
+                    id: parseInt($el.attr('data-id')),
                     calendar: parseInt($el.parents('.calendar').attr('data-id')),
                     type: parseInt($el.attr('data-type')),
                     // title: $el.find('.title').text(),
@@ -303,14 +304,10 @@ export default {
                     end: date
                 };
 
+                events.removeEvent(event);
+
                 action.events.push(event);
             });
-
-            // Remove events from minicals
-            $events.remove();
-    
-            // Remove events from main calendar
-            $(`.calendar-wrap .day[data-date="${date}"] .event`).remove();
         }
     
         // Save action in history
@@ -318,6 +315,7 @@ export default {
 
         calendars.updateCalendarHeight();
         stats.update();
+        data.save();
     },
     
     selectAll() {
