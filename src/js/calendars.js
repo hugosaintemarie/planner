@@ -110,7 +110,7 @@ export default {
 
     newCalendar() {
         // Create HTML
-        const calendar = `<div class="calendar sortable" data-id="${++this.calendarID}">
+        const calendar = `<div class="calendar sortable" data-id="${this.calendarID++}">
             <div class="tools">
                 <i data-tool="toggle" class="far fa-eye"></i>
                 <i data-tool="sort">⋮⋮</i>

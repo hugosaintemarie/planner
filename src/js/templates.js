@@ -76,30 +76,9 @@ export default {
 
     createCalendars(n = 1) {
         calendars.getStartEnd();
-        const calendar = calendars.buildCalendar();
+        for (let i = 0; i < n; i += 1) calendars.newCalendar();
 
-        $('.calendars-wrap .calendars').append(this.sidebarCalendars(calendar, n));
-        $('.calendar-wrap .content').html(calendar).addClass('selected');
-
-        calendars.calendarID = n - 1;
-    },
-
-    sidebarCalendars(calendar, n = 1) {
-        let html = '';
-
-        for (let i = 0; i < n; i += 1) {
-            html += `<div class="calendar sortable${i === 0 ? ' selected' : ''}" data-id="${i}">
-                <div class="tools">
-                    <i data-tool="toggle" class="far fa-eye"></i>
-                    <i data-tool="sort">⋮⋮</i>
-                    <i data-tool="duplicate" class="far fa-clone"></i>
-                    <i data-tool="delete" class="far fa-trash-alt"></i>
-                </div>
-                <div class="content">${calendar}</div>
-                <p><span contenteditable>Calendar ${i + 1}</span></p>
-            </div>`;
-        }
-
-        return html;
+        // Select first calendar
+        calendars.selectNextCalendar();
     }
 }
