@@ -255,6 +255,7 @@ export default {
         }
 
         stats.update();
+        data.save();
     },
 
     buildEvent(event) {
@@ -331,6 +332,7 @@ export default {
         $(`.event[data-id="${event.id}"]`).remove();
         calendars.updateCalendarHeight();
         stats.update();
+        data.save();
     },
 
     removeEventsByType(type) {
@@ -363,6 +365,9 @@ export default {
                 action.events.push(event);
             });
         }
+
+        // Update data
+        calendars.data.forEach(c => c.events = c.events.filter(e => e.type !== type));
 
         // Save action in history
         history.pushAction(action);
