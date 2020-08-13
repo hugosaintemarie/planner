@@ -1,6 +1,7 @@
 import calendars from './calendars';
 import data from './data';
 import dates from './dates';
+import events from './events';
 import selection from './selection';
 import stats from './stats';
 import ui from './ui';
@@ -126,10 +127,16 @@ export default {
             <p><span contenteditable spellcheck="false">${title}</span></p>
         </div>`;
         
-        $('.calendars-wrap .calendars').append(html);
+        let $calendar;
+        if (calendar && !isNaN(calendar.order)) {
+            $('.calendars-wrap .calendar').eq(calendar.order - 1).after(html);
+            $calendar = $(`.calendars-wrap .calendar:nth-child(${calendar.order + 1})`);
+        } else {
+            $('.calendars-wrap .calendars').append(html);
+            $calendar = $('.calendars-wrap .calendar:last-child');
+        }
 
         // Select new calendar
-        const $calendar = $('.calendars-wrap .calendar:last-child');
         this.selectCalendar($calendar);
 
         // Update linear view
@@ -141,25 +148,34 @@ export default {
             title,
             events: []
         });
+
+        // Build events (for calendar duplication)
+        if (calendar && calendar.events) {
+            for (const event of calendar.events) {
+                events.buildEvent({
+                    ...event,
+                    calendar: id
+                });
+            }
+        }
     },
 
     duplicateCalendar($calendar) {
-        const $new = $calendar.clone();
+        const calendar = {
+            id: ++this.calendarID,
+            title: `${$calendar.find('p span').text()} copy`, 
+            order: $calendar.index() + 1,
+            events: this.getEventsById(parseInt($calendar.attr('data-id')))
+        };
 
-        // Remove selected class and rename with 'copy'
-        $new.removeClass('selected');
-        $new.find('p span').append(' copy');
-
-        // Reindex new calendar
-        $new.attr('data-id', ++this.calendarID);
-
-        // Clone calendar
-        $calendar.after($new);
+        this.newCalendar(calendar);
 
         // Unselect any selection
         window.getSelection().removeAllRanges();
 
         if (ui.viewIs('linear')) ui.linearView();
+
+        data.save();
     },
 
     selectCalendar($calendar, selectedFirst, selectedLast) {
@@ -281,5 +297,9 @@ export default {
 
         if (ui.viewIs('linear')) $('.calendars-wrap .calendar').css('height', height);
         else $('.calendars-wrap .calendar').css('height', '');
+    },
+
+    getEventsById(id) {
+        return this.data.find(c => c.id === id).events;
     }
 }

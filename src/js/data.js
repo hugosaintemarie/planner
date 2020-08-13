@@ -12,20 +12,11 @@ export default {
 
             calendars.getStartEnd();
 
+            // Add events
             for (const event of data.events) events.newEvent(event);
 
-            for (const calendar of data.calendars) {
-                // Add calendar
-                calendars.newCalendar(calendar);
-
-                // Add all events in that calendar
-                for (const event of calendar.events) {
-                    events.buildEvent({
-                        ...event,
-                        calendar: calendar.id
-                    });
-                }
-            }
+            // Add calendars
+            for (const calendar of data.calendars) calendars.newCalendar(calendar);
 
             calendars.selectFirstCalendar();
 
