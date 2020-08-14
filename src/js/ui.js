@@ -1,6 +1,7 @@
 import calendars from './calendars';
 import data from './data';
 import dates from './dates';
+import selection from './selection';
 
 export default {
     view: 'full',
@@ -140,7 +141,10 @@ export default {
         $('.calendar-wrap').removeClass('select draw').addClass(tool);
 
         // Remove selection when entering draw mode
-        if (tool === 'draw') $('.day.selected').removeClass('selected');
+        if (tool === 'draw') {
+            selection.selectedDays = [];
+            selection.highlightSelection();
+        }
 
         data.save();
     }
