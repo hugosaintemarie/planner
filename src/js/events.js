@@ -302,7 +302,7 @@ export default {
 
             let eventType;
             if (event.type === undefined) {
-                eventType = { title: '', color: 20 };
+                eventType = { title: '', color: 17 };
                 classname += ' new';
             } else {
                 eventType = this.data.find(e => e.type === event.type);

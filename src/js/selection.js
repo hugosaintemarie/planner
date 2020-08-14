@@ -189,7 +189,7 @@ export default {
             // New event
             events.newEvent({
                 title: this.eventTitle || 'New event',
-                color: 20
+                color: 17
             });
             event.type = events.type;
         } else {
