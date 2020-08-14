@@ -139,6 +139,9 @@ export default {
         // Update cursor on main calendar
         $('.calendar-wrap').removeClass('select draw').addClass(tool);
 
+        // Remove selection when entering draw mode
+        if (tool === 'draw') $('.day.selected').removeClass('selected');
+
         data.save();
     }
 }
