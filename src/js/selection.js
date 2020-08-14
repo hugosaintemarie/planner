@@ -627,7 +627,7 @@ export default {
 
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
-            const $el = $(`.calendar.selected .day[data-date="${date}"]`);
+            const $el = $(`main:not(.linear) .calendar .day[data-date="${date}"], main.linear .calendar.selected .day[data-date="${date}"]`);
 
             // Select day
             $el.addClass('selected');
