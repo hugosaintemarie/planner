@@ -38,6 +38,10 @@ export default {
                 }
             }
             else if (e.which === 18 && this.isMouseDown) selection.dragSelect(e); // Alt + click
+            else if (ctrlOrMeta && e.which === 8) {                               // Cmd + backspace
+                const $calendar = $('.calendars-wrap .calendar.selected');
+                calendars.deleteCalendar($calendar);
+            }
             else if (e.which === 8) selection.emptySelection();                   // Backspace
             else if (e.which === 27) {                                            // Esc
                 if (panel.isOpen) panel.closePanel();
@@ -45,9 +49,15 @@ export default {
             }
             else if (ctrlOrMeta && e.which === 65) selection.selectAll();         // Cmd + A
             else if (ctrlOrMeta && e.which === 67) selection.copySelection();     // Cmd + C
-            else if (e.which === 72) {                                            // Cmd + H
+            else if (ctrlOrMeta && e.which === 68) {                              // Cmd + D
+                const $calendar = $('.calendars-wrap .calendar.selected');
+                calendars.duplicateCalendar($calendar);
+                return false;
+            }
+            else if (ctrlOrMeta && e.which === 72) {                              // Cmd + H
                 const $calendar = $('.calendars-wrap .calendar.selected');
                 calendars.toggleCalendar($calendar);
+                return false;
             }
             else if (ctrlOrMeta && e.which === 83) return data.save(true);        // Cmd + S
             else if (ctrlOrMeta && e.which === 86) selection.pasteSelection();    // Cmd + V
