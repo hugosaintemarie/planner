@@ -130,7 +130,7 @@ export default {
     },
 
     changeTool(tool) {
-        this.tool = tool,
+        this.tool = tool;
         $('header .tool.selected').removeClass('selected');
         $(`header .tool[data-tool="${tool}"]`).addClass('selected');
     }

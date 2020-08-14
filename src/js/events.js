@@ -9,7 +9,7 @@ import stats from './stats';
 
 export default {
     data: [],
-    eventID: 0,
+    eventID: -1,
     type: 0,
 
     init() {
@@ -248,7 +248,7 @@ export default {
                 const $day = $(`.calendar-wrap .day[data-date="${date}"]`);
                 
                 const event = {
-                    id: this.eventID++,
+                    id: ++this.eventID,
                     calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
                     type: type,
                     // title: $event.find('.title').text(),
@@ -317,6 +317,11 @@ export default {
         });
 
         calendars.updateCalendarHeight();
+    },
+
+    updateEvent(event) {
+        this.removeEvent(event);
+        this.buildEvent(event);
     },
 
     replaceEvent(event, undo = false) {

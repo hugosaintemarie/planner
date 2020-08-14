@@ -35,7 +35,7 @@ export default {
                 const $event = $events.eq(Math.floor(Math.random() * $events.length));
 
                 events.buildEvent({
-                    id: events.eventID++,
+                    id: ++events.eventID,
                     calendar: Math.floor(Math.random() * 3),
                     type: Math.floor(Math.random() * 3),
                     start: date,

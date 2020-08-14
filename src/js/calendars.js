@@ -8,7 +8,7 @@ import ui from './ui';
 
 export default {
     data: [],
-    calendarID: 0,
+    calendarID: -1,
     selected: 0,
     start: null,
     end: null,
@@ -113,7 +113,7 @@ export default {
     },
 
     newCalendar(calendar) {
-        const id = calendar ? calendar.id : this.calendarID++;
+        const id = calendar ? calendar.id : ++this.calendarID;
         const title = calendar ? calendar.title : `Calendar ${$('.calendars-wrap .calendar').length + 1}`;
         const order = calendar ? calendar.order : id;
 

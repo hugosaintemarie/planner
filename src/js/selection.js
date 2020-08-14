@@ -9,19 +9,32 @@ import ui from './ui';
 export default {
     selectedDays: [],
     clipboard: [],
+    lastHoveredDate: null,
+    event: null,
 
     init() {
         // Click on a day in main calendar
         $(document).on('mousedown', '.calendar-wrap .day', e => {
-            this.onCalendarClick(e);
+            if (ui.tool === 'draw') this.startDraw(e);
+            else if (ui.tool === 'select') this.select(e);
         });
 
-        // Mouse enters a day on calendar
-        $(document).on('mouseenter', '.calendar-wrap .day', e => {
-            const date = $(e.target).attr('data-date');
-            this.lastHoveredDate = date;
+        // Release click on a day in main calendar
+        $(document).on('mouseup', '.calendar-wrap .day', () => {
+            if (ui.tool === 'draw') this.endDraw();
+        });
 
-            if (this.selectedDays.length) this.dragSelect(e);
+        // Mouse enters a day in main calendar
+        $(document).on('mouseenter', '.calendar-wrap .day', e => {
+            if (ui.tool === 'draw') {
+                if (this.event) this.draw(e);
+            } else if (ui.tool === 'select') {
+                const date = $(e.currentTarget).attr('data-date');
+                this.lastHoveredDate = date;
+    
+                if (this.selectedDays.length) this.dragSelect(e);
+            }
+
             // if (!event.title || !settings.spreadOnDrag) return;
             // event.end = $(e.target).closest('.day').attr('data-date');
 
@@ -33,8 +46,44 @@ export default {
         // });
     },
 
-    onCalendarClick(e) {
-        const $day = $(e.target).closest('.day');
+    startDraw(e) {
+        const $day = $(e.currentTarget);
+        const date = $day.attr('data-date');
+
+        this.event = {
+            id: ++events.eventID,
+            calendar: parseInt($day.parents('.calendar').attr('data-id')),
+            type: 0,
+            start: date,
+            end: date,
+            startingDate: date
+        };
+
+        events.buildEvent(this.event);
+    },
+
+    draw(e) {
+        const $day = $(e.currentTarget);
+        const date = $day.attr('data-date');
+
+        if (date >= this.event.startingDate) {
+            this.event.start = this.event.startingDate;
+            this.event.end = date;
+        } else if (date < this.event.startingDate) {
+            this.event.start = date;
+            this.event.end = this.event.startingDate;
+        }
+
+        events.updateEvent(this.event);
+    },
+
+    endDraw() {
+        this.event = null;
+        data.save();
+    },
+
+    select(e) {
+        const $day = $(e.currentTarget);
         const date = $day.attr('data-date');
 
         $('.calendar.selected').removeClass('selected');
@@ -434,7 +483,7 @@ export default {
                     // Create event
                     const event = {
                         ..._event,
-                        id: events.eventID++,
+                        id: ++events.eventID,
                         start: eventDate,
                         end: eventDate
                     };

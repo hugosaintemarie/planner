@@ -1,5 +1,6 @@
 import calendars from './calendars';
 import events from './events';
+import ui from './ui';
 
 export default {
     loaded: false,
@@ -13,6 +14,8 @@ export default {
         if (!data) return;
 
         data = JSON.parse(data);
+
+        ui.changeTool(data.selectedTool);
 
         calendars.getStartEnd();
 
@@ -35,7 +38,8 @@ export default {
         const data = {
             events: [...events.data],
             calendars: [...calendars.data],
-            selectedCalendar: calendars.selected
+            selectedCalendar: calendars.selected,
+            selectedTool: ui.tool
         }
 
         if (manual) {
