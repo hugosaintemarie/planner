@@ -3,13 +3,15 @@ import events from './events';
 import ui from './ui';
 
 export default {
+    loading: false,
     loaded: false,
 
     init() {
         this.load();
     },
-
+    
     load() {
+        this.loading = true;
         let data = localStorage.getItem('data');
         if (!data) return;
 
@@ -31,10 +33,13 @@ export default {
         calendars.calendarID = Math.max(...data.calendars.map(c => c.id));
         events.eventID = Math.max(...data.calendars.map(c => c.events.map(e => e.id)).flat());
 
+        this.loading = false;
         this.loaded = true;
     },
 
     save(manual = false) {
+        if (this.loading) return;
+
         const data = {
             events: [...events.data],
             calendars: [...calendars.data],
