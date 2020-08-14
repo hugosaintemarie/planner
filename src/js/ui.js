@@ -131,8 +131,14 @@ export default {
 
     changeTool(tool) {
         this.tool = tool;
+
+        // Update UI
         $('header .tool.selected').removeClass('selected');
         $(`header .tool[data-tool="${tool}"]`).addClass('selected');
+
+        // Update cursor on main calendar
+        $('.calendar-wrap').removeClass('select draw').addClass(tool);
+
         data.save();
     }
 }

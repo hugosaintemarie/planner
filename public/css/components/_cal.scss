@@ -2,6 +2,18 @@
     min-width: 600px;
     padding: 16px 0;
 
+    &.select {
+        .calendar {
+            cursor: cell;
+        }
+    }
+
+    &.draw {
+        .calendar {
+            cursor: default;
+        }
+    }
+
     h2 {
         display: inline-block;
         margin-top: -4px;
@@ -59,6 +71,22 @@
             margin-top: -1px;
             transition: height .5s ease;
 
+            &.off {
+                background-color: #242424;
+            }
+
+            &.out {
+                border-color: #44444450;
+
+                &.off:not(.selected) {
+                    background-color: #24242450;
+                }
+                
+                span {
+                    color: #66666650;
+                }
+            }
+
             &.selected {
                 background-color: #61a0ff20;
 
@@ -101,22 +129,6 @@
                     &::after {
                         border-left-color: transparent;
                     }
-                }
-            }
-
-            &.off {
-                background-color: #242424;
-            }
-            
-            &.out {
-                border-color: #44444450;
-
-                &.off {
-                    background-color: #24242450;
-                }
-                
-                span {
-                    color: #66666650;
                 }
             }
 
