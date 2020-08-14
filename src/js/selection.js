@@ -167,8 +167,11 @@ export default {
         })
         .html(`<ul>${events.data.map(e => `<li data-type="${e.type}"><span class="event-icon" style="background-color: ${settings.eventsColors[e.color]}"></span>${e.title}</li>`).join('')}</ul>`)
         .addClass('visible');
+    },
 
-        // data.save();
+    cancelDraw() {
+        events.removeEvent({id: this.eventID });
+        $('.new-event').removeClass('visible');
     },
 
     rename($el) {
@@ -188,7 +191,7 @@ export default {
         if (isNaN(type)) {
             // New event
             events.newEvent({
-                title: this.eventTitle,
+                title: this.eventTitle || 'New event',
                 color: 20
             });
             event.type = events.type;

@@ -1,5 +1,6 @@
 import calendars from './calendars';
 import data from './data';
+import events from './events';
 import history from './history';
 import panel from './panel';
 import selection from './selection';
@@ -18,6 +19,8 @@ export default {
         $(document).on('keydown', e => {
             // Capture caps lock
             if (e.which === 20) this.capsLock(e.originalEvent.getModifierState('CapsLock'));
+
+            if (e.which === 27 && $('.event.new').length) selection.cancelDraw(); // Escape new event
 
             // Disable custom shortcuts when editing a contenteditable
             if ($(e.target).is('[contenteditable]')) return;
