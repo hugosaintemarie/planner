@@ -103,9 +103,17 @@
                     }
                 }
             }
+
+            &.off {
+                background-color: #242424;
+            }
             
             &.out {
                 border-color: #44444450;
+
+                &.off {
+                    background-color: #24242450;
+                }
                 
                 span {
                     color: #66666650;

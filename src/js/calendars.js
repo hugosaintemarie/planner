@@ -101,7 +101,8 @@ export default {
             day.setHours(0);
 
             // Show day cell as out of bounds if necessary
-            const classname = day < start || day > end ? ' out' : '';
+            let classname = day < start || day > end ? ' out' : '';
+            if (day.getDay() === 6 || day.getDay() === 0) classname += ' off';
     
             html += `<div class="day${classname}" data-date="${date}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span><div class="events"></div></div>`;
     
