@@ -22,7 +22,7 @@ export default {
             else if (ui.tool === 'select') this.select(e);
         });
 
-        // Click on a day in main calendar
+        // Double-click on a day in main calendar
         $(document).on('dblclick', '.calendar-wrap .day', e => {
             if (ui.tool === 'draw') {
                 this.startDraw(e);
@@ -106,12 +106,17 @@ export default {
 
         // Click on an event in main calendar
         $(document).on('mousedown', '.calendar-wrap .day .event:not(.new)', e => {
-            return false;
+            if (ui.tool === 'draw') return false;
         });
 
-        // Click on an event in main calendar
-        $(document).on('mouseup', '.calendar-wrap .day .event:not(.new)', () => {
-            return false;
+        // Release click on an event in main calendar
+        $(document).on('mouseup', '.calendar-wrap .day .event', () => {
+            if (ui.tool === 'draw' && !this.event) return false;
+        });
+
+        // Double-click on an event in main calendar
+        $(document).on('dblclick', '.calendar-wrap .day .event', () => {
+            if (ui.tool === 'draw') return false;
         });
     },
 
