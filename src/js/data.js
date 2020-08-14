@@ -13,7 +13,11 @@ export default {
     load() {
         this.loading = true;
         let data = localStorage.getItem('data');
-        if (!data) return;
+        
+        if (!data) {
+            this.loading = false;
+            return;
+        }
 
         data = JSON.parse(data);
 
@@ -38,7 +42,8 @@ export default {
     },
 
     save(manual = false) {
-        if (this.loading) return;
+        // Prevent saving while loading
+        if (this.loading) return false;
 
         const data = {
             events: [...events.data],
