@@ -3,6 +3,7 @@ import data from './data';
 import dates from './dates';
 import events from './events';
 import history from './history';
+import settings from './settings';
 import stats from './stats';
 import ui from './ui';
 
@@ -11,12 +12,23 @@ export default {
     clipboard: [],
     lastHoveredDate: null,
     event: null,
+    eventID: null,
+    eventTitle: null,
 
     init() {
         // Click on a day in main calendar
         $(document).on('mousedown', '.calendar-wrap .day', e => {
             if (ui.tool === 'draw') this.startDraw(e);
             else if (ui.tool === 'select') this.select(e);
+        });
+
+        // Click on a day in main calendar
+        $(document).on('dblclick', '.calendar-wrap .day', e => {
+            if (ui.tool === 'draw') {
+                this.startDraw(e);
+                this.draw(e);
+                this.endDraw();
+            }
         });
 
         // Release click on a day in main calendar
@@ -44,6 +56,63 @@ export default {
         // $(document).on('mouseup', '.day', e => {
         //     // event = { id: event.id + 1 };
         // });
+
+        $(document).on('input', '.event.new .title', e => {
+            const $el = $(e.currentTarget);
+            this.rename($el);
+        });
+
+        $(document).on('mouseenter', '.new-event ul li', e => {
+            const $el = $(e.currentTarget);
+            $('.new-event ul li.selected').removeClass('selected');
+            $el.addClass('selected');
+        });
+
+        $(document).on('click', '.new-event ul li', e => {
+            const type = parseInt($(e.currentTarget).attr('data-type'));
+            this.changeType(type);
+        });
+
+        $(document).on('keydown', e => {
+            if (!$('.new-event').hasClass('visible')) return;
+
+            const $li = $('.new-event ul li.selected');
+            
+            if (e.which === 38) { // Up
+                if ($li.length) {
+                    if ($li.prev('li').length) $li.prev('li').addClass('selected');
+                    else $('.new-event ul li:last-child').addClass('selected');
+                    $li.removeClass('selected');
+                } else {
+                    $('.new-event ul li:last-child').addClass('selected');
+                }
+            } else if (e.which === 40) { // Down
+                if ($li.length) {
+                    if ($li.next('li').length) $li.next('li').addClass('selected');
+                    else $('.new-event ul li:first-child').addClass('selected');
+                    $li.removeClass('selected');
+                } else {
+                    $('.new-event ul li:first-child').addClass('selected');
+                }
+            } else if (e.which === 13) { // Enter
+                if ($li.length) {
+                    const type = parseInt($li.attr('data-type'));
+                    this.changeType(type);
+                } else {
+                    this.changeType();
+                }
+            }
+        });
+
+        // Click on an event in main calendar
+        $(document).on('mousedown', '.calendar-wrap .day .event:not(.new)', e => {
+            return false;
+        });
+
+        // Click on an event in main calendar
+        $(document).on('mouseup', '.calendar-wrap .day .event:not(.new)', () => {
+            return false;
+        });
     },
 
     startDraw(e) {
@@ -53,13 +122,12 @@ export default {
         this.event = {
             id: ++events.eventID,
             calendar: parseInt($day.parents('.calendar').attr('data-id')),
-            type: 0,
             start: date,
             end: date,
             startingDate: date
         };
 
-        events.buildEvent(this.event);
+        this.eventID = this.event.id;
     },
 
     draw(e) {
@@ -78,7 +146,57 @@ export default {
     },
 
     endDraw() {
+        // Find new event start
+        const $event = $(`.calendar-wrap .event.new.start[data-id="${this.event.id}"]`);
         this.event = null;
+
+        // 
+        if (!$event.length) return;
+
+        const $title = $event.find('.title');
+        $title.attr('contenteditable', true).focus();
+
+        $('.new-event').css({
+            'top': $event.offset().top + $event.outerHeight() + 8,
+            'left': $event.offset().left
+        })
+        .html(`<ul>${events.data.map(e => `<li data-type="${e.type}"><span class="event-icon" style="background-color: ${settings.eventsColors[e.color]}"></span>${e.title}</li>`).join('')}</ul>`)
+        .addClass('visible');
+
+        // data.save();
+    },
+
+    rename($el) {
+        const title = $el.text();
+
+        this.eventTitle = title;
+
+        // Duplicate text to other title fields (event on multiple weeks)
+        const id = $el.closest('.event').attr('data-id');
+        $(`.event[data-id="${id}"] .title:not(:focus)`).text(title);
+    },
+
+    changeType(type) {
+        const calendar = calendars.data.find(c => c.events.some(e => e.id === this.eventID));
+        const event = calendar.events.find(e => e.id === this.eventID);
+
+        if (isNaN(type)) {
+            // New event
+            events.newEvent({
+                title: this.eventTitle,
+                color: 20
+            });
+            event.type = events.type;
+        } else {
+            event.type = type;
+        }
+
+        event.calendar = calendar.id;
+        events.updateEvent(event);
+
+        $('.new-event').removeClass('visible');
+
+        stats.update();
         data.save();
     },
 

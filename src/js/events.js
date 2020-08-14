@@ -10,7 +10,7 @@ import stats from './stats';
 export default {
     data: [],
     eventID: -1,
-    type: 0,
+    type: -1,
 
     init() {
         // Add new event
@@ -155,7 +155,8 @@ export default {
         if (!Array.isArray(events)) events = [events];
 
         for (const event of events) {
-            const type = event && event.type ? event.type : this.type++;
+            this.type++;
+            const type = event && event.type ? event.type : this.type;
             const li = `<li data-type="${type}" class="sortable" style="background-color: ${event && event.color ? settings.eventsColors[event.color] : settings.eventsColors[type]}">
                 <span class="title" ${!event ? 'contenteditable' : ''} spellcheck="false">${event && event.title ? event.title : ''}</span>
                 <span class="tools">
@@ -299,8 +300,15 @@ export default {
             if (day.valueOf() === new Date(event.start).valueOf()) classname += ' start';
             if (day.valueOf() === new Date(event.end).valueOf()) classname += ' end';
 
+            let eventType;
+            if (event.type === undefined) {
+                eventType = { title: '', color: 20 };
+                classname += ' new';
+            } else {
+                eventType = this.data.find(e => e.type === event.type);
+            }
+            
             // Find title and color from event
-            const eventType = this.data.find(e => e.type === event.type);
             const { title, color } = eventType;
 
             // Add event
