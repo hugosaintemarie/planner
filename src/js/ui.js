@@ -1,6 +1,6 @@
 import calendars from './calendars';
+import data from './data';
 import dates from './dates';
-import selection from './selection';
 
 export default {
     view: 'full',
@@ -133,5 +133,6 @@ export default {
         this.tool = tool;
         $('header .tool.selected').removeClass('selected');
         $(`header .tool[data-tool="${tool}"]`).addClass('selected');
+        data.save();
     }
 }
