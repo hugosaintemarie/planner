@@ -46,33 +46,28 @@ export default {
     
                 if (this.selectedDays.length) this.dragSelect(e);
             }
-
-            // if (!event.title || !settings.spreadOnDrag) return;
-            // event.end = $(e.target).closest('.day').attr('data-date');
-
-            // buildEvent();
         });
 
-        // $(document).on('mouseup', '.day', e => {
-        //     // event = { id: event.id + 1 };
-        // });
-
+        // Change new event title
         $(document).on('input', '.event.new .title', e => {
             const $el = $(e.currentTarget);
-            this.rename($el);
+            this.renameEvent($el);
         });
 
+        // Hover new event type option
         $(document).on('mouseenter', '.new-event ul li', e => {
             const $el = $(e.currentTarget);
             $('.new-event ul li.selected').removeClass('selected');
             $el.addClass('selected');
         });
 
+        // Click on new event type option
         $(document).on('click', '.new-event ul li', e => {
             const type = parseInt($(e.currentTarget).attr('data-type'));
             this.changeType(type);
         });
 
+        // Up/down arrow keys + enter key in new event type options
         $(document).on('keydown', e => {
             if (!$('.new-event').hasClass('visible')) return;
 
@@ -165,7 +160,7 @@ export default {
             'top': $event.offset().top + $event.outerHeight() + 8,
             'left': $event.offset().left
         })
-        .html(`<ul>${events.data.map(e => `<li data-type="${e.type}"><span class="event-icon" style="background-color: ${settings.eventsColors[e.color]}"></span>${e.title}</li>`).join('')}</ul>`)
+        .html(this.buildEventsTypesOptions(events.data))
         .addClass('visible');
     },
 
@@ -174,10 +169,12 @@ export default {
         $('.new-event').removeClass('visible');
     },
 
-    rename($el) {
+    renameEvent($el) {
         const title = $el.text();
 
         this.eventTitle = title;
+
+        this.filterTypes(title);
 
         // Duplicate text to other title fields (event on multiple weeks)
         const id = $el.closest('.event').attr('data-id');
@@ -206,6 +203,18 @@ export default {
 
         stats.update();
         data.save();
+    },
+
+    filterTypes(title) {
+        let eventsList = events.data;
+        eventsList = eventsList.filter(e => e.title.toLowerCase().startsWith(title.toLowerCase()));
+
+        if (eventsList.length) $('.new-event').html(this.buildEventsTypesOptions(eventsList)).addClass('visible');
+        else $('.new-event').removeClass('visible');
+    },
+
+    buildEventsTypesOptions(events) {
+        return `<ul>${events.map(e => `<li data-type="${e.type}"><span class="event-icon" style="background-color: ${settings.eventsColors[e.color]}"></span>${e.title}</li>`).join('')}</ul>`;
     },
 
     select(e) {
