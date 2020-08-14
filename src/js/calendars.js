@@ -56,7 +56,7 @@ export default {
 
         // Duplicate calendar
         $(document).on('click', '.calendar .tools [data-tool="duplicate"]', e => {
-            const $calendar = $(e.target).closest('.calendar')
+            const $calendar = $(e.target).closest('.calendar');
             calendars.duplicateCalendar($calendar);
             return false;
         });
