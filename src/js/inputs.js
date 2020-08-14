@@ -57,8 +57,10 @@ export default {
                 if (e.shiftKey) history.redo();
                 else history.undo();
             }
+            else if (e.which === 68) ui.changeTool('draw');                       // D
             else if (e.which === 70) ui.fullView();                               // F
             else if (e.which === 76) ui.linearView();                             // L
+            else if (e.which === 83) ui.changeTool('select');                     // S
         });
 
         // Enter key in contenteditable: blur

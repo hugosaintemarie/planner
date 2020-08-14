@@ -38,7 +38,32 @@ header {
     border-bottom: 1px solid #333;
     // padding: 16px;
 
-    div:nth-child(2) {
+    > div:nth-child(2) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .tool {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 56px;
+            color: #666666;
+            cursor: pointer;
+            
+            &:hover {
+                color: #999999;
+            }
+
+            &.selected {
+                background-color: #292929;
+                color: white;
+            }
+        }
+    }
+
+    > div:nth-child(3) {
         text-align: right;
         padding-top: 4px;
     }

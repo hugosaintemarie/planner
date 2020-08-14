@@ -4,6 +4,7 @@ import selection from './selection';
 
 export default {
     view: 'full',
+    tool: 'select',
 
     init() {
         $(document).on('click', 'header nav>ul>li', e => {
@@ -43,6 +44,11 @@ export default {
             if (this.viewIs('full')) return;
             const scroll = e.currentTarget.scrollTop;
             $('.calendar-wrap, .col-left').scrollTop(scroll);
+        });
+
+        // Change tool
+        $(document).on('click', 'header .tool', e => {
+            this.changeTool($(e.currentTarget).attr('data-tool'));
         });
     },
 
@@ -121,5 +127,11 @@ export default {
 
     viewIs(view) {
         return this.view === view;
+    },
+
+    changeTool(tool) {
+        this.tool = tool,
+        $('header .tool.selected').removeClass('selected');
+        $(`header .tool[data-tool="${tool}"]`).addClass('selected');
     }
 }
