@@ -11,6 +11,7 @@ export default {
     selectedDays: [],
     clipboard: [],
     lastHoveredDate: null,
+    drawing: false,
     event: null,
     eventID: null,
     eventTitle: null,
@@ -18,7 +19,10 @@ export default {
     init() {
         // Click on a day in main calendar
         $(document).on('mousedown', '.calendar-wrap .day', e => {
-            if (ui.tool === 'draw') this.startDraw(e);
+            if (ui.tool === 'draw') {
+                if (this.event) this.changeType();
+                this.startDraw(e);
+            }
             else if (ui.tool === 'select') this.select(e);
         });
 
@@ -39,7 +43,7 @@ export default {
         // Mouse enters a day in main calendar
         $(document).on('mouseenter', '.calendar-wrap .day', e => {
             if (ui.tool === 'draw') {
-                if (this.event) this.draw(e);
+                if (this.drawing) this.draw(e);
             } else if (ui.tool === 'select') {
                 const date = $(e.currentTarget).attr('data-date');
                 this.lastHoveredDate = date;
@@ -113,9 +117,16 @@ export default {
         $(document).on('dblclick', '.calendar-wrap .day .event', () => {
             if (ui.tool === 'draw') return false;
         });
+
+        // Click outside calendar submits new event
+        $(document).on('click', e => {
+            if (this.event && !$(e.target).closest('.calendar-wrap .calendar').length) this.changeType();
+        });
     },
 
     startDraw(e) {
+        this.drawing = true;
+
         const $day = $(e.currentTarget);
         const date = $day.attr('data-date');
 
@@ -146,12 +157,16 @@ export default {
     },
 
     endDraw() {
+        this.drawing = false;
+        
         // Find new event start
         const $event = $(`.calendar-wrap .event.new.start[data-id="${this.event.id}"]`);
-        this.event = null;
 
-        // 
-        if (!$event.length) return;
+        // Ignore single click
+        if (!$event.length) {
+            this.event = null;
+            return;
+        }
 
         const $title = $event.find('.title');
         $title.attr('contenteditable', true).focus();
@@ -165,6 +180,7 @@ export default {
     },
 
     cancelDraw() {
+        this.event = null;
         events.eventID--;
         events.removeEvent({id: this.eventID });
         $('.new-event').removeClass('visible');
@@ -201,6 +217,8 @@ export default {
         events.updateEvent(event);
 
         $('.new-event').removeClass('visible');
+
+        this.event = null;
 
         stats.update();
         data.save();
