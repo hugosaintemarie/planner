@@ -165,6 +165,7 @@ export default {
     },
 
     cancelDraw() {
+        events.eventID--;
         events.removeEvent({id: this.eventID });
         $('.new-event').removeClass('visible');
     },
