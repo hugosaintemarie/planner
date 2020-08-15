@@ -373,11 +373,11 @@ export default {
         for (const minical of $('.calendars-wrap .calendar').toArray()) {
             const $events = $(minical).find(`.event[data-type="${type}"]`);
 
-            $events.each((id, el) => {
+            $events.each((_, el) => {
                 const $el = $(el);
 
                 const event = {
-                    id: $el.attr('data-id'),
+                    id: parseInt($el.attr('data-id')),
                     calendar: parseInt($(minical).attr('data-id')),
                     type: $el.attr('data-type'),
                     // title: $el.find('.title').text(),
@@ -387,7 +387,7 @@ export default {
                 };
 
                 // Remove event
-                events.removeEvent(event);
+                this.removeEvent(event);
 
                 // Save event in action
                 action.events.push(event);
