@@ -60,5 +60,10 @@ export default {
 
         // Prevent default browser save window (Cmd + S)
         return false;
+    },
+
+    clear() {
+        // For development purposes only
+        localStorage.removeItem('data');
     }
 }
