@@ -19,7 +19,7 @@ export default {
     init() {
         // Click on a day in main calendar
         $(document).on('mousedown', '.calendar-wrap .day', e => {
-            if (ui.tool === 'draw') {
+            if (ui.toolIs('draw')) {
                 if (this.event) this.changeType();
                 this.startDraw(e);
             }
@@ -28,7 +28,7 @@ export default {
 
         // Double-click on a day in main calendar
         $(document).on('dblclick', '.calendar-wrap .day', e => {
-            if (ui.tool === 'draw') {
+            if (ui.toolIs('draw')) {
                 this.startDraw(e);
                 this.draw(e);
                 this.endDraw();
@@ -37,12 +37,12 @@ export default {
 
         // Release click on a day in main calendar
         $(document).on('mouseup', '.calendar-wrap .day', () => {
-            if (ui.tool === 'draw') this.endDraw();
+            if (ui.toolIs('draw')) this.endDraw();
         });
 
         // Mouse enters a day in main calendar
         $(document).on('mouseenter', '.calendar-wrap .day', e => {
-            if (ui.tool === 'draw') {
+            if (ui.toolIs('draw')) {
                 if (this.drawing) this.draw(e);
             } else if (ui.tool === 'select') {
                 const date = $(e.currentTarget).attr('data-date');
@@ -105,24 +105,24 @@ export default {
 
         // Click on an event in main calendar
         $(document).on('mousedown', '.calendar-wrap .day .event:not(.new)', e => {
-            if (ui.tool === 'draw') return false;
+            if (ui.toolIs('draw')) return false;
         });
 
         // Release click on an event in main calendar
         $(document).on('mouseup', '.calendar-wrap .day .event', () => {
-            if (ui.tool === 'draw' && !this.event) return false;
+            if (ui.toolIs('draw') && !this.event) return false;
         });
 
         // Double-click on an event in main calendar
         $(document).on('dblclick', '.calendar-wrap .day .event', () => {
-            if (ui.tool === 'draw') return false;
+            if (ui.toolIs('draw')) return false;
         });
 
         // Click outside calendar submits new event
         $(document).on('click', e => {
             if (this.event && !$(e.target).closest('.calendar-wrap .calendar').length) this.changeType();
 
-            if (ui.tool === 'draw') {
+            if (ui.toolIs('draw')) {
                 const multiSelect = e.metaKey || e.ctrlKey || e.shiftKey;
                 if (!multiSelect) $('.event.selected').removeClass('selected');
 
@@ -490,35 +490,51 @@ export default {
             type: 'removeEvents',
             events: []
         };
-    
-        for (const day of this.selectedDays) {
-            const date = dates.toString(day);
-            let $events;
-            if ($('.calendars-wrap').hasClass('edit-all')) {
-                $events = $(`.calendars-wrap .day[data-date="${date}"] .event`);
-            } else {
-                $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event`);
-            }
-            if (!$events.length) continue;
-    
-            // Save events in action
-            $events.each((id, el) => {
+
+        const removeEvents = $events => {
+            $events.each((_, el) => {
                 const $el = $(el);
-    
+
+                const id = parseInt($el.attr('data-id'));
+                const start = $(`.event[data-id="${id}"].start`).closest('.day').attr('data-date');
+                const end = $(`.event[data-id="${id}"].end`).closest('.day').attr('data-date');
+
+                if (!start || !end) return;
+                
                 const event = {
-                    id: parseInt($el.attr('data-id')),
+                    id,
                     calendar: parseInt($el.parents('.calendar').attr('data-id')),
                     type: parseInt($el.attr('data-type')),
                     // title: $el.find('.title').text(),
                     // color: $el.css('background-color'),
-                    start: date,
-                    end: date
+                    start,
+                    end
                 };
-
+                
                 events.removeEvent(event);
-
+                
+                // Save events in action
                 action.events.push(event);
             });
+        }
+        
+        if (ui.toolIs('draw')) {
+            const $events = $('.event.selected');
+            removeEvents($events);    
+        }
+        else if (ui.tool === 'select') {
+            for (const day of this.selectedDays) {
+                const date = dates.toString(day);
+                let $events;
+                if ($('.calendars-wrap').hasClass('edit-all')) {
+                    $events = $(`.calendars-wrap .day[data-date="${date}"] .event`);
+                } else {
+                    $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event`);
+                }
+
+                if (!$events.length) continue;
+                removeEvents($events);
+            }
         }
     
         // Save action in history

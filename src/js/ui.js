@@ -147,5 +147,9 @@ export default {
         }
 
         data.save();
+    },
+
+    toolIs(tool) {
+        return this.tool === tool;
     }
 }
