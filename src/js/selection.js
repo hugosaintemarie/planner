@@ -106,7 +106,9 @@ export default {
         // Click on an event in main calendar
         $(document).on('mousedown', '.calendar-wrap .day .event:not(.new)', e => {
             if (ui.tool === 'draw') {
-                this.selectEvent(e);
+                $('.event.selected').removeClass('selected');
+                const id = $(e.currentTarget).attr('data-id');
+                this.selectEventByID(id);
                 return false;
             }
         });
@@ -664,6 +666,9 @@ export default {
         // Reset all currently selected days
         $('.day.selected').removeClass('selected no-top no-right no-bottom no-left');
 
+        $('.event.selected').removeClass('selected');
+        const selectedEvents = new Set();
+
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
             const $el = $(`main:not(.linear) .calendar .day[data-date="${date}"], main.linear .calendar.selected .day[data-date="${date}"]`);
@@ -688,6 +693,16 @@ export default {
                 if (dayBeforeSelected) $el.addClass('no-left');
                 if (dayAfterSelected) $el.addClass('no-right');
             }
+
+            const $events = $(`.calendar-wrap .day[data-date="${date}"] .event`);
+            $events.each((_, el) => {
+                const id = parseInt($(el).attr('data-id'));
+                if (!isNaN(id)) selectedEvents.add(id);
+            });
+        }
+
+        for (const eventID of [...selectedEvents]) {
+            this.selectEventByID(eventID);
         }
     },
 
@@ -772,16 +787,8 @@ export default {
         return !this.selectedDays.some(day => $(`.day[data-date="${dates.toString(day)}"] .event`).length);
     },
 
-    selectEvent(e) {
-        const id = $(e.currentTarget).attr('data-id');
+    selectEventByID(id) {
         const $event = $(`.calendar-wrap .event[data-id="${id}"]`);
-
-        // let color = $event.css('background-color');
-        // color = color.replace(', 0.5)', ')');
-
-        // $event.css('background-color', color);
-
-        $('.event.selected').removeClass('selected');
         $event.addClass('selected');
     }
 }
