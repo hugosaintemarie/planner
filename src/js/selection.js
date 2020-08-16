@@ -241,7 +241,7 @@ export default {
     },
 
     buildEventsTypesOptions(events) {
-        return `<ul>${events.map(e => `<li data-type="${e.type}"><span class="event-icon" style="background-color: ${settings.eventsColors[e.color]}"></span>${e.title}</li>`).join('')}</ul>`;
+        return `<ul>${events.map(e => `<li data-type="${e.type}"><span class="event-icon" data-color="${e.color}"></span>${e.title}</li>`).join('')}</ul>`;
     },
 
     select(e) {

@@ -146,8 +146,8 @@ export default {
         //     $(e.target).closest('li').addClass('selected');
         // });
 
-        for (const [i, color] of settings.eventsColors.entries()) {
-            $('#color-swatch').append(`<div class="color" data-color="${i}" style="background-color: ${color}"></div>`);
+        for (let i = 0; i < 19; i += 1) {
+            $('#color-swatch').append(`<div class="color" data-color="${i}"></div>`);
         }
     },
 
