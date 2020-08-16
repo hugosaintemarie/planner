@@ -157,7 +157,7 @@ export default {
         for (const event of events) {
             this.type++;
             const type = event && event.type ? event.type : this.type;
-            const li = `<li data-type="${type}" class="sortable" style="background-color: ${event && event.color ? settings.eventsColors[event.color] : settings.eventsColors[type]}">
+            const li = `<li data-type="${type}" class="sortable" style="background-color: ${event && !isNaN(event.color) ? settings.eventsColors[event.color] : settings.eventsColors[type]}">
                 <span class="title" ${!event ? 'contenteditable' : ''} spellcheck="false">${event && event.title ? event.title : ''}</span>
                 <span class="tools">
                     <i class="fas fa-angle-down" data-tool="dropdown"></i>
