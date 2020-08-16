@@ -105,12 +105,7 @@ export default {
 
         // Click on an event in main calendar
         $(document).on('mousedown', '.calendar-wrap .day .event:not(.new)', e => {
-            if (ui.tool === 'draw') {
-                $('.event.selected').removeClass('selected');
-                const id = $(e.currentTarget).attr('data-id');
-                this.selectEventByID(id);
-                return false;
-            }
+            if (ui.tool === 'draw') return false;
         });
 
         // Release click on an event in main calendar
@@ -126,6 +121,14 @@ export default {
         // Click outside calendar submits new event
         $(document).on('click', e => {
             if (this.event && !$(e.target).closest('.calendar-wrap .calendar').length) this.changeType();
+
+            if (ui.tool === 'draw') {
+                const multiSelect = e.metaKey || e.ctrlKey || e.shiftKey;
+                if (!multiSelect) $('.event.selected').removeClass('selected');
+
+                const id = $(e.target).closest('.event').attr('data-id');
+                if (!isNaN(id)) this.selectEventByID(id);
+            }
         });
     },
 
