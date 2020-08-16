@@ -1,0 +1,63 @@
+.tooltip {
+    position: relative;
+    background-color: #111111;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 6px 8px;
+    font-size: .875rem;
+    border-radius: 4px;
+    z-index: 10;
+    display: none;
+
+    .tooltip-arrow {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: linear-gradient(135deg, #111111 50%, transparent 50%);
+        border-top-left-radius: 1px;
+        transform: rotate(45deg);
+    }
+
+    &.top {
+        .tooltip-arrow {
+            bottom: -5px;
+            left: calc(50% - 5px);
+            transform: rotate(-135deg);
+        }
+    }
+
+    &.right {
+        .tooltip-arrow {
+            top: calc(50% - 5px);
+            left: -5px;
+            transform: rotate(-45deg);
+        }
+    }
+
+    &.bottom {
+        .tooltip-arrow {
+            top: -5px;
+            left: calc(50% - 5px);
+            transform: rotate(45deg);
+        }
+    }
+
+    &.left {
+        .tooltip-arrow {
+            top: calc(50% - 5px);
+            right: -5px;
+            transform: rotate(135deg);
+        }
+    }
+
+    &.visible {
+        display: block;
+    }
+
+    .shortcut {
+        display: inline-block;
+        margin-left: 12px;
+        color: #666666;
+    }
+}

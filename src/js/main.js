@@ -7,6 +7,7 @@ import selection from './selection';
 import sortable from './sortable';
 import stats from './stats';
 import templates from './templates';
+import tooltip from './tooltip';
 import ui from './ui';
 
 $(document).ready(() => {
@@ -19,5 +20,6 @@ $(document).ready(() => {
     sortable.init();
     stats.init();
     templates.init();
+    tooltip.init();
     ui.init();
 });

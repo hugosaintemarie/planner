@@ -4,6 +4,7 @@ import dates from './dates';
 import events from './events';
 import selection from './selection';
 import stats from './stats';
+import tooltip from './tooltip';
 import ui from './ui';
 
 export default {
@@ -121,10 +122,10 @@ export default {
         // Create HTML
         const html = `<div class="calendar sortable" data-id="${id}">
             <div class="tools">
-                <i data-tool="toggle" class="far fa-eye"></i>
-                <i data-tool="sort">⋮⋮</i>
-                <i data-tool="duplicate" class="far fa-clone"></i>
-                <i data-tool="delete" class="far fa-trash-alt"></i>
+                <i data-tool="toggle" class="far fa-eye" data-tooltip="Hide<span class='shortcut'>⌘H</span>" data-tooltip-side="right"></i>
+                <i data-tool="sort" data-tooltip="Sort" data-tooltip-side="right">⋮⋮</i>
+                <i data-tool="duplicate" class="far fa-clone" data-tooltip="Duplicate<span class='shortcut'>⌘D</span>" data-tooltip-side="right"></i>
+                <i data-tool="delete" class="far fa-trash-alt" data-tooltip="Delete<span class='shortcut'>⌘⌫</span>" data-tooltip-side="right"></i>
             </div>
             <div class="content">${ this.buildCalendar() }</div>
             <p><span contenteditable spellcheck="false">${title}</span></p>
@@ -259,6 +260,8 @@ export default {
 
         this.reorder();
         data.save();
+
+        tooltip.hide();
     },
 
     selectPreviousCalendar() {
