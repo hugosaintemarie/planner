@@ -117,7 +117,7 @@ export default {
     newCalendar(calendar) {
         const id = calendar ? calendar.id : ++this.calendarID;
         const title = calendar ? calendar.title : `Calendar ${$('.calendars-wrap .calendar').length + 1}`;
-        const order = calendar ? calendar.order : id;
+        const order = calendar ? calendar.order : $('.calendars-wrap .calendar').length;
 
         // Create HTML
         const html = `<div class="calendar sortable" data-id="${id}">
@@ -134,7 +134,7 @@ export default {
         let $calendar;
         if (order) {
             $('.calendars-wrap .calendar').eq(order - 1).after(html);
-            $calendar = $(`.calendars-wrap .calendar:nth-child(${order + 1})`);
+            $calendar = $('.calendars-wrap .calendar').eq(order);
         } else {
             $('.calendars-wrap .calendars').append(html);
             $calendar = $('.calendars-wrap .calendar:last-child');
@@ -163,6 +163,8 @@ export default {
                 });
             }
         }
+
+        data.save();
     },
 
     duplicateCalendar($calendar) {
