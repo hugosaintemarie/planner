@@ -115,9 +115,9 @@ export default {
             $color.addClass('selected');
 
             // Update event, occurences and stats
-            const color = $color.css('background-color')
-            $(`.events-wrap ul li[data-type="${eventType}"], .event[data-type="${eventType}"]`).css('background-color', color);
-            $(`.stat[data-type="${eventType}"] .event-icon`).css('background-color', color);
+            const color = $color.attr('data-color');
+            $(`.events-wrap ul li[data-type="${eventType}"], .event[data-type="${eventType}"]`).attr('data-color', color);
+            $(`.stat[data-type="${eventType}"] .event-icon`).attr('data-color', color);
 
             // Update data
             this.data.find(e => e.type === eventType).color = parseInt($color.attr('data-color'));
@@ -312,7 +312,7 @@ export default {
             const { title, color } = eventType;
 
             // Add event
-            $events.append(`<div data-id="${event.id}" data-type="${event.type}" class="event${classname}" style="top: ${top * 32}px; background-color: ${settings.eventsColors[color]}">${classname.includes('start') || day.getDay() === 1 ? `<span class="title${!classname.includes('start') ? ' not-linear' : ''}">${title}</span>` : ''}</div>`);
+            $events.append(`<div data-id="${event.id}" data-type="${event.type}" data-color="${color}" class="event${classname}" style="top: ${top * 32}px">${classname.includes('start') || day.getDay() === 1 ? `<span class="title${!classname.includes('start') ? ' not-linear' : ''}">${title}</span>` : ''}</div>`);
         }
 
         // Save data

@@ -105,7 +105,10 @@ export default {
 
         // Click on an event in main calendar
         $(document).on('mousedown', '.calendar-wrap .day .event:not(.new)', e => {
-            if (ui.tool === 'draw') return false;
+            if (ui.tool === 'draw') {
+                this.selectEvent(e);
+                return false;
+            }
         });
 
         // Release click on an event in main calendar
@@ -767,5 +770,18 @@ export default {
 
     allDaysEmpty() {
         return !this.selectedDays.some(day => $(`.day[data-date="${dates.toString(day)}"] .event`).length);
+    },
+
+    selectEvent(e) {
+        const id = $(e.currentTarget).attr('data-id');
+        const $event = $(`.calendar-wrap .event[data-id="${id}"]`);
+
+        // let color = $event.css('background-color');
+        // color = color.replace(', 0.5)', ')');
+
+        // $event.css('background-color', color);
+
+        $('.event.selected').removeClass('selected');
+        $event.addClass('selected');
     }
 }

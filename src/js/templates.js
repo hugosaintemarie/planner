@@ -48,6 +48,7 @@ export default {
         } else if (template === 'events') {
             // 1 calendar
             // 20 events (for events colors testing)
+            // 20 occurences (one per event type)
 
             this.createCalendars(1);
             events.newEvent([
@@ -72,6 +73,18 @@ export default {
                 { title: 'S', color: 18 },
                 { title: 'T', color: 19 }
             ]);
+
+            for (let i = 0; i < 20; i += 1) {
+                const date = dates.relativeDate(calendars.start, i);
+
+                events.buildEvent({
+                    id: ++events.eventID,
+                    calendar: 0,
+                    type: i,
+                    start: date,
+                    end: date
+                });
+            }
         }
     },
 
