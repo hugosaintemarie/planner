@@ -198,7 +198,7 @@
                             &:empty {
                                 &::before {
                                     content: "New event";
-                                    color: #cccccc;
+                                    opacity: .5;
                                 }
                             }
 
