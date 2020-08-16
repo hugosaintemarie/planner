@@ -19,7 +19,7 @@ export default {
             return {
                 title: $el.find('span.title').text(),
                 type: parseInt($el.attr('data-type')),
-                color: $el.css('background-color')
+                color: $el.attr('data-color')
             }
         });
 
@@ -30,7 +30,7 @@ export default {
 
             html += `<div class="stat" data-type="${event.type}">
                 <p>
-                    <span class="event-icon" style="background-color: ${event.color}"></span>
+                    <span class="event-icon" data-color="${event.color}"></span>
                     ${event.title}
                     <span class="count">${count}</span>
                 </p>

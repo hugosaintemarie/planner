@@ -11,7 +11,7 @@
             padding: 12px 6px;
             cursor: pointer;
             background-color: grey;
-            transition: backgroun-color .1s ease;
+            transition: background-color .1s ease;
 
             &:not(:last-child) {
                 margin-bottom: 12px;
@@ -121,6 +121,90 @@
 
         &:hover {
             opacity: .7;
+        }
+    }
+}
+
+.events-wrap {
+    li {
+        &[data-color="0"] {
+            background-color: var(--color-event-0);
+        }
+    
+        &[data-color="1"] {
+            background-color: var(--color-event-1);
+        }
+    
+        &[data-color="2"] {
+            background-color: var(--color-event-2);
+        }
+    
+        &[data-color="3"] {
+            background-color: var(--color-event-3);
+        }
+    
+        &[data-color="4"] {
+            background-color: var(--color-event-4);
+        }
+    
+        &[data-color="5"] {
+            background-color: var(--color-event-5);
+        }
+    
+        &[data-color="6"] {
+            background-color: var(--color-event-6);
+        }
+    
+        &[data-color="7"] {
+            background-color: var(--color-event-7);
+        }
+    
+        &[data-color="8"] {
+            background-color: var(--color-event-8);
+        }
+    
+        &[data-color="9"] {
+            background-color: var(--color-event-9);
+        }
+    
+        &[data-color="10"] {
+            background-color: var(--color-event-10);
+        }
+    
+        &[data-color="11"] {
+            background-color: var(--color-event-11);
+        }
+    
+        &[data-color="12"] {
+            background-color: var(--color-event-12);
+        }
+    
+        &[data-color="13"] {
+            background-color: var(--color-event-13);
+        }
+    
+        &[data-color="14"] {
+            background-color: var(--color-event-14);
+        }
+    
+        &[data-color="15"] {
+            background-color: var(--color-event-15);
+        }
+    
+        &[data-color="16"] {
+            background-color: var(--color-event-16);
+        }
+    
+        &[data-color="17"] {
+            background-color: var(--color-event-17);
+        }
+    
+        &[data-color="18"] {
+            background-color: var(--color-event-18);
+        }
+    
+        &[data-color="19"] {
+            background-color: var(--color-event-19);
         }
     }
 }
