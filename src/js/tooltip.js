@@ -1,5 +1,6 @@
 export default{
     $tooltip: null,
+    showTimeout: null,
 
     init() {
         // Find tooltip element
@@ -41,17 +42,23 @@ export default{
             top = $el.offset().top + $el.outerHeight() / 2 - this.$tooltip.outerHeight() / 2;
             left = $el.offset().left - this.$tooltip.outerWidth() - margin;
         }
-        
+
         this.$tooltip
-        .css({
-            'top': top,
-            'left': left
-        })
-        .removeClass('top right bottom left').addClass(side)
-        .addClass('visible');
+            .css({
+                'top': top,
+                'left': left
+            })
+            .removeClass('top right bottom left')
+            .addClass(side);
+        
+        clearTimeout(this.showTimeout);
+        this.showTimeout = setTimeout(() => {
+            this.$tooltip.addClass('visible');
+        }, 1000);
     },
 
     hide() {
+        clearTimeout(this.showTimeout);
         this.$tooltip.removeClass('visible');
     }
 }
