@@ -35,6 +35,7 @@
 
     .head {
         display: flex;
+        border-bottom: 1px solid #444444;
         
         > div {
             position: relative;
@@ -76,7 +77,6 @@
         padding-bottom: 16px;
         overflow-y: auto;
         padding-left: 1px;
-        border-top: 1px solid #444444;
 
         &::-webkit-scrollbar {
             width: 0;
@@ -359,8 +359,16 @@ main.linear {
         }
     
         .head {
-            div {
+            width: fit-content;
+
+            > div {
                 flex: 0 0 139px;
+                padding-left: 0;
+                cursor: default;
+
+                &:hover {
+                    opacity: .3;
+                }
             }
         }
     
@@ -373,6 +381,7 @@ main.linear {
     
             .day {
                 width: 140px;
+                margin-top: 0;
     
                 &.out {
                     display: none;
