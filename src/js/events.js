@@ -166,7 +166,7 @@ export default {
                     <span class="dropdown">
                         <span data-tool="rename"><i class="fas fa-pen"></i>Rename</span>
                         <span data-tool="color"><i class="fas fa-palette"></i>Change color</span>
-                        <span data-tool="delete"><i class="far fa-trash-alt"></i>Delete</span>
+                        <span class="border-top" data-tool="delete"><i class="far fa-trash-alt"></i>Delete</span>
                     </span>
                 </span>
             </li>`;

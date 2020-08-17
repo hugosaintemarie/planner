@@ -25,14 +25,21 @@
         white-space: nowrap;
         font-size: .875rem;
 
+        &:hover {
+            color: white;
+        }
+
         i {
             width: 20px;
             text-align: center;
             margin-right: 12px;
         }
 
-        &:hover {
-            color: white;
+
+        &.border-top {
+            border-top: 1px solid #333333;
+            margin-top: 6px;
+            padding-top: 12px;
         }
     }
 }
