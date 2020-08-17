@@ -165,6 +165,7 @@ export default {
     },
 
     endDraw() {
+        if (!this.event) return;
         this.drawing = false;
         
         // Find new event start
