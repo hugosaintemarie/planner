@@ -94,22 +94,39 @@ export default {
     
         // Fill last week
         while (days.length % 7 !== 0) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
-    
-        // Build HTML
-        let html = '<div>';
-        for (const day of days) {
-            const date = dates.toString(day);
-            day.setHours(0);
 
-            // Show day cell as out of bounds if necessary
-            let classname = day < start || day > end ? ' out' : '';
-            if (day.getDay() === 6 || day.getDay() === 0) classname += ' off';
+        // Convert days 1D array to weeks 2D array
+        const weeks = days.reduce((acc, curr) => {
+            if (!acc.length) {
+                acc = [[curr]];
+            } else {
+                const lastWeek = acc[acc.length - 1];
+
+                if (curr.getWeek() === lastWeek[lastWeek.length - 1].getWeek()) lastWeek.push(curr);
+                else acc.push([curr]);
+            }
+
+            return acc;
+        }, []);
+
+        // Build HTML
+        let html = '';
+        for (const week of weeks) {
+            html += '<div>';
+
+            for (const day of week) {
+                const date = dates.toString(day);
+                day.setHours(0);
     
-            html += `<div class="day${classname}" data-day="${day.getDay()}" data-date="${date}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span><div class="events"></div></div>`;
-    
-            if (day.getDay() === 0) html += '</div><div>';
+                // Show day cell as out of bounds if necessary
+                let classname = day < start || day > end ? ' out' : '';
+                if (day.getDay() === 6 || day.getDay() === 0) classname += ' off';
+        
+                html += `<div class="day${classname}" data-day="${day.getDay()}" data-date="${date}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span><div class="events"></div></div>`;
+            }
+
+            html += '</div>';
         }
-        html += '</div>';
     
         return html;
     },
