@@ -35,15 +35,39 @@
 
     .head {
         display: flex;
-        padding: 16px 0;
-        border-bottom: 1px solid rgba(255,255,255,.1);
-        margin-bottom: -1px;
-
+        
         > div {
+            position: relative;
             flex: 1;
             text-align: center;
             font-size: .8em;
             opacity: .3;
+            padding: 16px 0;
+            cursor: pointer;
+            transition: opacity .2s ease;
+            padding-left: 12px;
+
+            i {
+                width: 12px;
+                font-size: .625rem;
+                margin-left: 4px;
+                opacity: 0;
+                transition: opacity .2s ease;
+            }
+
+            &.open,
+            &:hover {
+                opacity: 1;
+
+                i {
+                    opacity: 1;
+                }
+            }
+
+            .dropdown {
+                top: 40px;
+                left: 0;
+            }
         }
     }
 
@@ -52,7 +76,7 @@
         padding-bottom: 16px;
         overflow-y: auto;
         padding-left: 1px;
-        padding-top: 1px;
+        border-top: 1px solid #444444;
 
         &::-webkit-scrollbar {
             width: 0;
@@ -64,7 +88,8 @@
         
         .day {
             position: relative;
-            width: calc(100% / 7 + 1px);
+            // width: calc(100% / 7 + 1px);
+            flex: 1;
             border: 1px solid #444;
             height: 72px;
             max-height: 240px;

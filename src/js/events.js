@@ -51,6 +51,7 @@ export default {
 
             // Close dropdown menu
             $('.dropdown.visible').removeClass('visible');
+            $('[data-day].open').removeClass('open');
             $('#color-swatch').removeClass('visible');
 
             if ($(e.target).parents().is('[data-tool="dropdown"], .dropdown')) return;
@@ -163,9 +164,9 @@ export default {
                     <i class="fas fa-angle-down" data-tool="dropdown"></i>
                     <i data-tool="sort">⋮⋮</i>
                     <span class="dropdown">
-                        <span data-tool="rename"><i class="fas fa-pen"></i> Rename</span>
-                        <span data-tool="color"><i class="fas fa-palette"></i> Change color</span>
-                        <span data-tool="delete"><i class="far fa-trash-alt"></i> Delete</span>
+                        <span data-tool="rename"><i class="fas fa-pen"></i>Rename</span>
+                        <span data-tool="color"><i class="fas fa-palette"></i>Change color</span>
+                        <span data-tool="delete"><i class="far fa-trash-alt"></i>Delete</span>
                     </span>
                 </span>
             </li>`;

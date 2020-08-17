@@ -30,7 +30,7 @@ export default {
             const $target = $(e.currentTarget);
             if ($target.attr('data-checkable') === '') {
                 if ($target.attr('data-radio')) this.onRadioChange($target);
-                else $target.toggleClass('checked');
+                else this.check($target);
             }
 
             return false;
@@ -51,6 +51,33 @@ export default {
         $(document).on('click', 'header .tool', e => {
             this.changeTool($(e.currentTarget).attr('data-tool'));
         });
+
+        // Click on day in timeline
+        $(document).on('click', '.head [data-day]', e => {
+            $('.head [data-day].open').removeClass('open');
+            $('.dropdown').removeClass('visible');
+
+            const $el = $(e.currentTarget);
+            $el.addClass('open');
+            $el.find('.dropdown').addClass('visible');
+            return false;
+        });
+
+        // Hide day column
+        $(document).on('click', '[data-tool="hide-weekday"]', e => {
+            const $el = $(e.currentTarget);
+            const day = $el.closest('[data-day]').attr('data-day');
+            this.showHideWeekday(day, false);
+        });
+    },
+
+    check($target) {
+        const setting = $target.attr('data-setting');
+        const value = $target.attr('data-value');
+        const checked = $target.hasClass('checked');
+
+        if (setting === 'show-weekday') this.showHideWeekday(value, !checked);
+        else $target.toggleClass('checked');
     },
 
     onRadioChange($target) {
@@ -151,5 +178,17 @@ export default {
 
     toolIs(tool) {
         return this.tool === tool;
+    },
+
+    showHideWeekday(day, show) {
+        const $day = $(`[data-day=${day}]`);
+        const $li = $(`nav [data-setting="show-weekday"][data-value="${day}"]`);
+        if (show) {
+            $day.show();
+            $li.addClass('checked');
+        } else {
+            $day.hide();
+            $li.removeClass('checked');
+        }
     }
 }

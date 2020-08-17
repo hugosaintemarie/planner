@@ -64,51 +64,14 @@
                 }
 
                 .dropdown {
-                    position: absolute;
                     right: 0;
                     top: 24px;
-                    z-index: 1;
-                    background-color: #1e1e1e;
-                    border: 1px solid #333;
-                    padding: 6px 0;
-                    border-radius: 4px;
-                    box-shadow: 0 16px 16px #00000050;
-                    pointer-events: none;
-                    opacity: 0;
-                    transform: translateY(-4px);
-                    transition: all .2s ease;
-
-                    &.visible {
-                        pointer-events: all;
-                        opacity: 1;
-                        transform: none;
-                    }
-
-                    > span {
-                        display: inline-block;
-                        width: 100%;
-                        padding: 8px 16px;
-                        color: #888;
-                        white-space: nowrap;
-                        font-size: .875rem;
-
-                        i {
-                            width: 20px;
-                            text-align: center;
-                            margin-right: 6px;
-                            opacity: 1;
-                        }
-
-                        &:hover {
-                            color: white;
-                        }
-                    }
                 }
             }
 
             &:hover {
                 .tools {
-                    i {
+                    > i {
                         opacity: .5;
 
                         &:hover {

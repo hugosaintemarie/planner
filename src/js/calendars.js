@@ -105,7 +105,7 @@ export default {
             let classname = day < start || day > end ? ' out' : '';
             if (day.getDay() === 6 || day.getDay() === 0) classname += ' off';
     
-            html += `<div class="day${classname}" data-date="${date}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span><div class="events"></div></div>`;
+            html += `<div class="day${classname}" data-day="${day.getDay()}" data-date="${date}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span><div class="events"></div></div>`;
     
             if (day.getDay() === 0) html += '</div><div>';
         }

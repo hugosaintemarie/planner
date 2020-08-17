@@ -52,6 +52,28 @@
                         <ul>
                             <li class="checked" data-checkable data-radio="view" data-value="full" data-shortcut="F">Full view</li>
                             <li data-checkable data-radio="view" data-value="linear" data-shortcut="L">Linear view</li>
+                            <li class="border-top sub">Show/hide days
+                                <ul>
+                                    <li class="checked" data-checkable data-setting="show-weekday" data-value="1">Monday</li>
+                                    <li class="checked" data-checkable data-setting="show-weekday" data-value="2">Tuesday</li>
+                                    <li class="checked" data-checkable data-setting="show-weekday" data-value="3">Wednesday</li>
+                                    <li class="checked" data-checkable data-setting="show-weekday" data-value="4">Thursday</li>
+                                    <li class="checked" data-checkable data-setting="show-weekday" data-value="5">Friday</li>
+                                    <li class="checked" data-checkable data-setting="show-weekday" data-value="6">Saturday</li>
+                                    <li class="checked" data-checkable data-setting="show-weekday" data-value="0">Sunday</li>
+                                </ul>
+                            </li>
+                            <li class="sub">Week starts on
+                                <ul>
+                                    <li class="disabled checked" data-checkable data-radio="first-weekday" data-value="1">Monday</li>
+                                    <li class="disabled" data-checkable data-radio="first-weekday" data-value="2">Tuesday</li>
+                                    <li class="disabled" data-checkable data-radio="first-weekday" data-value="3">Wednesday</li>
+                                    <li class="disabled" data-checkable data-radio="first-weekday" data-value="4">Thursday</li>
+                                    <li class="disabled" data-checkable data-radio="first-weekday" data-value="5">Friday</li>
+                                    <li class="disabled" data-checkable data-radio="first-weekday" data-value="6">Saturday</li>
+                                    <li class="disabled" data-checkable data-radio="first-weekday" data-value="0">Sunday</li>
+                                </ul>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -92,13 +114,48 @@
         <div class="calendar-wrap">
             <h2 contenteditable>Calendar 1</h2>
             <div class="head">
-                <div>Mon</div>
-                <div>Tue</div>
-                <div>Wed</div>
-                <div>Thu</div>
-                <div>Fri</div>
-                <div>Sat</div>
-                <div>Sun</div>
+                <div data-day="1">
+                    Mon<i class="fas fa-chevron-down"></i>
+                    <div class="dropdown">
+                        <span data-tool="hide-weekday"><i class="fas fa-eye-slash"></i>Hide column</span>
+                    </div>
+                </div>
+                <div data-day="2">
+                    Tue<i class="fas fa-chevron-down"></i>
+                    <div class="dropdown">
+                        <span data-tool="hide-weekday"><i class="fas fa-eye-slash"></i>Hide column</span>
+                    </div>
+                </div>
+                <div data-day="3">
+                    Wed<i class="fas fa-chevron-down"></i>
+                    <div class="dropdown">
+                        <span data-tool="hide-weekday"><i class="fas fa-eye-slash"></i>Hide column</span>
+                    </div>
+                </div>
+                <div data-day="4">
+                    Thu<i class="fas fa-chevron-down"></i>
+                    <div class="dropdown">
+                        <span data-tool="hide-weekday"><i class="fas fa-eye-slash"></i>Hide column</span>
+                    </div>
+                </div>
+                <div data-day="5">
+                    Fri<i class="fas fa-chevron-down"></i>
+                    <div class="dropdown">
+                        <span data-tool="hide-weekday"><i class="fas fa-eye-slash"></i>Hide column</span>
+                    </div>
+                </div>
+                <div data-day="6">
+                    Sat<i class="fas fa-chevron-down"></i>
+                    <div class="dropdown">
+                        <span data-tool="hide-weekday"><i class="fas fa-eye-slash"></i>Hide column</span>
+                    </div>
+                </div>
+                <div data-day="0">
+                    Sun<i class="fas fa-chevron-down"></i>
+                    <div class="dropdown">
+                        <span data-tool="hide-weekday"><i class="fas fa-eye-slash"></i>Hide column</span>
+                    </div>
+                </div>
             </div>
             <div class="content calendar" data-id="0"></div>
         </div>
