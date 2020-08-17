@@ -79,6 +79,12 @@
                     opacity: .3;
                     width: 120px;
                     margin-left: -4px;
+
+                    @for $i from 0 through 19 {
+                        &[data-color="#{$i}"] {
+                            background-color: var(--color-event-#{$i});
+                        }
+                    }
                 }
             }
         }

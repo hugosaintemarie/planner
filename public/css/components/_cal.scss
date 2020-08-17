@@ -165,6 +165,17 @@
                     width: 100%;
                     margin-bottom: 8px;
 
+                    @for $i from 0 through 19 {
+                        &[data-color="#{$i}"] {
+                            color: var(--color-event-text-#{$i});
+                            background-color: var(--color-event-bg-#{$i});
+
+                            &.selected {
+                                background-color: var(--color-event-#{$i});
+                            }
+                        }
+                    }
+
                     .title {
                         font-weight: 500;
                     }
@@ -243,188 +254,6 @@
     }
 }
 
-.event {
-    &[data-color="0"] {
-        color: var(--color-event-text-0);
-        background-color: var(--color-event-bg-0);
-
-        &.selected {
-            background-color: var(--color-event-0);
-        }
-    }
-
-    &[data-color="1"] {
-        color: var(--color-event-text-1);
-        background-color: var(--color-event-bg-1);
-
-        &.selected {
-            background-color: var(--color-event-1);
-        }
-    }
-
-    &[data-color="2"] {
-        color: var(--color-event-text-2);
-        background-color: var(--color-event-bg-2);
-
-        &.selected {
-            background-color: var(--color-event-2);
-        }
-    }
-
-    &[data-color="3"] {
-        color: var(--color-event-text-3);
-        background-color: var(--color-event-bg-3);
-
-        &.selected {
-            background-color: var(--color-event-3);
-        }
-    }
-
-    &[data-color="4"] {
-        color: var(--color-event-text-4);
-        background-color: var(--color-event-bg-4);
-
-        &.selected {
-            background-color: var(--color-event-4);
-        }
-    }
-
-    &[data-color="5"] {
-        color: var(--color-event-text-5);
-        background-color: var(--color-event-bg-5);
-
-        &.selected {
-            background-color: var(--color-event-5);
-        }
-    }
-
-    &[data-color="6"] {
-        color: var(--color-event-text-6);
-        background-color: var(--color-event-bg-6);
-
-        &.selected {
-            background-color: var(--color-event-6);
-        }
-    }
-
-    &[data-color="7"] {
-        color: var(--color-event-text-7);
-        background-color: var(--color-event-bg-7);
-
-        &.selected {
-            background-color: var(--color-event-7);
-        }
-    }
-
-    &[data-color="8"] {
-        color: var(--color-event-text-8);
-        background-color: var(--color-event-bg-8);
-
-        &.selected {
-            background-color: var(--color-event-8);
-        }
-    }
-
-    &[data-color="9"] {
-        color: var(--color-event-text-9);
-        background-color: var(--color-event-bg-9);
-
-        &.selected {
-            background-color: var(--color-event-9);
-        }
-    }
-
-    &[data-color="10"] {
-        color: var(--color-event-text-10);
-        background-color: var(--color-event-bg-10);
-
-        &.selected {
-            background-color: var(--color-event-10);
-        }
-    }
-
-    &[data-color="11"] {
-        color: var(--color-event-text-11);
-        background-color: var(--color-event-bg-11);
-
-        &.selected {
-            background-color: var(--color-event-11);
-        }
-    }
-
-    &[data-color="12"] {
-        color: var(--color-event-text-12);
-        background-color: var(--color-event-bg-12);
-
-        &.selected {
-            background-color: var(--color-event-12);
-        }
-    }
-
-    &[data-color="13"] {
-        color: var(--color-event-text-13);
-        background-color: var(--color-event-bg-13);
-
-        &.selected {
-            background-color: var(--color-event-13);
-        }
-    }
-
-    &[data-color="14"] {
-        color: var(--color-event-text-14);
-        background-color: var(--color-event-bg-14);
-
-        &.selected {
-            background-color: var(--color-event-14);
-        }
-    }
-
-    &[data-color="15"] {
-        color: var(--color-event-text-15);
-        background-color: var(--color-event-bg-15);
-
-        &.selected {
-            background-color: var(--color-event-15);
-        }
-    }
-
-    &[data-color="16"] {
-        color: var(--color-event-text-16);
-        background-color: var(--color-event-bg-16);
-
-        &.selected {
-            background-color: var(--color-event-16);
-        }
-    }
-
-    &[data-color="17"] {
-        color: var(--color-event-text-17);
-        background-color: var(--color-event-bg-17);
-
-        &.selected {
-            background-color: var(--color-event-17);
-        }
-    }
-
-    &[data-color="18"] {
-        color: var(--color-event-text-18);
-        background-color: var(--color-event-bg-18);
-
-        &.selected {
-            background-color: var(--color-event-18);
-        }
-    }
-
-    &[data-color="19"] {
-        color: var(--color-event-text-19);
-        background-color: var(--color-event-bg-19);
-
-        &.selected {
-            background-color: var(--color-event-19);
-        }
-    }
-}
-
 .new-event {
     position: fixed;
     width: 160px;
@@ -478,84 +307,10 @@
                 margin-right: 12px;
                 vertical-align: -6px;
 
-                &[data-color="0"] {
-                    background-color: var(--color-event-0);
-                }
-            
-                &[data-color="1"] {
-                    background-color: var(--color-event-1);
-                }
-            
-                &[data-color="2"] {
-                    background-color: var(--color-event-2);
-                }
-            
-                &[data-color="3"] {
-                    background-color: var(--color-event-3);
-                }
-            
-                &[data-color="4"] {
-                    background-color: var(--color-event-4);
-                }
-            
-                &[data-color="5"] {
-                    background-color: var(--color-event-5);
-                }
-            
-                &[data-color="6"] {
-                    background-color: var(--color-event-6);
-                }
-            
-                &[data-color="7"] {
-                    background-color: var(--color-event-7);
-                }
-            
-                &[data-color="8"] {
-                    background-color: var(--color-event-8);
-                }
-            
-                &[data-color="9"] {
-                    background-color: var(--color-event-9);
-                }
-            
-                &[data-color="10"] {
-                    background-color: var(--color-event-10);
-                }
-            
-                &[data-color="11"] {
-                    background-color: var(--color-event-11);
-                }
-            
-                &[data-color="12"] {
-                    background-color: var(--color-event-12);
-                }
-            
-                &[data-color="13"] {
-                    background-color: var(--color-event-13);
-                }
-            
-                &[data-color="14"] {
-                    background-color: var(--color-event-14);
-                }
-            
-                &[data-color="15"] {
-                    background-color: var(--color-event-15);
-                }
-            
-                &[data-color="16"] {
-                    background-color: var(--color-event-16);
-                }
-            
-                &[data-color="17"] {
-                    background-color: var(--color-event-17);
-                }
-            
-                &[data-color="18"] {
-                    background-color: var(--color-event-18);
-                }
-            
-                &[data-color="19"] {
-                    background-color: var(--color-event-19);
+                @for $i from 0 through 19 {
+                    &[data-color="#{$i}"] {
+                        background-color: var(--color-event-#{$i});
+                    }
                 }
             }
 
