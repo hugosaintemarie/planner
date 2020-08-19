@@ -18,6 +18,7 @@ export default {
         // Update calendars start and end
         $(document).on('change', '#start, #end', () => {
             this.updateCalendars();
+            data.save();
         });
 
         // Switch calendar

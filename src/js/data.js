@@ -23,6 +23,9 @@ export default {
 
         ui.changeTool(data.selectedTool);
 
+        if (data.start) $('#start').val(data.start);
+        if (data.end) $('#end').val(data.end);
+
         calendars.getStartEnd();
 
         // Add events
@@ -46,6 +49,8 @@ export default {
         if (this.loading) return false;
 
         const data = {
+            start: $('#start').val(),
+            end: $('#end').val(),
             events: [...events.data],
             calendars: [...calendars.data],
             selectedCalendar: calendars.selected,
