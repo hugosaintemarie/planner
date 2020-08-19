@@ -25,6 +25,8 @@ export default {
     startSort(e) {
         const $icon = $(e.target);
         this.$sortedEl = $icon.closest('.sortable');
+
+        this.$sortedEl.addClass('sorting');
         
         // Ignore sort if only child
         if (this.$sortedEl.is(':only-child')) return;
@@ -118,6 +120,8 @@ export default {
 
         if ($parent.parents('.calendars-wrap').length) calendars.reorder();
         else if ($parent.parents('.events-wrap').length) events.reorder();
+
+        this.$sortedEl.removeClass('sorting');
     
         this.$sortedEl = null;
 

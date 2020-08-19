@@ -305,6 +305,23 @@
 
                 }
             }
+
+            &.sorting {
+                cursor: grabbing;
+
+                .tools {
+                    i {
+                        &:hover {
+                            color: #999;
+                            cursor: grabbing;
+                        }
+
+                        &[data-tool="sort"] {
+                            color: white;
+                        }
+                    }
+                }
+            }
         }
     }
 
