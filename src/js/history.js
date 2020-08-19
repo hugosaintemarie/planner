@@ -1,3 +1,4 @@
+import data from './data';
 import events from './events';
 
 export default {
@@ -18,6 +19,8 @@ export default {
         if (action.type === 'addEvents') for (const event of action.events) events.removeEvent(event);
         else if (action.type === 'removeEvents') for (const event of action.events) events.buildEvent(event);
         else if (action.type === 'replaceEvents') for (const event of action.events) events.replaceEvent(event, true);
+
+        data.save();
     },
 
     redo() {
@@ -29,5 +32,7 @@ export default {
         ;
 
         this.actionsIndex += 1;
+
+        data.save();
     }
 }
