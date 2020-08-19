@@ -56,5 +56,22 @@ export default {
 
     findHighestWeekDay(arr) {
         return Math.max(...arr.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
+    },
+
+    toWeeksArray(days) {
+        const weeks = days.reduce((acc, curr) => {
+            if (!acc.length) {
+                acc = [[curr]];
+            } else {
+                const lastWeek = acc[acc.length - 1];
+
+                if (curr.getWeek() === lastWeek[lastWeek.length - 1].getWeek()) lastWeek.push(curr);
+                else acc.push([curr]);
+            }
+
+            return acc;
+        }, []);
+        
+        return weeks;
     }
 }

@@ -17,11 +17,7 @@ export default {
     init() {
         // Update calendars start and end
         $(document).on('change', '#start, #end', () => {
-            this.getStartEnd();
-            const calendar = this.buildCalendar();
-
-            $('.calendar-wrap .content').html(calendar);
-            $('.calendars-wrap .calendar .content').html(calendar);
+            this.updateCalendars();
         });
 
         // Switch calendar
@@ -82,53 +78,120 @@ export default {
     },
     
     buildCalendar() {
-        const start = this.start;
-        const end = this.end;
-        if (end < start) return;
+        if (this.end < this.start) return;
     
         // Find first week day
-        const first = dates.relativeFirstWeekDay(start);
+        const first = dates.relativeFirstWeekDay(this.start);
 
         // Create range from first day to end
-        const days = dates.range(first, end);
+        const days = dates.range(first, this.end);
     
         // Fill last week
         while (days.length % 7 !== 0) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
 
         // Convert days 1D array to weeks 2D array
-        const weeks = days.reduce((acc, curr) => {
-            if (!acc.length) {
-                acc = [[curr]];
-            } else {
-                const lastWeek = acc[acc.length - 1];
-
-                if (curr.getWeek() === lastWeek[lastWeek.length - 1].getWeek()) lastWeek.push(curr);
-                else acc.push([curr]);
-            }
-
-            return acc;
-        }, []);
+        const weeks = dates.toWeeksArray(days);
 
         // Build HTML
         let html = '';
         for (const week of weeks) {
             html += '<div>';
-
-            for (const day of week) {
-                const date = dates.toString(day);
-                day.setHours(0);
-    
-                // Show day cell as out of bounds if necessary
-                let classname = day < start || day > end ? ' out' : '';
-                if (day.getDay() === 6 || day.getDay() === 0) classname += ' off';
-        
-                html += `<div class="day${classname}" data-day="${day.getDay()}" data-date="${date}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span><div class="events"></div></div>`;
-            }
-
+            for (const day of week) html += this.buildDayHTML(day);
             html += '</div>';
         }
     
         return html;
+    },
+
+    buildDayHTML(day) {
+        const date = dates.toString(day);
+        day.setHours(0);
+
+        // Show day cell as out of bounds if necessary
+        let classname = day < this.start || day > this.end ? ' out' : '';
+        if (day.getDay() === 6 || day.getDay() === 0) classname += ' off';
+
+        const html = `<div class="day${classname}" data-day="${day.getDay()}" data-date="${date}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span><div class="events"></div></div>`;
+
+        return html;
+    },
+
+    updateCalendars() {
+        let toAdd = [];
+        let toDelete = [];
+        let toSetIn = [];
+        let toSetOut = [];
+
+        const oldStart = this.start;
+        const oldEnd = this.end;
+        this.getStartEnd();
+        const start = this.start;
+        const end = this.end;
+
+        const oldFirst = dates.relativeFirstWeekDay(oldStart);
+        const first = dates.relativeFirstWeekDay(start);
+        const oldLast = dates.relativeLastWeekDay(oldEnd);
+        const last = dates.relativeLastWeekDay(end);
+
+        if (oldStart < start) {
+            toDelete.push(...dates.range(oldFirst, dates.relativeDate(first, -1)));
+            toSetOut.push(...dates.range(first, dates.relativeDate(start, -1)));
+        } else if (oldStart > start) {
+            toAdd.push(...dates.range(first, dates.relativeDate(oldFirst, -1)));
+            toSetIn.push(...dates.range(start, dates.relativeDate(oldStart, -1)));
+        }
+
+        if (oldEnd < end) {
+            toAdd.push(...dates.range(dates.relativeDate(oldLast, 1), last));
+            toSetIn.push(...dates.range(dates.relativeDate(oldEnd, 1), end));
+        } else if (oldEnd > end) {
+            toDelete.push(...dates.range(dates.relativeDate(last, 1), oldLast));
+            toSetOut.push(...dates.range(dates.relativeDate(end, 1), last));
+        }
+
+        // Add new days
+        if (toAdd.length > 1) {
+            const weeks = dates.toWeeksArray(toAdd);
+
+            let html = '';
+            for (const week of weeks) {
+                html += '<div>';
+
+                for (const day of week) {
+                    const date = dates.toString(day);
+                    html += this.buildDayHTML(day);
+                }
+
+                html += '</div>';
+            }
+
+            if (oldStart > start) $('.calendar').prepend(html);
+            else if (oldEnd < end) $('.calendar').append(html);
+
+            this.updateCalendarHeight();
+        }
+
+        // Remove 'out' class for days that are now in scope
+        for (const day of toSetIn) {
+            const date = dates.toString(day);
+            $(`.day[data-date="${date}"]`).removeClass('out');
+        }
+
+        // Delete excessive days
+        if (toDelete.length >= 7) {
+            for (const day of toDelete) {
+                const date = dates.toString(day);
+                $(`.day[data-date="${date}"]`).remove();
+            }
+        }
+
+        // Set out remaining out-of-scope days
+        if (toSetOut.length > 1) {
+            for (const day of toSetOut) { 
+                const date = dates.toString(day);
+                $(`.day[data-date="${date}"]`).addClass('out');
+            }
+        }
     },
 
     newCalendar(calendar) {
