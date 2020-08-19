@@ -41,6 +41,10 @@ export default {
                     selection.selectAll();
                     $('nav li.open').removeClass('open');
                 }
+                else if (tool === 'edit-all') {
+                    $target.toggleClass('checked');
+                    $('.calendars-wrap').toggleClass('edit-all');
+                }
             }
 
             return false;

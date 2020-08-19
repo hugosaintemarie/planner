@@ -116,7 +116,12 @@ export default {
         // Save status
         this.capsLockIsDown = isDown;
 
-        if (isDown) $('.calendars-wrap').addClass('edit-all');
-        else $('.calendars-wrap').removeClass('edit-all');
+        if (isDown) {
+            $('.calendars-wrap').addClass('edit-all');
+            $('nav [data-tool="edit-all"]').addClass('checked');
+        } else {
+            $('.calendars-wrap').removeClass('edit-all');
+            $('nav [data-tool="edit-all"]').removeClass('checked');
+        }
     }
 }

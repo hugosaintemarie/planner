@@ -68,6 +68,7 @@ export default {
 
         // Toggle edit all
         $(document).on('click', '.toggle-edit-all', () => {
+            $('nav [data-tool="edit-all"]').toggleClass('checked');
             $('.calendars-wrap').toggleClass('edit-all');
         });
     },
