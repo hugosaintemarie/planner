@@ -342,6 +342,9 @@ export default {
     },
 
     reorder() {
+        // Update linear view
+        if (ui.viewIs('linear')) ui.linearView();
+
         this.data.forEach(c => c.order = parseInt($(`.calendars-wrap .calendar[data-id="${c.id}"]`).attr('data-order')));
     }
 }
