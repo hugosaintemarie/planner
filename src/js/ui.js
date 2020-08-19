@@ -1,6 +1,7 @@
 import calendars from './calendars';
 import data from './data';
 import dates from './dates';
+import history from './history';
 import selection from './selection';
 
 export default {
@@ -8,7 +9,7 @@ export default {
     tool: 'select',
 
     init() {
-        $(document).on('click', 'header nav>ul>li', e => {
+        $(document).on('click', 'header nav > ul > li', e => {
             const $el = $(e.currentTarget);
             $el.siblings('.open').removeClass('open');
             $el.toggleClass('open');
@@ -16,7 +17,7 @@ export default {
             return false;
         });
 
-        $(document).on('mouseenter', 'header nav>ul>li', e => {
+        $(document).on('mouseenter', 'header nav > ul > li', e => {
             const $el = $(e.currentTarget);
             if ($el.siblings('.open').length) {
                 $('header ul li.open').removeClass('open');
@@ -26,11 +27,15 @@ export default {
             return false;
         });
 
-        $(document).on('click', 'header nav>ul>li li:not(.disabled)', e => {
+        $(document).on('click', 'header nav li:not(.disabled)', e => {
             const $target = $(e.currentTarget);
+
             if ($target.attr('data-checkable') === '') {
                 if ($target.attr('data-radio')) this.onRadioChange($target);
                 else this.check($target);
+            } else if ($target.attr('data-tool')) {
+                if ($target.attr('data-tool') === 'undo') history.undo();
+                else if ($target.attr('data-tool') === 'redo') history.redo();
             }
 
             return false;
