@@ -123,7 +123,7 @@ export default {
         }).toArray();
 
         if (filter) {
-            const eventsInSelection = selection.selectedDays.map(day => $(`.calendar-wrap .day[data-date="${dates.toString(day)}"] .event`).map((id, el) => $(el).attr('data-type')).toArray()).flat();
+            const eventsInSelection = selection.selectedDays.map(day => $(`.day[data-date="${dates.toString(day)}"] .event`).map((_, el) => $(el).attr('data-type')).toArray()).flat();
             list = list.filter(li => eventsInSelection.includes($(li).find('.event').attr('data-type')));
         }
 

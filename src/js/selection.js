@@ -733,14 +733,14 @@ export default {
 
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
-            const $events = $(`.calendar-wrap .day[data-date="${date}"] .event[data-type="${from}"]`);
+            const $events = $('.calendars-wrap').hasClass('edit-all') ? $(`.day[data-date="${date}"] .event[data-type="${from}"]`) : $(`.calendar.selected .day[data-date="${date}"] .event[data-type="${from}"]`);
 
             $events.each((_, el) => {
                 const $el = $(el);
 
                 const event = {
                     id: parseInt($el.attr('data-id')),
-                    calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
+                    calendar: parseInt($el.closest('.calendar').attr('data-id')),
                     type: to,
                     from,
                     start: date,
@@ -770,14 +770,14 @@ export default {
 
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
-            const $events = $(`.calendar-wrap .day[data-date="${date}"] .event[data-type="${type}"]`);
+            const $events = $('.calendars-wrap').hasClass('edit-all') ? $(`.day[data-date="${date}"] .event[data-type="${type}"]`) : $(`.calendar.selected .day[data-date="${date}"] .event[data-type="${type}"]`);
 
-            $events.each((id, el) => {
+            $events.each((_, el) => {
                 const $el = $(el);
 
                 const event = {
                     id: parseInt($el.attr('data-id')),
-                    calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
+                    calendar: parseInt($el.closest('.calendar').attr('data-id')),
                     type: parseInt($el.attr('data-type')),
                     start: date,
                     end: date
