@@ -798,7 +798,11 @@ export default {
     },
 
     allDaysEmpty() {
-        return !this.selectedDays.some(day => $(`.day[data-date="${dates.toString(day)}"] .event`).length);
+        if ($('.calendars-wrap').hasClass('edit-all')) {
+            return !this.selectedDays.some(day => $(`.day[data-date="${dates.toString(day)}"] .event`).length);
+        } else {
+            return !this.selectedDays.some(day => $(`.calendar.selected .day[data-date="${dates.toString(day)}"] .event`).length);
+        }
     },
 
     selectEventByID(id) {
