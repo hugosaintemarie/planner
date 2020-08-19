@@ -73,8 +73,6 @@ export default {
 
         // Up/down arrow keys + enter key in new event type options
         $(document).on('keydown', e => {
-            if (!$('.new-event').hasClass('visible')) return;
-
             const $li = $('.new-event ul li.selected');
             
             if (e.which === 38) { // Up
