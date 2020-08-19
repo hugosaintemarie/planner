@@ -34,8 +34,13 @@ export default {
                 if ($target.attr('data-radio')) this.onRadioChange($target);
                 else this.check($target);
             } else if ($target.attr('data-tool')) {
-                if ($target.attr('data-tool') === 'undo') history.undo();
-                else if ($target.attr('data-tool') === 'redo') history.redo();
+                const tool = $target.attr('data-tool');
+                if (tool === 'undo') history.undo();
+                else if (tool === 'redo') history.redo();
+                else if (tool === 'select-all') {
+                    selection.selectAll();
+                    $('nav li.open').removeClass('open');
+                }
             }
 
             return false;
