@@ -506,8 +506,6 @@ export default {
                     id,
                     calendar: parseInt($el.parents('.calendar').attr('data-id')),
                     type: parseInt($el.attr('data-type')),
-                    // title: $el.find('.title').text(),
-                    // color: $el.css('background-color'),
                     start,
                     end
                 };
@@ -745,8 +743,6 @@ export default {
                     calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
                     type: to,
                     from,
-                    // title: $el.find('.title').text(),
-                    // color: $el.css('background-color'),
                     start: date,
                     end: date
                 };
@@ -783,8 +779,6 @@ export default {
                     id: parseInt($el.attr('data-id')),
                     calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
                     type: parseInt($el.attr('data-type')),
-                    // title: $el.find('.title').text(),
-                    // color: $el.css('background-color'),
                     start: date,
                     end: date
                 };
