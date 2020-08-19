@@ -92,7 +92,7 @@ export default {
                     $('.new-event ul li:first-child').addClass('selected');
                 }
             } else if (e.which === 13) { // Enter
-                if ($li.length) {
+                if ($li.length && $('.new-event').hasClass('visible')) {
                     const type = parseInt($li.attr('data-type'));
                     this.changeType(type);
                 } else {
