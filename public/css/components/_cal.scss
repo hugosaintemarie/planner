@@ -35,6 +35,8 @@
 
     .head {
         display: flex;
+        border-bottom: 1px solid #444444;
+        margin-bottom: -1px;
         
         > div {
             position: relative;
@@ -71,7 +73,7 @@
         }
     }
 
-    .content {
+    .calendar {
         max-height: calc(100% - 64px);
         padding-bottom: 16px;
         overflow-y: auto;
@@ -102,14 +104,14 @@
             transition: height .5s ease;
 
             &.off {
-                background-color: #242424;
+                background-color: rgba(255,255,255,.025);
             }
 
             &.out {
                 border-color: #44444450;
 
                 &.off:not(.selected) {
-                    background-color: #24242450;
+                    background-color: rgba(255,255,255,.0125);
                 }
                 
                 span {
@@ -120,7 +122,7 @@
             &.selected {
                 background-color: #61a0ff20;
 
-                > span {
+                &:not(.out) > span {
                     color: #888;
                 }
 
@@ -362,10 +364,12 @@ main.linear {
         }
     
         .head {
-            width: fit-content;
+            display: block;
+            width: max-content;
 
             > div {
-                flex: 0 0 139px;
+                display: inline-block;
+                width: 139px;
                 padding-left: 0;
                 cursor: default;
 
@@ -381,6 +385,10 @@ main.linear {
             padding-right: 16px;
             padding-bottom: 0;
             margin-top: -1px;
+
+            &:nth-child(3) {
+                padding-top: 0;
+            }
     
             .day {
                 width: 140px;
