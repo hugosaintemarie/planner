@@ -141,10 +141,11 @@ export default {
             data.save();
         });
 
-        // // Selected event
+        // Selected event
         // $(document).on('mousedown', '.events-wrap ul li', e => {
-        //     $('.events-wrap ul li.selected').removeClass('selected');
-        //     $(e.target).closest('li').addClass('selected');
+        //     const $el = $(e.currentTarget);
+        //     $el.siblings('.selected').removeClass('selected');
+        //     $el.toggleClass('selected');
         // });
 
         for (let i = 0; i < 19; i += 1) {
@@ -175,8 +176,8 @@ export default {
             $ul.append(li);
 
             // Select new event
-            $ul.find('li.selected').removeClass('selected');
-            $ul.find('li:last-child').addClass('selected');
+            // $ul.find('li.selected').removeClass('selected');
+            // $ul.find('li:last-child').addClass('selected');
 
             // Focus span if empty
             if (!event) $ul.find('li:last-child .title').focus();

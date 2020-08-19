@@ -19,11 +19,18 @@
 
             @for $i from 0 through 19 {
                 &[data-color="#{$i}"] {
-                    background-color: var(--color-event-#{$i});
+                    color: var(--color-event-text-#{$i});
+                    background-color: var(--color-event-bg-#{$i});
+
+                    &.selected {
+                        color: white;
+                        background-color: var(--color-event-#{$i});
+                    }
                 }
             }
 
-            > span {
+            .title {
+                font-weight: 600;
                 display: inline-block;
                 padding: 4px 8px;
                 border-radius: 4px;
