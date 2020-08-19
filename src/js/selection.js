@@ -128,17 +128,26 @@ export default {
         });
 
         // Click outside calendar submits new event
-        $(document).on('click', e => {
-            if (this.event && !$(e.target).closest('.calendar-wrap .calendar').length) this.changeType();
-
+        $(document).on('click', '.calendar-wrap .event', e => {
             if (ui.toolIs('draw')) {
+                if (this.event) this.changeType();
+
                 const multiSelect = e.metaKey || e.ctrlKey || e.shiftKey;
                 if (!multiSelect) $('.event.selected').removeClass('selected');
                 $('.new-event').removeClass('visible');
 
                 const id = $(e.target).closest('.event').attr('data-id');
                 if (!isNaN(id)) this.selectEventByID(id);
+                return false;
             }
+        });
+
+        // Click anywhere
+        $(document).on('click', e => {
+            // Click outside calendar submits new event
+            if (this.event && !$(e.target).closest('.calendar-wrap .calendar').length) this.changeType();
+
+            $('.event.selected').removeClass('selected');
         });
     },
 
