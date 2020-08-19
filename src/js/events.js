@@ -271,30 +271,38 @@ export default {
         data.save();
     },
 
-    buildEvent(event) {
-        const getEventsWrap = (day) => {
-            const date = dates.toString(new Date(day));
-            let $el;
-            if ($('.calendars-wrap').hasClass('edit-all')) {
-                $el = $(`.day[data-date="${date}"] .events`);
-            } else {
-                $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
-            }
-            return $el;
+    getEventsWrap(event, day) {
+        const date = dates.toString(new Date(day));
+        let $el;
+        if ($('.calendars-wrap').hasClass('edit-all')) {
+            $el = $(`.day[data-date="${date}"] .events`);
+        } else {
+            $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
         }
+        return $el;
+    },
 
+    getEventTopCoordinate(event) {
         const range = dates.range(event.start, event.end);
 
         // Get first available top coordinate for multi-days event
         const top = new Array(32).fill(0).map(d => d).findIndex((_, i) => {
             return range.map(day => {
-                const events = getEventsWrap(day).eq(0).find('.event').toArray();
+                const events = this.getEventsWrap(event, day).eq(0).find(`.event[data-id!="${event.id}"]`).toArray();
                 return events.every(ev => parseInt($(ev).css('top')) !== i * 32);
             }).every(d => d);
         });
 
+        return top;
+    },
+
+    buildEvent(event) {
+        const range = dates.range(event.start, event.end);
+
+        const top = this.getEventTopCoordinate(event);
+
         for (const day of range) {
-            const $events = getEventsWrap(day);
+            const $events = this.getEventsWrap(event, day);
     
             // Build classname
             let classname = '';
@@ -358,6 +366,32 @@ export default {
 
     removeEvent(event) {
         $(`.event[data-id="${event.id}"]`).remove();
+
+        // Find all events to update top coordinate for
+        const range = dates.range(event.start, event.end);
+        const eventIDs = new Set();
+
+        for (const day of range) {
+            const $events = this.getEventsWrap(event, day);
+            $events.find('.event').each((_, el) => {
+                const $el = $(el);
+                const id = parseInt($el.attr('data-id'));
+                eventIDs.add(id);
+            });
+        }
+
+        for (const id of eventIDs) {
+            const event = { id,
+                start: $(`.event[data-id="${id}"].start`).eq(0).closest('.day').attr('data-date'),
+                end: $(`.event[data-id="${id}"].end`).eq(0).closest('.day').attr('data-date'), 
+                calendar: parseInt($(`.event[data-id="${id}"].start`).eq(0).closest('.calendar').attr('data-id'))
+            };
+
+            // Update top coordinate
+            const top = this.getEventTopCoordinate(event);
+            $(`.event[data-id="${id}"]`).css('top', top * 32);
+        }
+
         calendars.updateCalendarHeight();
 
         // Update data
