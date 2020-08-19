@@ -55,14 +55,16 @@ export default {
             }
         });
 
-        $(document).on('mousemove', '.panel ul li:not([disabled])', e => {
+        $(document).on('mouseenter', '.panel ul li:not([disabled])', e => {
             const $el = $(e.target).closest('li');
             $('.panel ul li.selected').removeClass('selected');
             $el.addClass('selected');
         });
 
         $(document).on('click', '.panel ul li', e => {
-            if ($(e.currentTarget).is('[disabled]')) return false;
+            const $el = $(e.currentTarget);
+            if ($el.is('[disabled]')) return false;
+            $el.siblings('.picked').removeClass('picked');
 
             this.confirm();
             return false;
