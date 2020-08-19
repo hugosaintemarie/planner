@@ -53,7 +53,7 @@ export default {
                 'top': $el.position().top,
                 'left': $el.position().left,
                 'width': $el.outerWidth(),
-                'height': $el.outerHeight()
+                // 'height': $el.outerHeight()
             });
         });
     
@@ -109,7 +109,7 @@ export default {
                 'top': '',
                 'left': '',
                 'width': '',
-                'height': '',
+                // 'height': '',
                 'position': ''
             });
 
