@@ -112,8 +112,19 @@ export default {
         });
 
         // Double-click on an event in main calendar
-        $(document).on('dblclick', '.calendar-wrap .day .event', () => {
-            if (ui.toolIs('draw')) return false;
+        $(document).on('dblclick', '.calendar-wrap .day .event', e => {
+            if (ui.toolIs('draw')) {
+                const $event = $(`.calendar-wrap .event.start[data-id="${$(e.currentTarget).attr('data-id')}"]`);
+
+                $('.new-event').css({
+                    'top': $event.offset().top + $event.outerHeight() + 8,
+                    'left': $event.offset().left
+                })
+                .html(this.buildEventsTypesOptions(events.data))
+                .addClass('visible');
+
+                return false;
+            }
         });
 
         // Click outside calendar submits new event
@@ -123,6 +134,7 @@ export default {
             if (ui.toolIs('draw')) {
                 const multiSelect = e.metaKey || e.ctrlKey || e.shiftKey;
                 if (!multiSelect) $('.event.selected').removeClass('selected');
+                $('.new-event').removeClass('visible');
 
                 const id = $(e.target).closest('.event').attr('data-id');
                 if (!isNaN(id)) this.selectEventByID(id);
@@ -206,8 +218,18 @@ export default {
     },
 
     changeType(type) {
-        const calendar = calendars.data.find(c => c.events.some(e => e.id === this.eventID));
-        const event = calendar.events.find(e => e.id === this.eventID);
+        let event;
+        let calendar;
+
+        if (this.eventID && !isNaN(this.eventID)) {
+            calendar = calendars.data.find(c => c.events.some(e => e.id === this.eventID));
+            event = calendar.events.find(e => e.id === this.eventID);
+        } else {
+            const $event = $('.calendar-wrap .event.start.selected').eq(0);
+            const eventID = parseInt($event.attr('data-id'));
+            calendar = calendars.data.find(c => c.events.some(e => e.id === eventID));
+            event = calendar.events.find(e => e.id === eventID);
+        }
 
         if (isNaN(type)) {
             // New event
@@ -226,6 +248,7 @@ export default {
         $('.new-event').removeClass('visible');
 
         this.event = null;
+        this.eventID = null;
 
         stats.update();
         data.save();
@@ -566,6 +589,8 @@ export default {
         
         // If only one selected day, toggle it
         $onlySelectedDay.removeClass('selected');
+
+        $('.new-event').removeClass('visible');
     },
         
     copySelection() {
