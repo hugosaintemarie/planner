@@ -135,7 +135,7 @@ export default {
 
         // Duplicate every minical
         $('.calendar-wrap .calendar').remove();
-        $('.calendars-wrap .calendar').each((id, el) => {
+        $('.calendars-wrap .calendar').each((_, el) => {
             const $el = $(el);
             const content = $el.find('.content').html();
             $('.calendar-wrap').append(`<div class="content calendar" data-id="${$el.attr('data-id')}">${content}</div>`);

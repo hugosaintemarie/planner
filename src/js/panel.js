@@ -117,7 +117,7 @@ export default {
     },
 
     buildEventsList(action, filter = false) {
-        let list = $('.events-wrap ul li').map((id, el) => {
+        let list = $('.events-wrap ul li').map((_, el) => {
             const $el = $(el);
             return `<li data-tool="${action}-event"><span class="event" data-type="${$el.attr('data-type')}" data-color="${$el.attr('data-color')}"><span class="title">${$el.find('.title').text()}</span></span></li>`;
         }).toArray();

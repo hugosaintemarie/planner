@@ -329,7 +329,7 @@ export default {
     },
 
     updateCalendarHeight() {
-        const mostEventsPerDay = Math.max(...$('.calendar-wrap .day .events').map((id, el) => $(el).find('.event').length));
+        const mostEventsPerDay = Math.max(...$('.calendar-wrap .day .events').map((_, el) => $(el).find('.event').length));
         const height = `${Math.max(40 + mostEventsPerDay * 32, 72)}px`;
         $('.calendar-wrap .day').css('height', height);
 

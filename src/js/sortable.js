@@ -49,7 +49,7 @@ export default {
             'height': $parent.outerHeight()
         });
     
-        $parent.children().each((id, el) => {
+        $parent.children().each((_, el) => {
             const $el = $(el);
             $el.css({
                 'top': $el.position().top,
@@ -59,7 +59,7 @@ export default {
             });
         });
     
-        $parent.children().each((id, el) => {
+        $parent.children().each((_, el) => {
             $(el).css('position', 'absolute');
         });
     },
@@ -73,7 +73,7 @@ export default {
             // 'left': this.sortedPosition.left + deltaX
         });
     
-        this.$sortedEl.nextAll().each((id, el) => {
+        this.$sortedEl.nextAll().each((_, el) => {
             const $el = $(el);
             if (this.$sortedEl.position().top + this.$sortedEl.outerHeight() > $el.position().top + $el.outerHeight() / 2) {
                 $el.css('top', $el.position().top - this.$sortedEl.outerHeight(true));
@@ -81,7 +81,7 @@ export default {
             }
         });
     
-        this.$sortedEl.prevAll().each((id, el) => {
+        this.$sortedEl.prevAll().each((_, el) => {
             const $el = $(el);
             if (this.$sortedEl.position().top < $el.position().top + $el.outerHeight() / 2) {
                 this.$sortedEl.after($el);

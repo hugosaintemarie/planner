@@ -607,7 +607,7 @@ export default {
     
             // Copy day events to clipboard
             if ($events.length) {
-                $events.each((id, el) => {
+                $events.each((_, el) => {
                     const $el = $(el);
         
                     const event = {
@@ -737,7 +737,7 @@ export default {
             const date = dates.toString(day);
             const $events = $(`.calendar-wrap .day[data-date="${date}"] .event[data-type="${from}"]`);
 
-            $events.each((id, el) => {
+            $events.each((_, el) => {
                 const $el = $(el);
 
                 const event = {
