@@ -167,8 +167,8 @@ export default {
                 html += '</div>';
             }
 
-            if (oldStart > start) $('.calendar').prepend(html);
-            else if (oldEnd < end) $('.calendar').append(html);
+            if (oldStart > start) $('.calendar.content, .calendar > .content').prepend(html);
+            else if (oldEnd < end) $('.calendar.content, .calendar > .content').append(html);
 
             this.updateCalendarHeight();
         }
