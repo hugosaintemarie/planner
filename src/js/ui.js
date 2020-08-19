@@ -103,6 +103,7 @@ export default {
             const view = $target.attr('data-value');
             if (view === 'full') this.fullView()
             else if (view === 'linear') this.linearView();
+            data.save();
         }
     },
 

@@ -22,6 +22,7 @@ export default {
         data = JSON.parse(data);
 
         ui.changeTool(data.selectedTool);
+        if (data.view === 'linear') ui.linearView();
 
         if (data.start) $('#start').val(data.start);
         if (data.end) $('#end').val(data.end);
@@ -54,7 +55,8 @@ export default {
             events: [...events.data],
             calendars: [...calendars.data],
             selectedCalendar: calendars.selected,
-            selectedTool: ui.tool
+            selectedTool: ui.tool,
+            view: ui.view
         }
 
         if (manual) {
