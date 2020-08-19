@@ -35,7 +35,6 @@
 
     .head {
         display: flex;
-        border-bottom: 1px solid #444444;
         
         > div {
             position: relative;
@@ -77,6 +76,10 @@
         padding-bottom: 16px;
         overflow-y: auto;
         padding-left: 1px;
+
+        &:nth-child(3) {
+            padding-top: 1px;
+        }
 
         &::-webkit-scrollbar {
             width: 0;
