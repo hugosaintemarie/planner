@@ -188,11 +188,9 @@ export default {
         }
 
         // Set out remaining out-of-scope days
-        if (toSetOut.length > 1) {
-            for (const day of toSetOut) { 
-                const date = dates.toString(day);
-                $(`.day[data-date="${date}"]`).addClass('out');
-            }
+        for (const day of toSetOut) { 
+            const date = dates.toString(day);
+            $(`.day[data-date="${date}"]`).addClass('out');
         }
     },
 
