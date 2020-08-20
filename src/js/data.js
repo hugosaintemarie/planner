@@ -43,7 +43,9 @@ export default {
         events.eventID = Math.max(...data.calendars.map(c => c.events.map(e => e.id)).flat());
 
         // Hide days if necessary
-        if (data.daysShown) for (const [day, show] of data.daysShown.entries()) ui.showHideWeekday(day, show);
+        if (data.daysShown) for (const [day, show] of data.daysShown.entries()) {
+            if (!show) ui.showHideWeekday(day, show);
+        }
 
         this.loading = false;
         this.loaded = true;
