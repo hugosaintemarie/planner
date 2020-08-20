@@ -37,7 +37,11 @@ export default {
 
         // Release click on a day in main calendar
         $(document).on('mouseup', '.calendar-wrap .day', () => {
-            if (ui.toolIs('draw')) this.endDraw();
+            if (ui.toolIs('draw')) {
+                if (this.drawing) this.endDraw();
+                else if (this.dragging) this.endDrag();
+                else if (this.resizing) this.endResize();
+            }
         });
 
         // Mouse enters a day in main calendar
@@ -71,6 +75,10 @@ export default {
         $(document).on('click', '.new-event ul li', e => {
             const type = parseInt($(e.currentTarget).attr('data-type'));
             this.changeType(type);
+        });
+
+        $(document).on('mousedown', '.new-event ul li', () => {
+            return false;
         });
 
         // Up/down arrow keys + enter key in new event type options
@@ -166,6 +174,7 @@ export default {
             // Click outside calendar submits new event
             // if (this.event && !$(e.target).closest('.calendar-wrap .calendar').length) this.changeType();
 
+            $('.new-event').removeClass('visible');
             $('.event.selected').removeClass('selected');
         });
 
@@ -193,16 +202,12 @@ export default {
         });
 
         $(document).on('mouseup', () => {
-            this.event = null;
-            
-            if (this.dragging) {
-                this.dragging = false;
-            } else if (this.resizing) {
-                this.resizing = false;
-                $('.calendar.resizing').removeClass('resizing');
-            }
+            if (this.dragging) this.endDrag();
+            else if (this.resizing) this.endResize();
+        });
 
-            data.save();
+        $(document).on('dblclick', '.calendar-wrap .event .anchor', () => {
+            return false;
         });
     },
 
@@ -919,13 +924,35 @@ export default {
         this.event.dragging = dates.relativeDate(new Date(this.event.dragging), delta);
 
         events.updateEvent(this.event);
+
+
+        this.selectEventByID(this.event.id);
+    },
+
+    endDrag() {
+        this.event = null;
+
+        this.dragging = false;
+
+        data.save();
     },
 
     resizeEvent(e) {
         const $day = $(e.currentTarget);
         const date = $day.attr('data-date');
 
-        this.event[this.event.anchor] = date;
+        if (this.event.anchor === 'start' && date <= this.event.end) this.event.start = date;
+        else if (this.event.anchor === 'end' && date >= this.event.start) this.event.end = date;
+        
         events.updateEvent(this.event);
+    },
+
+    endResize() {
+        this.event = null;
+        
+        this.resizing = false;
+        $('.calendar.resizing').removeClass('resizing');
+
+        data.save();
     }
 }
