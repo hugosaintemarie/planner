@@ -361,9 +361,9 @@ export default {
         if (!undo) $target = $(`.events-wrap ul li[data-type="${event.type}"]`);
         else $target = $(`.events-wrap ul li[data-type="${event.from}"]`);
 
-        $el.css('background-color', $target.css('background-color'));
         $el.find('.title').text($target.find('.title').text());
         $el.attr('data-type', $target.attr('data-type'));
+        $el.attr('data-color', $target.attr('data-color'));
 
         // Update data
         calendars.data.find(c => c.id === event.calendar).events.find(e => e.id === event.id).type = event.type;
