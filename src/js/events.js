@@ -1,7 +1,6 @@
 import calendars from './calendars';
 import data from './data';
 import dates from './dates';
-import events from './events';
 import history from './history';
 import selection from './selection';
 import settings from './settings';
