@@ -34,20 +34,15 @@
     }
 
     .head {
-        display: flex;
         border-bottom: 1px solid #444444;
         margin-bottom: -1px;
-        
+
         > div {
             position: relative;
-            flex: 1;
+            padding: 16px 0;
             text-align: center;
             font-size: .8em;
             opacity: .3;
-            padding: 16px 0;
-            cursor: pointer;
-            transition: opacity .2s ease;
-            padding-left: 12px;
 
             i {
                 width: 12px;
@@ -56,19 +51,41 @@
                 opacity: 0;
                 transition: opacity .2s ease;
             }
+        }
 
-            &.open,
-            &:hover {
-                opacity: 1;
-
-                i {
-                    opacity: 1;
-                }
+        &.linear {
+            width: max-content;
+            display: none;
+    
+            > div {
+                display: inline-block;
+                width: 139px;
+                padding-left: 0;
             }
+        }
 
-            .dropdown {
-                top: 40px;
-                left: 0;
+        &.full {
+            display: flex;
+
+            > div {
+                flex: 1;
+                padding-left: 12px;
+                cursor: pointer;
+                transition: opacity .2s ease;
+
+                &.open,
+                &:hover {
+                    opacity: 1;
+
+                    i {
+                        opacity: 1;
+                    }
+                }
+
+                .dropdown {
+                    top: 40px;
+                    left: 0;
+                }
             }
         }
     }
@@ -362,20 +379,14 @@ main.linear {
         > h2 {
             display: none;
         }
-    
+
         .head {
-            display: block;
-            width: max-content;
+            &.full {
+                display: none;
+            }
 
-            > div {
-                display: inline-block;
-                width: 139px;
-                padding-left: 0;
-                cursor: default;
-
-                &:hover {
-                    opacity: .3;
-                }
+            &.linear {
+                display: block;
             }
         }
     

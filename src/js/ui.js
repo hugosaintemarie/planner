@@ -116,9 +116,6 @@ export default {
         // Update UI
         $('main').removeClass('linear');
 
-        // Update timeline
-        $('.calendar-wrap .head').html(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => `<div>${d}</div>`).join(''));
-
         // Keep only one calendar
         $('.calendar-wrap .calendar').eq(1).empty();
         $('.calendar-wrap .calendar').slice(1).remove();
@@ -144,12 +141,6 @@ export default {
 
         // Update UI
         $('main').addClass('linear');
-
-        // Create range from first day to end
-        const days = dates.range(calendars.start, calendars.end);
-
-        // Update timeline
-        $('.calendar-wrap .head').html(days.map(day => `<div>${day.toLocaleDateString('en-US', { weekday: 'short' })} ${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</div>`));
 
         // Duplicate every minical
         $('.calendar-wrap .calendar').remove();

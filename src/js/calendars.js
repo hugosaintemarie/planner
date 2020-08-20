@@ -71,12 +71,40 @@ export default {
             $('nav [data-tool="edit-all"]').toggleClass('checked');
             $('.calendars-wrap').toggleClass('edit-all');
         });
+
+        this.buildCalendarHead();
     },
 
     // Get start and end dates
     getStartEnd() {
         this.start = new Date(new Date($('#start').val()).setHours(0));
         this.end = new Date(new Date($('#end').val()).setHours(0));
+    },
+
+    buildCalendarHead() {
+        const headFull = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) =>
+            `<div data-day="${i === 6 ? 0 : i + 1}">
+                ${d}<i class="fas fa-chevron-down"></i>
+                <div class="dropdown">
+                    <span data-tool="hide-weekday"><i class="fas fa-eye-slash"></i>Hide column</span>
+                </div>
+            </div>`
+        ).join('');
+
+        $('.head.full').html(headFull);
+
+        this.getStartEnd();
+        const days = dates.range(this.start, this.end);
+
+        const headLinear = days.map(day =>
+            `<div>
+                ${day.toLocaleDateString('en-US', { weekday: 'short' })}
+                ${day.getDate()}
+                ${day.toLocaleDateString('en-US', { month: 'short' })}
+            </div>`
+        ).join('');
+
+        $('.head.linear').html(headLinear);
     },
     
     buildCalendar() {
