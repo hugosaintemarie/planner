@@ -259,6 +259,8 @@ export default {
         const $title = $event.find('.title');
         $title.attr('contenteditable', true).focus();
 
+        if (!events.data.length) return;
+
         $('.new-event').css({
             'top': $event.offset().top + $event.outerHeight() + 8,
             'left': $event.offset().left
