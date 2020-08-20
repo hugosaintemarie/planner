@@ -147,7 +147,7 @@ export default {
         $('.calendars-wrap .calendar').each((_, el) => {
             const $el = $(el);
             const content = $el.find('.content').html();
-            $('.calendar-wrap').append(`<div class="content calendar" data-id="${$el.attr('data-id')}">${content}</div>`);
+            $('.calendar-wrap').append(`<div class="content calendar ${$el.hasClass('hidden') ? 'hidden' : ''}" data-id="${$el.attr('data-id')}">${content}</div>`);
         });
 
         // Select current calendar and restore .selected-first and .selected-last classes

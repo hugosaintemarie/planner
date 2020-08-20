@@ -418,6 +418,17 @@ main.linear {
                     height: calc(100% + 8px);
                 }
             }
+
+            &.hidden {
+                .day {
+                    height: 40px !important;
+                    overflow: hidden;
+                }
+
+                .events {
+                    display: none;
+                }
+            }
         }
     }
 }

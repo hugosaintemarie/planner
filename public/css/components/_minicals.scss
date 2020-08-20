@@ -346,6 +346,7 @@ main.linear {
             border-top: 1px solid #444444;
             border-bottom: 1px solid #444444;
             background-color: #1e1e1e;
+            transition: height .5s ease;
 
             .content {
                 display: none;
@@ -376,6 +377,32 @@ main.linear {
             &:hover {
                 p {
                     height: calc(100% - 24px);
+                }
+            }
+
+            &.hidden {
+                height: 40px !important;
+                transition: none;
+                
+                p {
+                    justify-content: flex-start;
+                    margin-left: 40px;
+                    transition: none;
+
+                    span {
+                        margin-top: 0;
+                    }
+                }
+
+                .tools {
+                    bottom: 2px;
+                    left: 4px;
+                }
+
+                &:hover {
+                    p {
+                        height: 100%;
+                    }
                 }
             }
         }

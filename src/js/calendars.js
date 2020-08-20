@@ -351,6 +351,16 @@ export default {
 
     toggleCalendar($calendar) {
         $calendar.toggleClass('hidden');
+
+        if (ui.viewIs('linear')) {
+            $calendar.css('transition', 'none');
+            $(`.calendar-wrap .calendar[data-id="${$calendar.attr('data-id')}"]`).toggleClass('hidden').find('.day').css('transition', 'none');
+            setTimeout(() => {
+                $calendar.css('transition', '');
+                $(`.calendar-wrap .calendar[data-id="${$calendar.attr('data-id')}"] .day`).css('transition', '');
+            }, 500);
+        }
+
         this.selectAnotherCalendar($calendar);
     },
 
