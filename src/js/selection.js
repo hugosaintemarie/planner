@@ -253,6 +253,7 @@ export default {
         // Ignore single click
         if (!$event.length) {
             this.event = null;
+            events.eventID--;
             return;
         }
 
