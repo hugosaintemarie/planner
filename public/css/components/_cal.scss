@@ -295,8 +295,28 @@
                         //                 -2px 0px white inset;
                         // }
                     }
+
+                    .anchor {
+                        position: absolute;
+                        top: 0;
+                        width: 12px;
+                        height: 100%;
+                        cursor: col-resize;
+
+                        &.anchor-start {
+                            left: -6px;
+                        }
+
+                        &.anchor-end {
+                            right: -6px;
+                        }
+                    }
                 }
             }
+        }
+
+        &.resizing {
+            cursor: col-resize;
         }
     }
 }

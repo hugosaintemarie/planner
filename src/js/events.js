@@ -321,8 +321,14 @@ export default {
             // Find title and color from event
             const { title, color } = eventType;
 
+            const html = `<div data-id="${event.id}" data-type="${event.type}" data-color="${color}" class="event${classname}" style="top: ${top * 32}px">
+                ${classname.includes('start') || day.getDay() === 1 ? `<span class="title${!classname.includes('start') ? ' not-linear' : ''}">${title}</span>` : ''}
+                ${classname.includes('start') ? '<div class="anchor anchor-start"></div>' : ''}
+                ${classname.includes('end') ? '<div class="anchor anchor-end"></div>' : ''}
+            </div>`;
+
             // Add event
-            $events.append(`<div data-id="${event.id}" data-type="${event.type}" data-color="${color}" class="event${classname}" style="top: ${top * 32}px">${classname.includes('start') || day.getDay() === 1 ? `<span class="title${!classname.includes('start') ? ' not-linear' : ''}">${title}</span>` : ''}</div>`);
+            $events.append(html);
         }
 
         // Save data

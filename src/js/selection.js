@@ -3,7 +3,6 @@ import data from './data';
 import dates from './dates';
 import events from './events';
 import history from './history';
-import settings from './settings';
 import stats from './stats';
 import ui from './ui';
 
@@ -12,6 +11,7 @@ export default {
     clipboard: [],
     lastHoveredDate: null,
     drawing: false,
+    resizing: false,
     event: null,
     eventID: null,
     eventTitle: null,
@@ -44,6 +44,7 @@ export default {
         $(document).on('mouseenter', '.calendar-wrap .day', e => {
             if (ui.toolIs('draw')) {
                 if (this.drawing) this.draw(e);
+                else if (this.resizing) this.resizeEvent(e);
             } else if (ui.tool === 'select') {
                 const date = $(e.currentTarget).attr('data-date');
                 this.lastHoveredDate = date;
@@ -149,6 +150,37 @@ export default {
             if (this.event && !$(e.target).closest('.calendar-wrap .calendar').length) this.changeType();
 
             $('.event.selected').removeClass('selected');
+        });
+
+        $(document).on('mousedown', '.calendar-wrap .event .anchor', e => {
+            this.resizing = true;
+            
+            const $anchor = $(e.currentTarget);
+            const $event = $anchor.closest('.event');
+
+            const id = parseInt($event.attr('data-id'));
+
+            this.event = {
+                id,
+                calendar: parseInt($event.closest('.calendar').attr('data-id')),
+                type: parseInt($event.attr('data-type')),
+                start: $(`.event.start[data-id="${id}"]`).closest('.day').attr('data-date'),
+                end: $(`.event.end[data-id="${id}"]`).closest('.day').attr('data-date'),
+                dragging: $anchor.hasClass('anchor-start') ? 'start' : 'end'
+            };
+
+            $event.closest('.calendar').addClass('resizing');
+        });
+
+        $(document).on('mouseup', e => {
+            if (!this.resizing) return;
+
+            this.event = null;
+            this.resizing = false;
+
+            $('.calendar.resizing').removeClass('resizing');
+
+            data.save();
         });
     },
 
@@ -852,5 +884,13 @@ export default {
     selectEventByID(id) {
         const $event = $(`.calendar-wrap .event[data-id="${id}"]`);
         $event.addClass('selected');
+    },
+
+    resizeEvent(e) {
+        const $day = $(e.currentTarget);
+        const date = $day.attr('data-date');
+
+        this.event[this.event.dragging] = date;
+        events.updateEvent(this.event);
     }
 }
