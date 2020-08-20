@@ -137,7 +137,7 @@ export default {
                 if (!multiSelect) $('.event.selected').removeClass('selected');
                 $('.new-event').removeClass('visible');
 
-                const id = $(e.target).closest('.event').attr('data-id');
+                const id = $(e.currentTarget).attr('data-id');
                 if (!isNaN(id)) this.selectEventByID(id);
                 return false;
             }
@@ -661,6 +661,9 @@ export default {
     
         // Convert 1D array of events to 2D array to mimic selection bounding rectangle layout
         while (events.length) this.clipboard.push(events.splice(0, highestWeekDay - lowestWeekDay + 1));
+
+        if (this.clipboard.length) $('nav [data-tool="paste"').removeClass('disabled');
+        else $('nav [data-tool="paste"').addClass('disabled');
     },
     
     cutSelection() {
@@ -753,7 +756,15 @@ export default {
         }
 
         for (const eventID of [...selectedEvents]) {
-            this.selectEventByID(eventID);
+            // this.selectEventByID(eventID);
+        }
+
+        if (this.selectedDays.length || $('.event.selected').length) {
+            $('nav [data-tool="cut"]').removeClass('disabled');
+            $('nav [data-tool="copy"]').removeClass('disabled');
+        } else {
+            $('nav [data-tool="cut"]').addClass('disabled');
+            $('nav [data-tool="copy"]').addClass('disabled');
         }
     },
 

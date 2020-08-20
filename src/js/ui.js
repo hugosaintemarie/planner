@@ -37,6 +37,9 @@ export default {
                 const tool = $target.attr('data-tool');
                 if (tool === 'undo') history.undo();
                 else if (tool === 'redo') history.redo();
+                else if (tool === 'cut') selection.cutSelection();
+                else if (tool === 'copy') selection.copySelection();
+                else if (tool === 'paste') selection.pasteSelection();
                 else if (tool === 'select-all') {
                     selection.selectAll();
                     $('nav li.open').removeClass('open');
