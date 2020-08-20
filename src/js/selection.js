@@ -44,6 +44,7 @@ export default {
         $(document).on('mouseenter', '.calendar-wrap .day', e => {
             if (ui.toolIs('draw')) {
                 if (this.drawing) this.draw(e);
+                else if (this.dragging) this.dragEvent(e);
                 else if (this.resizing) this.resizeEvent(e);
             } else if (ui.tool === 'select') {
                 const date = $(e.currentTarget).attr('data-date');
@@ -129,30 +130,47 @@ export default {
             }
         });
 
-        // Click outside calendar submits new event
-        $(document).on('click', '.calendar-wrap .event', e => {
+        // Mousedown outside calendar submits new event
+        $(document).on('mousedown', '.calendar-wrap .event', e => {
             if (ui.toolIs('draw')) {
+                const $event = $(e.currentTarget);
+
                 if (this.event) this.changeType();
+                else {
+                    this.dragging = true;
+
+                    const id = parseInt($event.attr('data-id'));
+
+                    this.event = {
+                        id,
+                        calendar: parseInt($event.closest('.calendar').attr('data-id')),
+                        type: parseInt($event.attr('data-type')),
+                        start: $(`.event.start[data-id="${id}"]`).closest('.day').attr('data-date'),
+                        end: $(`.event.end[data-id="${id}"]`).closest('.day').attr('data-date'),
+                        dragging: $event.closest('.day').attr('data-date')
+                    };
+                }
 
                 const multiSelect = e.metaKey || e.ctrlKey || e.shiftKey;
                 if (!multiSelect) $('.event.selected').removeClass('selected');
                 $('.new-event').removeClass('visible');
 
-                const id = $(e.currentTarget).attr('data-id');
+                const id = $event.attr('data-id');
                 if (!isNaN(id)) this.selectEventByID(id);
                 return false;
             }
         });
 
-        // Click anywhere
-        $(document).on('click', e => {
+        // Mousedown anywhere
+        $(document).on('mousedown', e => {
             // Click outside calendar submits new event
-            if (this.event && !$(e.target).closest('.calendar-wrap .calendar').length) this.changeType();
+            // if (this.event && !$(e.target).closest('.calendar-wrap .calendar').length) this.changeType();
 
             $('.event.selected').removeClass('selected');
         });
 
         $(document).on('mousedown', '.calendar-wrap .event .anchor', e => {
+            $('.new-event').removeClass('visible');
             this.resizing = true;
             
             const $anchor = $(e.currentTarget);
@@ -166,19 +184,23 @@ export default {
                 type: parseInt($event.attr('data-type')),
                 start: $(`.event.start[data-id="${id}"]`).closest('.day').attr('data-date'),
                 end: $(`.event.end[data-id="${id}"]`).closest('.day').attr('data-date'),
-                dragging: $anchor.hasClass('anchor-start') ? 'start' : 'end'
+                anchor: $anchor.hasClass('anchor-start') ? 'start' : 'end'
             };
 
             $event.closest('.calendar').addClass('resizing');
+
+            return false;
         });
 
-        $(document).on('mouseup', e => {
-            if (!this.resizing) return;
-
+        $(document).on('mouseup', () => {
             this.event = null;
-            this.resizing = false;
-
-            $('.calendar.resizing').removeClass('resizing');
+            
+            if (this.dragging) {
+                this.dragging = false;
+            } else if (this.resizing) {
+                this.resizing = false;
+                $('.calendar.resizing').removeClass('resizing');
+            }
 
             data.save();
         });
@@ -886,11 +908,24 @@ export default {
         $event.addClass('selected');
     },
 
+    dragEvent(e) {
+        const $day = $(e.currentTarget);
+        const date = $day.attr('data-date');
+
+        const delta = dates.delta(this.event.dragging, date);
+
+        this.event.start = dates.relativeDate(new Date(this.event.start), delta);
+        this.event.end = dates.relativeDate(new Date(this.event.end), delta);
+        this.event.dragging = dates.relativeDate(new Date(this.event.dragging), delta);
+
+        events.updateEvent(this.event);
+    },
+
     resizeEvent(e) {
         const $day = $(e.currentTarget);
         const date = $day.attr('data-date');
 
-        this.event[this.event.dragging] = date;
+        this.event[this.event.anchor] = date;
         events.updateEvent(this.event);
     }
 }

@@ -73,5 +73,9 @@ export default {
         }, []);
         
         return weeks;
+    },
+
+    delta(date1, date2) {
+        return Math.ceil((new Date(date2) - new Date(date1)) / (1000 * 60 * 60 * 24)); 
     }
 }
