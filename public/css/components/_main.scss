@@ -65,7 +65,14 @@ header {
 
     > div:nth-child(3) {
         text-align: right;
-        padding-top: 4px;
+        padding-top: 12px;
+        padding-right: 12px;
+
+        i {
+            font-size: .75rem;
+            color: #666666;
+            margin: 0 4px;
+        }
     }
 
     nav {
