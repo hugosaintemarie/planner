@@ -375,6 +375,7 @@ main.linear {
         padding-left: 16px;
         padding-bottom: 82px;
         overflow: auto;
+        overscroll-behavior-x: none;
     
         > h2 {
             display: none;
