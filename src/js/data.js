@@ -28,6 +28,7 @@ export default {
         if (data.end) $('#end').val(data.end);
 
         calendars.getStartEnd();
+        calendars.buildCalendarHead();
 
         // Add events
         for (const event of data.events.sort((a, b) => a.order < b.order ? -1 : 1)) events.newEvent(event);

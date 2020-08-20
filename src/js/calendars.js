@@ -97,11 +97,7 @@ export default {
         const days = dates.range(this.start, this.end);
 
         const headLinear = days.map(day =>
-            `<div>
-                ${day.toLocaleDateString('en-US', { weekday: 'short' })}
-                ${day.getDate()}
-                ${day.toLocaleDateString('en-US', { month: 'short' })}
-            </div>`
+            `<div data-day="${day.getDay()}">${day.toLocaleDateString('en-US', { weekday: 'short' })} ${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</div>`
         ).join('');
 
         $('.head.linear').html(headLinear);
