@@ -293,7 +293,7 @@ export default {
         let event;
         let calendar;
 
-        if (this.eventID && !isNaN(this.eventID)) {
+        if (typeof this.eventID === 'number') {
             calendar = calendars.data.find(c => c.events.some(e => e.id === this.eventID));
             event = calendar.events.find(e => e.id === this.eventID);
         } else {
@@ -927,7 +927,6 @@ export default {
         this.event.dragging = dates.relativeDate(new Date(this.event.dragging), delta);
 
         events.updateEvent(this.event);
-
 
         this.selectEventByID(this.event.id);
     },
