@@ -39,8 +39,8 @@ export default {
         calendars.selectCalendar($(`.calendars-wrap .calendar[data-id="${data.selectedCalendar}"]`));
 
         // Save current ids
-        calendars.calendarID = Math.max(...data.calendars.map(c => c.id));
-        events.eventID = Math.max(...data.calendars.map(c => c.events.map(e => e.id)).flat());
+        calendars.calendarID = Math.max(...data.calendars.map(c => c.id), -1);
+        events.eventID = Math.max(...data.calendars.map(c => c.events.map(e => e.id)).flat(), -1);
 
         // Hide days if necessary
         if (data.daysShown) for (const [day, show] of data.daysShown.entries()) {
