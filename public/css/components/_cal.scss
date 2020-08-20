@@ -13,7 +13,18 @@
     &.draw {
         .calendar {
             cursor: default;
+
+            .day {
+                .events {
+                    .event {
+                        .anchor {
+                            display: block;
+                        }
+                    }
+                }
+            }
         }
+
     }
 
     h2 {
@@ -302,6 +313,7 @@
                         width: 12px;
                         height: 100%;
                         cursor: col-resize;
+                        display: none;
 
                         &.anchor-start {
                             left: -6px;

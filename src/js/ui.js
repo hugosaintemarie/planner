@@ -170,11 +170,11 @@ export default {
     changeTool(tool) {
         this.tool = tool;
 
-        // Update UI
+        // Update header UI
         $('header .tool.selected').removeClass('selected');
         $(`header .tool[data-tool="${tool}"]`).addClass('selected');
 
-        // Update cursor on main calendar
+        // Update main calendar UI
         $('.calendar-wrap').removeClass('select draw').addClass(tool);
 
         // Remove selection when entering draw mode
