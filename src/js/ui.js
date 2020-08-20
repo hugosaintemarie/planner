@@ -7,6 +7,7 @@ import selection from './selection';
 export default {
     view: 'full',
     tool: 'select',
+    daysShown: [true, true, true, true, true, true, true],
 
     init() {
         $(document).on('click', 'header nav > ul > li', e => {
@@ -199,5 +200,8 @@ export default {
             $day.hide();
             $li.removeClass('checked');
         }
+
+        this.daysShown[day] = show;
+        data.save();
     }
 }
