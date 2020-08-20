@@ -89,7 +89,7 @@ export default {
 
             // Select current event color
             $('#color-swatch .color.selected').removeClass('selected');
-            $($('#color-swatch .color').toArray().find(c => $(c).css('background-color') === $el.css('background-color'))).addClass('selected');
+            $($('#color-swatch .color').toArray().find(c => $(c).attr('data-color') === $el.attr('data-color'))).addClass('selected');
 
             // Open swatch
             $('#color-swatch')
