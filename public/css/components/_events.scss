@@ -2,7 +2,7 @@
     ul {
         list-style: none;
         margin-top: 16px;
-        margin-right: 32px;
+        margin-right: 18px;
 
         li {
             position: relative;
@@ -48,7 +48,7 @@
             .tools {
                 position: absolute;
                 top: 0;
-                right: -36px;
+                right: -28px;
                 padding: 0;
                 
                 > i {
@@ -71,7 +71,7 @@
                 }
 
                 .dropdown {
-                    right: 0;
+                    right: 4px;
                     top: 24px;
                 }
             }
@@ -105,7 +105,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 176px;
+    width: 190px;
     background-color: #1e1e1e;
     border: 1px solid #333;
     box-shadow: 0 16px 16px #00000050;
@@ -124,11 +124,20 @@
         pointer-events: all;
         opacity: 1;
         transform: none;
+
+        ~ ul {
+            li {    
+                .tools {
+                    pointer-events: none;
+                    opacity: 0;
+                }
+            }
+        }
     }
 
     .color {
-        width: 24px;
-        height: 24px;
+        width: 27px;
+        height: 27px;
         border-radius: 50%;
         border: 2px solid transparent;
         cursor: pointer;
