@@ -81,12 +81,13 @@ export default {
                 
                 const eventOffsetLeft = $event.offset().left;
                 const eventOffsetRight = eventOffsetLeft + width;
+                const colWidth = $(window).width() <= 1120 ? 24 : 240;
                 
-                if (eventOffsetLeft < 24 && eventOffsetRight > 24) {
+                if (eventOffsetLeft < colWidth && eventOffsetRight > colWidth) {
                     const top = $event.offset().top + 2;
 
                     // Make title stick to left border or right end of event
-                    const left = Math.min(Math.ceil(eventOffsetRight - $title.outerWidth() - 38), 0) + 30;
+                    const left = Math.min(Math.ceil(eventOffsetRight - $title.outerWidth() - (colWidth + 14)), 0) + colWidth + 6;
 
                     $title.css({
                         'position': 'fixed',
