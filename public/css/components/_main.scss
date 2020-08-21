@@ -39,6 +39,7 @@ header {
     // padding: 16px;
 
     > div:nth-child(2) {
+        flex: 0;
         display: flex;
         justify-content: center;
         align-items: center;
