@@ -38,13 +38,16 @@ header {
     border-bottom: 1px solid #333;
     z-index: 1000;
     background-color: #1e1e1e;
-    // padding: 16px;
+
+    > div:nth-child(1) {
+        flex: 0;
+    }
 
     > div:nth-child(2) {
-        flex: 0;
+        flex: 1;
         display: flex;
-        justify-content: center;
         align-items: center;
+        border-left: 1px solid #333333;
 
         .tool {
             display: flex;
@@ -67,20 +70,21 @@ header {
     }
 
     > div:nth-child(3) {
-        text-align: right;
-        padding-top: 12px;
-        padding-right: 12px;
+        flex: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-right: 16px;
 
         > i {
             font-size: .75rem;
             color: #666666;
-            margin: 0 4px;
+            margin: 0 8px;
         }
 
         .view-switcher {
             display: inline-flex;
             margin-right: 16px;
-            margin-top: -16px;
             padding-right: 8px;
             border-right: 1px solid #333333;
 
