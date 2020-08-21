@@ -58,11 +58,49 @@ export default {
             $('header ul li.open').removeClass('open');
         });
 
-        // Keep scroll in sync in linear mode
+        // Scroll in linear mode
         $(document).on('mousewheel', '.calendar-wrap, .col-left', e => {
             if (this.viewIs('full')) return;
-            const scroll = e.currentTarget.scrollTop;
-            $('.calendar-wrap, .col-left').scrollTop(scroll);
+
+            // Keep scroll in sync
+            const scrollTop = e.currentTarget.scrollTop;
+            $('.calendar-wrap, .col-left').scrollTop(scrollTop);
+            
+            // Keep (visible) event titles in view
+            $('.calendar-wrap .event .title:visible').each((_, el) => {
+                const $title = $(el);
+                const $event = $title.closest('.event');
+                const id = $event.attr('data-id');
+                const $events = $(`.calendar-wrap .event[data-id="${id}"]`);
+
+                // Ignore one-day events
+                if ($events.length === 1) return;
+
+                const width = $events.toArray().reduce((acc, curr) => acc + curr.offsetWidth, 0);
+                const offsetRight = Math.ceil(width + $event.offset().left - $title.offset().left - $title.outerWidth());
+                
+                if ($event.offset().left < 24 && offsetRight > 8) {
+                    const left = width - $title.outerWidth() - 8;
+                    if ($event.offset().left > 32 - left) {
+                        // Element hits left border
+                        $title.css({
+                            'position': 'fixed',
+                            'left': 30
+                        });
+                    } else {
+                        // Element hits right stop
+                        $title.css({
+                            'position': '',
+                            'left': left
+                        });
+                    }
+                } else {
+                    $title.css({
+                        'position': '',
+                        'left': ''
+                    });
+                }
+            })
         });
 
         // Change tool

@@ -235,7 +235,9 @@
                     }
 
                     .title {
+                        position: absolute;
                         font-weight: 500;
+                        z-index: 1;
                     }
 
                     &.start,
@@ -446,9 +448,10 @@ main.linear {
                     display: none;
                 }
     
-                > .events {
+                .events {
                     margin-top: 0;
                     height: calc(100% + 8px);
+                    overflow: visible;
                 }
             }
 
