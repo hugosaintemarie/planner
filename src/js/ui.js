@@ -76,24 +76,20 @@ export default {
                 // Ignore one-day events
                 if ($events.length === 1) return;
 
+                // Total event width (add up single .events widths)
                 const width = $events.toArray().reduce((acc, curr) => acc + curr.offsetWidth, 0);
-                const offsetRight = Math.ceil(width + $event.offset().left - $title.offset().left - $title.outerWidth());
                 
-                if ($event.offset().left < 24 && offsetRight > 8) {
-                    const left = width - $title.outerWidth() - 8;
-                    if ($event.offset().left > 32 - left) {
-                        // Element hits left border
-                        $title.css({
-                            'position': 'fixed',
-                            'left': 30
-                        });
-                    } else {
-                        // Element hits right stop
-                        $title.css({
-                            'position': '',
-                            'left': left
-                        });
-                    }
+                const eventOffsetLeft = $event.offset().left;
+                const eventOffsetRight = eventOffsetLeft + width;
+                
+                if (eventOffsetLeft < 24 && eventOffsetRight > 24) {
+                    // Make title stick to left border or right end of event
+                    const left = Math.min(Math.ceil(eventOffsetRight - $title.outerWidth() - 38), 0) + 30;
+
+                    $title.css({
+                        'position': 'fixed',
+                        'left': left
+                    });
                 } else {
                     $title.css({
                         'position': '',

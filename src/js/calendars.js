@@ -72,10 +72,6 @@ export default {
             $('.calendars-wrap').toggleClass('edit-all');
         });
 
-        $(document).on('scroll', e => {
-            console.log(e);
-        });
-
         this.buildCalendarHead();
     },
 
