@@ -126,6 +126,13 @@ export default {
             const day = $el.closest('[data-day]').attr('data-day');
             this.showHideWeekday(day, false);
         });
+
+        $(document).on('click', '[data-view]', e => {
+            const $el = $(e.currentTarget);
+            const view = $el.attr('data-view');
+            if (view === 'full') this.fullView();
+            else if (view === 'linear') this.linearView();
+        });
     },
 
     check($target) {
@@ -155,6 +162,8 @@ export default {
 
         // Update UI
         $('main').removeClass('linear');
+        $('[data-view]').removeClass('selected');
+        $('[data-view="full"]').addClass('selected');
 
         // Keep only one calendar
         $('.calendar-wrap .calendar').eq(1).empty();
@@ -181,6 +190,8 @@ export default {
 
         // Update UI
         $('main').addClass('linear');
+        $('[data-view]').removeClass('selected');
+        $('[data-view="linear"]').addClass('selected');
 
         // Duplicate every minical
         $('.calendar-wrap .calendar').remove();

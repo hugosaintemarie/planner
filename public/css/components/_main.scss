@@ -71,10 +71,36 @@ header {
         padding-top: 12px;
         padding-right: 12px;
 
-        i {
+        > i {
             font-size: .75rem;
             color: #666666;
             margin: 0 4px;
+        }
+
+        .view-switcher {
+            display: inline-flex;
+            margin-right: 16px;
+            margin-top: -16px;
+            padding-right: 8px;
+            border-right: 1px solid #333333;
+
+            i {
+                width: 48px;
+                height: 48px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: #666666;
+                cursor: pointer;
+
+                &:hover {
+                    color: #999999;
+                }
+
+                &.selected {
+                    color: white;
+                }
+            }
         }
     }
 
