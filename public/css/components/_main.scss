@@ -36,6 +36,8 @@ h2 {
 header {
     height: 48px;
     border-bottom: 1px solid #333;
+    z-index: 100;
+    background-color: #1e1e1e;
     // padding: 16px;
 
     > div:nth-child(2) {
@@ -285,6 +287,12 @@ main.linear {
         .calendar-wrap {
             left: 24px;
             width: calc(100% - 48px);
+        }
+
+        .col-left {
+            > * {
+                padding-right: 0;
+            }
         }
     }
 }

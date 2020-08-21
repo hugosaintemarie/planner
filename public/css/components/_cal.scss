@@ -45,8 +45,13 @@
     }
 
     .head {
+        position: relative;
+        background-color: #1e1e1e;
         border-bottom: 1px solid #444444;
         margin-bottom: -1px;
+        z-index: 10;
+        margin-top: -16px;
+        padding-top: 16px;
 
         > div {
             position: relative;
@@ -405,11 +410,21 @@
 
 main.linear {
     .calendar-wrap {
+        overflow-x: auto;
+        overflow-y: hidden;
+        overscroll-behavior-x: none;
         margin-right: 0;
         padding-left: 16px;
-        padding-bottom: 82px;
-        overflow: auto;
-        overscroll-behavior-x: none;
+
+        .calendars {
+            width: max-content;
+            height: calc(100vh - 112px);
+            padding-bottom: 82px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            margin-top: 1px;
+            margin-left: -1px;
+        }
     
         > h2 {
             display: none;

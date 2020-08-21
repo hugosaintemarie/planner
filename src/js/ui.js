@@ -59,12 +59,12 @@ export default {
         });
 
         // Scroll in linear mode
-        $(document).on('mousewheel', '.calendar-wrap, .col-left', e => {
+        $(document).on('mousewheel', '.calendar-wrap .calendars, .col-left', e => {
             if (this.viewIs('full')) return;
 
             // Keep scroll in sync
             const scrollTop = e.currentTarget.scrollTop;
-            $('.calendar-wrap, .col-left').scrollTop(scrollTop);
+            $('.calendar-wrap .calendars, .col-left').scrollTop(scrollTop);
             
             // Keep (visible) event titles in view
             $('.calendar-wrap .event .title:visible').each((_, el) => {
@@ -187,7 +187,7 @@ export default {
         $('.calendars-wrap .calendar').each((_, el) => {
             const $el = $(el);
             const content = $el.find('.content').html();
-            $('.calendar-wrap').append(`<div class="content calendar ${$el.hasClass('hidden') ? 'hidden' : ''}" data-id="${$el.attr('data-id')}">${content}</div>`);
+            $('.calendar-wrap .calendars').append(`<div class="content calendar ${$el.hasClass('hidden') ? 'hidden' : ''}" data-id="${$el.attr('data-id')}">${content}</div>`);
         });
 
         // Select current calendar and restore .selected-first and .selected-last classes
