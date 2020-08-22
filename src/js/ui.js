@@ -225,7 +225,7 @@ export default {
         $(`header .tool[data-tool="${tool}"]`).addClass('selected');
 
         // Update main calendar UI
-        $('.calendar-wrap').removeClass('select draw').addClass(tool);
+        $('.calendar-wrap').removeClass('select draw comment').addClass(tool);
 
         // Remove selection when entering draw mode
         if (tool === 'draw') {

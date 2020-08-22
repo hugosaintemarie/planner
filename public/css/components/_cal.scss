@@ -24,7 +24,20 @@
                 }
             }
         }
+    }
 
+    &.comment {
+        .calendar {
+            cursor: copy;
+
+            // .day {
+            //     transition: background-color .1s ease;
+
+            //     &:hover {
+            //         background-color: hsla(40, 100%, 70%, 0.05);
+            //     }
+            // }
+        }
     }
 
     h2 {
