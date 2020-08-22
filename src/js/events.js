@@ -158,7 +158,9 @@ export default {
         for (const event of events) {
             this.type++;
             const type = event && event.type ? event.type : this.type;
-            const li = `<li data-type="${type}" class="sortable" data-color="${event && !isNaN(event.color) ? event.color : type}">
+            const color = event && !isNaN(event.color) ? event.color : type;
+
+            const li = `<li data-type="${type}" class="sortable" data-color="${color}">
                 <span class="title" ${!event ? 'contenteditable' : ''} spellcheck="false">${event && event.title ? event.title : ''}</span>
                 <span class="tools">
                     <i class="fas fa-angle-down" data-tool="dropdown"></i>
@@ -184,7 +186,8 @@ export default {
             // Save data
             this.data.push({
                 ...event,
-                type
+                type,
+                color
             });
         }
 
