@@ -55,9 +55,8 @@ export default {
             $(`nav [data-tool="${type}"]`).text(type === 'undo' ? 'Undo' : 'Redo').addClass('disabled');
         } else {
             // Update nav undo/redo options text
-
             const buildActionText = (action) => {
-                const n = action.events.length;
+                const n = action.type === 'addEvents' ? action.events.length : action.events.length / 2;
                 const s = n > 1 ? 's' : '';
         
                 const text = {
