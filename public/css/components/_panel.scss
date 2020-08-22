@@ -66,7 +66,8 @@
                     color: white;
                     background-color: #292929;
 
-                    .event {
+                    .event,
+                    .count {
                         opacity: 1;
                     }
                 }
@@ -85,6 +86,16 @@
                             background-color: var(--color-event-#{$i});
                         }
                     }
+                }
+
+                .count {
+                    position: absolute;
+                    right: 12px;
+                    top: 16px;
+                    font-size: .875rem;
+                    vertical-align: 2px;
+                    color: #999999;
+                    opacity: .5;
                 }
             }
         }

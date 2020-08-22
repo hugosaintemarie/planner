@@ -26,7 +26,7 @@ export default {
                 <ul class="from"></ul>
             </div>
             <div>
-                <span>With…</span>
+                <div class="head">With…</div>
                 <ul class="to"></ul>
             </div>
         </div>`,
@@ -129,9 +129,22 @@ export default {
     },
 
     buildEventsList(action, filter = false) {
+        const $calendars = $('.calendars-wrap').hasClass('edit-all') ? $('.calendars-wrap .calendar') : $('.calendars-wrap .calendar.selected');
+
         let list = $('.events-wrap ul li').map((_, el) => {
             const $el = $(el);
-            return `<li data-tool="${action}-event"><span class="event" data-type="${$el.attr('data-type')}" data-color="${$el.attr('data-color')}"><span class="title">${$el.find('.title').text()}</span></span></li>`;
+            const type = $el.attr('data-type');
+            const count = selection.selectedDays.reduce((acc, curr) => {
+                const date = dates.toString(curr);
+                const $events = $calendars.find(`.day[data-date="${date}"] .event[data-type="${type}"]`);
+
+                const ids = $events.toArray().map(e => $(e).attr('data-id'));
+                ids.map(id => acc.add(id));
+
+                return acc;
+            }, new Set()).size;
+
+            return `<li data-tool="${action}-event"><span class="event" data-type="${type}" data-color="${$el.attr('data-color')}"><span class="title">${$el.find('.title').text()}</span></span>${action === 'from' ? `<span class="count">${count}</span>` : ''}</li>`;
         }).toArray();
 
         if (filter) {
