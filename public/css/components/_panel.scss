@@ -89,20 +89,18 @@
             }
         }
 
-        div {
-            > span {
-                display: inline-block;
-                text-transform: uppercase;
-                font-size: .875rem;
-                color: #999999;
-                letter-spacing: .02rem;
-                padding: 12px 12px 0 16px;
+        .head {
+            display: inline-block;
+            text-transform: uppercase;
+            font-size: .875rem;
+            color: #999999;
+            letter-spacing: .02rem;
+            padding: 12px 12px 0 16px;
 
-                i {
-                    display: inline-block;
-                    margin-right: 8px;
-                    font-size: .875em;
-                }
+            i {
+                display: inline-block;
+                margin-right: 8px;
+                font-size: .875em;
             }
         }
 

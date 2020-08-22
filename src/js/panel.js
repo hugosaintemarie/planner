@@ -6,19 +6,23 @@ export default {
     isOpen: false,
     layouts: {
         default: `<ul>
-            <li data-tool="add" class="selected"><i class="fas fa-plus"></i>Add event…</li>
+            <li data-tool="add" class="selected"><i class="fas fa-plus"></i><span>Add event…</span></li>
             <li data-tool="replace"><i class="fas fa-exchange-alt"></i>Replace event…</li>
             <li data-tool="remove"><i class="far fa-trash-alt"></i>Remove event…</li>
             <li data-tool="fill" class="border-top" disabled><i class="far fa-calendar-plus"></i>Fill empty days…</li>
             <li data-tool="count" disabled><i class="fa fa-calculator"></i>Count occurences…</li>
         </ul>`,
         add: `<div>
-            <span><i class="fas fa-plus"></i>Add event…</span>
+            <div class="head">
+                <i class="fas fa-plus"></i><span>Add event…</span>
+            </div>
             <ul></ul>
         </div>`,
         replace: `<div class="row">
             <div>
-                <span><i class="fas fa-exchange-alt"></i>Replace…</span>
+                <div class="head">
+                    <i class="fas fa-exchange-alt"></i>Replace…
+                </div>
                 <ul class="from"></ul>
             </div>
             <div>
@@ -27,11 +31,15 @@ export default {
             </div>
         </div>`,
         remove: `<div>
-            <span><i class="far fa-trash-alt"></i>Remove event…</span>
+            <div class="head">
+                <i class="far fa-trash-alt"></i>Remove event…
+            </div>
             <ul></ul>
         </div>`,
         count: `<div>
-            <span><i class="fa fa-calculator"></i>Count occurences of…</span>
+            <div class="head">
+                <i class="fa fa-calculator"></i>Count occurences of…
+            </div>
             <ul></ul>
         </div>`
     },
@@ -78,6 +86,8 @@ export default {
     openPanel() {
         this.isOpen = true;
         $('.panel').html(this.layouts['default']);
+
+        $('.panel [data-tool="add"] span').text(`Add ${selection.selectedDays.length} event${selection.selectedDays.length > 1 ? 's' : ''}…`)
 
         // Disable replace and remove if selection is empty
         if (selection.allDaysEmpty()) $('.panel li[data-tool="replace"], .panel li[data-tool="remove"]').attr('disabled', true);
@@ -138,6 +148,7 @@ export default {
             $html.find('ul').html(this.buildEventsList('add'));
             $html.find('li:first-child').addClass('selected');
             $('.panel').html($html);
+            $('.panel .head span').text(`Add ${selection.selectedDays.length} event${selection.selectedDays.length > 1 ? 's' : ''}…`)
         } else {
             const $event = $('.panel li.selected .event');
             events.insertEvent($event);
