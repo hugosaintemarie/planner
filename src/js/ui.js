@@ -66,42 +66,7 @@ export default {
             const scrollTop = e.currentTarget.scrollTop;
             $('.calendar-wrap .calendars, .col-left').scrollTop(scrollTop);
             
-            // Keep (visible) event titles in view
-            $('.calendar-wrap .event .title:visible').each((_, el) => {
-                const $title = $(el);
-                const $event = $title.closest('.event');
-                const id = $event.attr('data-id');
-                const $events = $(`.calendar-wrap .event[data-id="${id}"]`);
-
-                // Ignore one-day events
-                if ($events.length === 1) return;
-
-                // Total event width (add up single .events widths)
-                const width = $events.toArray().reduce((acc, curr) => acc + curr.offsetWidth, 0);
-                
-                const eventOffsetLeft = $event.offset().left;
-                const eventOffsetRight = eventOffsetLeft + width;
-                const colWidth = $(window).width() <= 1120 ? 24 : 240;
-                
-                if (eventOffsetLeft < colWidth && eventOffsetRight > colWidth) {
-                    const top = $event.offset().top + 2;
-
-                    // Make title stick to left border or right end of event
-                    const left = Math.min(Math.ceil(eventOffsetRight - $title.outerWidth() - (colWidth + 14)), 0) + colWidth + 6;
-
-                    $title.css({
-                        'position': 'fixed',
-                        'top': top,
-                        'left': left
-                    });
-                } else {
-                    $title.css({
-                        'position': '',
-                        'top': '',
-                        'left': ''
-                    });
-                }
-            })
+            this.moveEventsTitles();
         });
 
         // Change tool
@@ -211,6 +176,8 @@ export default {
         // Check option in menu (when switched from shorcut)
         $(`nav [data-radio="view"]`).removeClass('checked');
         $(`nav [data-radio="view"][data-value="linear"]`).addClass('checked');
+
+        this.moveEventsTitles();
     },
 
     viewIs(view) {
@@ -253,5 +220,44 @@ export default {
 
         this.daysShown[day] = show;
         data.save();
+    },
+
+    moveEventsTitles() {
+        // Keep (visible) event titles in view
+        $('.calendar-wrap .event .title:visible').each((_, el) => {
+            const $title = $(el);
+            const $event = $title.closest('.event');
+            const id = $event.attr('data-id');
+            const $events = $(`.calendar-wrap .event[data-id="${id}"]`);
+
+            // Ignore one-day events
+            if ($events.length === 1) return;
+
+            // Total event width (add up single .events widths)
+            const width = $events.toArray().reduce((acc, curr) => acc + curr.offsetWidth, 0);
+            
+            const eventOffsetLeft = $event.offset().left;
+            const eventOffsetRight = eventOffsetLeft + width;
+            const colWidth = $(window).width() <= 1120 ? 24 : 240;
+            
+            if (eventOffsetLeft < colWidth && eventOffsetRight > colWidth) {
+                const top = $event.offset().top + 2;
+
+                // Make title stick to left border or right end of event
+                const left = Math.min(Math.ceil(eventOffsetRight - $title.outerWidth() - (colWidth + 14)), 0) + colWidth + 6;
+
+                $title.css({
+                    'position': 'fixed',
+                    'top': top,
+                    'left': left
+                });
+            } else {
+                $title.css({
+                    'position': '',
+                    'top': '',
+                    'left': ''
+                });
+            }
+        });
     }
 }
