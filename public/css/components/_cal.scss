@@ -60,7 +60,6 @@
     .head {
         position: relative;
         border-bottom: 1px solid #444444;
-        margin-bottom: -1px;
         z-index: 10;
 
         > div {
@@ -123,6 +122,7 @@
         overflow-x: hidden;
         overflow-y: auto;
         height: calc(100vh - 74px);
+        margin-top: -1px;;
     }
 
     .calendar {
@@ -130,6 +130,7 @@
         padding-bottom: 16px;
         overflow-y: auto;
         padding-left: 1px;
+        padding-top: 1px;
 
         &:nth-child(3) {
             padding-top: 1px;
@@ -183,7 +184,7 @@
                     position: absolute;
                     top: -1px;
                     left: -1px;
-                    z-index: 1;
+                    z-index: 20;
                     width: 100%;
                     height: 100%;
                     border: 1px solid #61a0ff;
@@ -439,7 +440,6 @@ main.linear {
             width: max-content;
             height: calc(100vh - 112px);
             padding-bottom: 82px;
-            margin-top: 1px;
             margin-left: -1px;
         }
     
@@ -460,12 +460,11 @@ main.linear {
         .calendar {
             display: flex;
             width: fit-content;
-            padding-right: 16px;
-            padding-bottom: 0;
             margin-top: -1px;
+            padding: 0 16px 0 0;
 
-            &:nth-child(3) {
-                padding-top: 0;
+            &:first-child {
+                padding-top: 1px;
             }
     
             .day {
