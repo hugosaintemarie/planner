@@ -11,6 +11,15 @@ export default {
     eventID: -1,
     type: -1,
 
+    reset() {
+        this.data = [];
+        this.eventID = -1;
+        this.type = -1;
+
+        $('.events-wrap ul').empty();
+        $('.stats-wrap .stats').empty();
+    },
+
     init() {
         // Add new event
         $(document).on('click', '.events-wrap .add', () => {
@@ -157,7 +166,7 @@ export default {
 
         for (const event of events) {
             this.type++;
-            const type = event && event.type ? event.type : this.type;
+            const type = event && !isNaN(event.type) ? event.type : this.type;
             const color = event && !isNaN(event.color) ? event.color : type;
 
             const li = `<li data-type="${type}" class="sortable" data-color="${color}">

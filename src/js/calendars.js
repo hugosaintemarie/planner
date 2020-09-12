@@ -14,6 +14,17 @@ export default {
     start: null,
     end: null,
 
+    reset() {
+        this.data = [];
+        this.calendarID = -1;
+        this.selected = 0;
+        this.start = null;
+        this.end = null;
+
+        $('.calendars-wrap .calendars').empty();
+        $('.calendar-wrap .calendars .content').empty();
+    },
+
     init() {
         // Update calendars start and end
         $(document).on('change', '#start, #end', () => {

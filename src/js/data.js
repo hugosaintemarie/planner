@@ -7,19 +7,15 @@ export default {
     loaded: false,
 
     init() {
-        this.load();
-    },
-    
-    load() {
-        this.loading = true;
         let data = localStorage.getItem('data');
-        
-        if (!data) {
-            this.loading = false;
-            return;
-        }
+        if (!data) return;
 
         data = JSON.parse(data);
+        this.load(data);
+    },
+    
+    load(data) {
+        this.loading = true;
 
         ui.changeTool(data.selectedTool);
         if (data.view === 'linear') ui.linearView();
@@ -92,5 +88,34 @@ export default {
         a.href = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`;
         a.download = 'project.planner';
         a.click();
+    },
+
+    open() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.planner';
+        input.addEventListener('change', e => {
+            const file = e.target.files[0];
+            
+            const reader = new FileReader();
+            reader.addEventListener('load', _e => {
+                const result = _e.target.result;
+                const data = JSON.parse(result);
+                this.reset();
+                this.load(data);
+                this.save();
+                
+                $('header ul li.open').removeClass('open');
+            });
+
+            reader.readAsText(file);
+        });
+
+        input.click();
+    },
+
+    reset() {
+        events.reset();
+        calendars.reset();
     }
 }

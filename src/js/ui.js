@@ -38,6 +38,7 @@ export default {
                 const tool = $target.attr('data-tool');
 
                 if (tool === 'save') data.download();
+                else if (tool === 'open') data.open();
                 else if (tool === 'undo') history.undo();
                 else if (tool === 'redo') history.redo();
                 else if (tool === 'cut') selection.cutSelection();
