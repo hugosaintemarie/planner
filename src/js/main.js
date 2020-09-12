@@ -11,7 +11,7 @@ import templates from './templates';
 import tooltip from './tooltip';
 import ui from './ui';
 
-$(document).ready(() => {
+$(() => {
     dates.init();
     
     calendars.init();
