@@ -55,6 +55,18 @@ export default {
         // Prevent saving while loading
         if (this.loading) return false;
 
+        const data = this.getData();
+        localStorage.setItem('data', JSON.stringify(data));
+
+        if (manual) {
+            // TODO: display message to explain auto-save
+
+            // Prevent default browser save window (Cmd + S)
+            return false;
+        }
+    },
+
+    getData() {
         const data = {
             start: $('#start').val(),
             end: $('#end').val(),
@@ -66,18 +78,19 @@ export default {
             daysShown: ui.daysShown
         };
 
-        if (manual) {
-            // TODO: display message to explain auto-save
-        }
-
-        localStorage.setItem('data', JSON.stringify(data));
-
-        // Prevent default browser save window (Cmd + S)
-        return false;
+        return data;
     },
 
     clear() {
         // For development purposes only
         localStorage.removeItem('data');
+    },
+
+    download() {
+        const data = this.getData();
+        const a = document.createElement('a');
+        a.href = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(data))}`;
+        a.download = 'project.planner';
+        a.click();
     }
 }

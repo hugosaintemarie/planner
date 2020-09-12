@@ -36,7 +36,9 @@ export default {
                 else this.check($target);
             } else if ($target.attr('data-tool')) {
                 const tool = $target.attr('data-tool');
-                if (tool === 'undo') history.undo();
+
+                if (tool === 'save') data.download();
+                else if (tool === 'undo') history.undo();
                 else if (tool === 'redo') history.redo();
                 else if (tool === 'cut') selection.cutSelection();
                 else if (tool === 'copy') selection.copySelection();
