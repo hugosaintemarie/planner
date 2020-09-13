@@ -117,6 +117,22 @@ export default {
             return false;
         });
 
+        // Change head columns icons on mouseenter
+        $(document).on('mouseenter', '.head.full', e => {
+            if (e.altKey) $(e.currentTarget).addClass('alt');
+            else $(e.currentTarget).removeClass('alt');
+        });
+
+        // Change head columns icons on keydown
+        $(document).on('keydown', e => {
+            if (e.which === 18) $('.head.full').addClass('alt');
+        });
+
+        // Change head columns icons on keyup
+        $(document).on('keyup', e => {
+            if (e.which === 18) $('.head.full').removeClass('alt');
+        });
+
         $(document).on('click', '[data-view]', e => {
             const $el = $(e.currentTarget);
             const view = $el.attr('data-view');

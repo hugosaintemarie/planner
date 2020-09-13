@@ -98,7 +98,7 @@ export default {
             `<div data-day="${i === 6 ? 0 : i + 1}">
                 ${d}<i class="fas fa-chevron-down"></i>
                 <div class="dropdown">
-                    <span data-tool="select-weekday"><i class="fas fa-check"></i>Select ${days[i]}</span>
+                    <span data-tool="select-weekday"><i class="fas fa-plus"></i>Select ${days[i]}</span>
                     <span class="border-top" data-tool="hide-weekday"><i class="fas fa-eye-slash"></i>Hide column</span>
                 </div>
             </div>`
