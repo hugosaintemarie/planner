@@ -214,7 +214,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _cal
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = ({\n    // spreadOnDrag: false,\n    oneEventPerDay: false,\n    // eventsColors: [\n    //     'hsl(0, 55%, 45%)',    // A\n    //     'hsl(334, 60%, 38%)',  // B\n    //     'hsl(277, 60%, 35%)',  // C\n    //     'hsl(255, 61%, 39%)',  // D\n    //     'hsl(233, 57%, 37%)',  // E\n    //     'hsl(210, 65%, 40%)',  // F\n    //     'hsl(202, 98%, 47%)',  // G\n    //     'hsl(185, 100%, 28%)', // H\n    //     'hsl(173, 100%, 21%)', // I\n    //     'hsl(123, 56%, 35%)',  // J\n    //     'hsl(95, 69%, 23%)',   // K\n    //     'hsl(60, 83%, 28%)',   // L\n    //     'hsl(43, 90%, 46%)',   // M\n    //     'hsl(34, 80%, 40%)',   // N\n    //     'hsl(14, 70%, 40%)',   // O\n    //     'hsl(27, 80%, 27%)',   // P\n    //     'hsl(11, 36%, 24%)',   // Q\n    //     'hsl(0, 0%, 52%)',     // R\n    //     'hsl(0, 0%, 38%)',     // S\n    //     'hsl(0, 0%, 23%)',     // T\n    // ],\n    template: 'filled'\n});\n\n//# sourceURL=webpack:///./src/js/settings.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = ({\n    // spreadOnDrag: false,\n    oneEventPerDay: false,\n    template: 'filled'\n});\n\n//# sourceURL=webpack:///./src/js/settings.js?");
 
 /***/ }),
 
