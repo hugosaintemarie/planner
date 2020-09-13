@@ -81,6 +81,8 @@ export default {
         // Double-click on an event in main calendar
         $(document).on('dblclick', '.calendar-wrap .day .event', e => {
             if (ui.toolIs('draw')) {
+                if ($('.event.selected').length > 1) return false;
+
                 const $event = $(`.calendar-wrap .event.start[data-id="${$(e.currentTarget).attr('data-id')}"]`);
                 newEvent.show($event);
 
@@ -114,17 +116,16 @@ export default {
                 newEvent.hide();
 
                 const id = $event.attr('data-id');
-                if (!isNaN(id)) this.selectEventByID(id);
+                if (!isNaN(id)) this.selectEventByID(id, true);
                 return false;
             }
         });
 
         // Mousedown anywhere
         $(document).on('mousedown', e => {
-            // Click outside calendar submits new event
-            // if (this.event && !$(e.target).closest('.calendar-wrap .calendar').length) this.changeType();
-
             newEvent.hide();
+            const multiSelect = e.metaKey || e.ctrlKey || e.shiftKey;
+            if (multiSelect) return false;
             $('.event.selected').removeClass('selected');
         });
 
@@ -859,9 +860,10 @@ export default {
         }
     },
 
-    selectEventByID(id) {
+    selectEventByID(id, toggle = false) {
         const $event = $(`.calendar-wrap .event[data-id="${id}"]`);
-        $event.addClass('selected');
+        if (toggle) $event.toggleClass('selected');
+        else $event.addClass('selected');
     },
 
     dragEvent(e) {
