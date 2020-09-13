@@ -2,6 +2,7 @@ import calendars from './calendars';
 import data from './data';
 import events from './events';
 import stats from './stats';
+import tooltip from './tooltip';
 
 export default {
     $sortedEl: null,
@@ -23,6 +24,8 @@ export default {
     },
     
     startSort(e) {
+        tooltip.hide();
+        
         const $icon = $(e.target);
         this.$sortedEl = $icon.closest('.sortable');
 
