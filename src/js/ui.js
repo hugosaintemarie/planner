@@ -85,6 +85,20 @@ export default {
             const $el = $(e.currentTarget);
             $el.addClass('open');
             $el.find('.dropdown').addClass('visible');
+
+            return false;
+        });
+
+        // Select all days in column
+        $(document).on('click', '[data-tool="select-weekday"]', e => {
+            const $el = $(e.currentTarget);
+            const day = $el.closest('[data-day]').attr('data-day');
+
+            selection.selectByWeekday(day);
+
+            $el.closest('[data-day]').removeClass('open');
+            $el.closest('.dropdown').removeClass('visible');
+
             return false;
         });
 

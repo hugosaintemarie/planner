@@ -595,6 +595,16 @@ export default {
         }
     },
 
+    selectByWeekday(day, add = false) {
+        const start = new Date($('#start').val());
+        const end = new Date($('#end').val());
+        
+        if (add) this.selectedDays.push(...dates.range(start, end).filter(d => d.getDay() === parseInt(day)));
+        else this.selectedDays = dates.range(start, end).filter(d => d.getDay() === parseInt(day));
+
+        this.highlightSelection();
+    },
+
     narrowSelection() {
         const $onlySelectedDay = $('.selected-first.selected-last.selected');
 
