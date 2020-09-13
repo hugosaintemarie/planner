@@ -870,7 +870,10 @@ export default {
         this.event.end = dates.relativeDate(new Date(this.event.end), delta);
         this.event.dragging = dates.relativeDate(new Date(this.event.dragging), delta);
 
-        events.updateEvent(this.event);
+        events.updateEvent(this.event, false);
+
+        this.maxHeight = Math.max(this.maxHeight, calendars.getCalendarHeight());
+        calendars.updateCalendarHeight(this.maxHeight);
 
         this.selectEventByID(this.event.id);
     },
@@ -879,6 +882,8 @@ export default {
         this.event = null;
 
         this.dragging = false;
+
+        calendars.updateCalendarHeight();
 
         data.save();
     },
@@ -894,7 +899,6 @@ export default {
 
         this.maxHeight = Math.max(this.maxHeight, calendars.getCalendarHeight());
         calendars.updateCalendarHeight(this.maxHeight);
-        
     },
 
     endResize() {
