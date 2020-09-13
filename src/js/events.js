@@ -386,8 +386,8 @@ export default {
         $(`.event[data-id="${event.id}"]`).remove();
 
         const oldEvent = calendars.data.map(c => c.events).flat().find(e => e.id === event.id);
-        const start = Math.min(new Date(oldEvent.start), new Date(event.start));
-        const end = Math.max(new Date(oldEvent.end), new Date(event.end));
+        const start = oldEvent ? Math.min(new Date(oldEvent.start), new Date(event.start)) : event.start;
+        const end = oldEvent ? Math.max(new Date(oldEvent.end), new Date(event.end)) : event.end;
 
         // Find all events to update top coordinate for
         const range = dates.range(start, end);
