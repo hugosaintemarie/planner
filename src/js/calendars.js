@@ -436,12 +436,18 @@ export default {
         }
     },
 
-    updateCalendarHeight() {
+    getCalendarHeight() {
         const mostEventsPerDay = Math.max(...$('.calendar-wrap .day .events').map((_, el) => $(el).find('.event').length));
-        const height = `${Math.max(40 + mostEventsPerDay * 32, 72)}px`;
-        $('.calendar-wrap .day').css('height', height);
+        const height = Math.max(40 + mostEventsPerDay * 32, 72);
+        return height;
+    },
 
-        if (ui.viewIs('linear')) $('.calendars-wrap .calendar').css('height', height);
+    updateCalendarHeight(height) {
+        if (!height) height = this.getCalendarHeight();
+
+        $('.calendar-wrap .day').css('height', `${height}px`);
+        
+        if (ui.viewIs('linear')) $('.calendars-wrap .calendar').css('height', `${height}px`);
         else $('.calendars-wrap .calendar').css('height', '');
     },
 

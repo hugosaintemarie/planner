@@ -15,6 +15,7 @@ export default {
     event: null,
     eventID: null,
     eventTitle: null,
+    maxHeight: 0,
 
     init() {
         // Click on a day in main calendar
@@ -211,6 +212,8 @@ export default {
         $(document).on('dblclick', '.calendar-wrap .event .anchor', () => {
             return false;
         });
+
+        this.maxHeight = calendars.getCalendarHeight();
     },
 
     startDraw(e) {
@@ -947,8 +950,12 @@ export default {
 
         if (this.event.anchor === 'start' && date <= this.event.end) this.event.start = date;
         else if (this.event.anchor === 'end' && date >= this.event.start) this.event.end = date;
+
+        events.updateEvent(this.event, false);
+
+        this.maxHeight = Math.max(this.maxHeight, calendars.getCalendarHeight());
+        calendars.updateCalendarHeight(this.maxHeight);
         
-        events.updateEvent(this.event);
     },
 
     endResize() {
@@ -956,6 +963,9 @@ export default {
         
         this.resizing = false;
         $('.calendar.resizing').removeClass('resizing');
+
+        this.maxHeight = calendars.getCalendarHeight();
+        calendars.updateCalendarHeight();
 
         data.save();
     }

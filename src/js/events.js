@@ -308,7 +308,7 @@ export default {
         return top;
     },
 
-    buildEvent(event) {
+    buildEvent(event, updateHeight = true) {
         const range = dates.range(event.start, event.end);
 
         const top = this.getEventTopCoordinate(event);
@@ -351,12 +351,12 @@ export default {
             end
         });
 
-        calendars.updateCalendarHeight();
+        if (updateHeight) calendars.updateCalendarHeight();
     },
 
-    updateEvent(event) {
-        this.removeEvent(event);
-        this.buildEvent(event);
+    updateEvent(event, updateHeight) {
+        this.removeEvent(event, updateHeight);
+        this.buildEvent(event, updateHeight);
     },
 
     replaceEvent(event, undo = false) {
@@ -382,7 +382,7 @@ export default {
         stats.update();
     },
 
-    removeEvent(event) {
+    removeEvent(event, updateHeight = true) {
         $(`.event[data-id="${event.id}"]`).remove();
 
         // Find all events to update top coordinate for
@@ -410,7 +410,7 @@ export default {
             $(`.event[data-id="${id}"]`).css('top', top * 32);
         }
 
-        calendars.updateCalendarHeight();
+        if (updateHeight) calendars.updateCalendarHeight();
 
         // Update data
         calendars.data.forEach(c => c.events = c.events.filter(e => e.id !== event.id));
