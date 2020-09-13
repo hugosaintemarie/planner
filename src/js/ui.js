@@ -79,12 +79,23 @@ export default {
 
         // Click on day in timeline
         $(document).on('click', '.head [data-day]', e => {
+            const $el = $(e.currentTarget);
+
             $('.head [data-day].open').removeClass('open');
             $('.dropdown').removeClass('visible');
 
-            const $el = $(e.currentTarget);
-            $el.addClass('open');
-            $el.find('.dropdown').addClass('visible');
+            if (e.altKey) {
+                // Alt + click: select all days in column
+                const day = $el.closest('[data-day]').attr('data-day');
+                if (e.metaKey) selection.selectByWeekday(day, true);
+                else selection.selectByWeekday(day);
+
+                // TODO: Meta + click should toggle off selected column
+                // TODO: Alt + shift for columns range
+            } else {
+                $el.addClass('open');
+                $el.find('.dropdown').addClass('visible');
+            }
 
             return false;
         });
