@@ -123,7 +123,7 @@
         overflow-x: hidden;
         overflow-y: auto;
         height: calc(100vh - 74px);
-        margin-top: -1px;;
+        margin-top: -1px;
     }
 
     .calendar {
@@ -464,7 +464,7 @@ main.linear {
             margin-top: -1px;
             padding: 0 16px 0 1px;
 
-            &:first-child {
+            &:nth-child(2) {
                 padding-top: 1px;
             }
     
