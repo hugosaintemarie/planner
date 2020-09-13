@@ -99,7 +99,7 @@ export default {
             this.showHideWeekday(day, false);
 
             const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-            toast.show(`${days[day]} column hidden`, () => { this.showHideWeekday(day, true) }, 0);
+            toast.show(`${days[day]} column hidden`, () => { this.showHideWeekday(day, true) });
 
             return false;
         });
