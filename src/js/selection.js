@@ -192,7 +192,10 @@ export default {
             this.event.end = this.event.startingDate;
         }
 
-        events.updateEvent(this.event);
+        events.updateEvent(this.event, false);
+
+        this.maxHeight = Math.max(this.maxHeight, calendars.getCalendarHeight());
+        calendars.updateCalendarHeight(this.maxHeight);
     },
 
     endDraw() {
@@ -212,9 +215,7 @@ export default {
         const $title = $event.find('.title');
         $title.attr('contenteditable', true).focus();
 
-        if (!events.data.length) return;
-
-        newEvent.show($event);
+        if (events.data.length) newEvent.show($event);
     },
 
     cancelDraw() {
