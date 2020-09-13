@@ -67,8 +67,6 @@ export default {
     show($event) {
         const $wrap = $('.calendar-wrap .calendars');
 
-        console.log($wrap.scrollTop());
-
         $('.new-event').css({
             top: $event.offset().top - $wrap.offset().top + $event.outerHeight() + 8,
             left: $event.offset().left - $wrap.offset().left,
