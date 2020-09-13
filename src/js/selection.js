@@ -582,12 +582,16 @@ export default {
     },
     
     selectAll() {
-        const start = new Date($('#start').val());
-        const end = new Date($('#end').val());
-
-        this.selectedDays = dates.range(start, end);
-
-        this.highlightSelection();
+        if (ui.toolIs('select')) {
+            const start = new Date($('#start').val());
+            const end = new Date($('#end').val());
+    
+            this.selectedDays = dates.range(start, end);
+    
+            this.highlightSelection();
+        } else if (ui.toolIs('draw')) {
+            $('.calendar.selected .event').addClass('selected');
+        }
     },
 
     narrowSelection() {
