@@ -59,8 +59,7 @@
 
     .head {
         position: relative;
-        border-bottom: 1px solid #444444;
-        z-index: 10;
+        z-index: 30;
 
         > div {
             position: relative;
@@ -96,6 +95,9 @@
             display: flex;
 
             > div {
+                display: flex;
+                justify-content: center;
+                align-items: center;
                 flex: 1;
                 padding-left: 12px;
                 cursor: pointer;
@@ -112,7 +114,13 @@
 
                 .dropdown {
                     top: 40px;
-                    left: 0;
+                    text-align: initial;
+
+                    i {
+                        font-size: .875rem;
+                        width: 18px;
+                        text-align: center;
+                    }
                 }
             }
         }
@@ -132,10 +140,6 @@
         overflow-y: auto;
         padding-left: 1px;
         padding-top: 1px;
-
-        &:nth-child(3) {
-            padding-top: 1px;
-        }
 
         &::-webkit-scrollbar {
             width: 0;
@@ -455,6 +459,8 @@ main.linear {
 
             &.linear {
                 display: block;
+                border-bottom: 1px solid #444444;
+                z-index: 20;
             }
         }
     
@@ -495,6 +501,23 @@ main.linear {
                 .events {
                     display: none;
                 }
+            }
+        }
+    }
+}
+
+main:not(.linear) {
+    .calendar-wrap {
+        .calendars {
+            &::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 1px;
+                background-color: #444444;
+                z-index: 1;
             }
         }
     }
