@@ -1,5 +1,6 @@
 import calendars from './calendars';
 import events from './events';
+import toast from './toast';
 import ui from './ui';
 
 export default {
@@ -55,7 +56,7 @@ export default {
         localStorage.setItem('data', JSON.stringify(data));
 
         if (manual) {
-            // TODO: display message to explain auto-save
+            toast.show('Saved!<br><span class="small">Planner autosaves your work ✨</span>');
 
             // Prevent default browser save window (Cmd + S)
             return false;

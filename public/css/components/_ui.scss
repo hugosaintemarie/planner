@@ -107,3 +107,49 @@
         color: #666666;
     }
 }
+
+.toast-wrap {
+    position: absolute;
+    bottom: 24px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    .toast {
+        padding: 8px 16px;
+        border-radius: 4px;
+        background-color: #111111;
+        font-size: .875rem;
+        text-align: center;
+        box-shadow: 0 8px 8px #00000020;
+        transform: translateY(8px);
+        opacity: 0;
+        transition: transform .1s ease, opacity .1s ease;
+
+        .small {
+            color: #888;
+        }
+
+        [data-tool="undo"] {
+            display: inline-block;
+            margin: -8px -16px -8px 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            color: #888;
+            text-transform: uppercase;
+            font-weight: 500;
+            font-size: .8125rem;
+            letter-spacing: .02em;
+
+            &:hover {
+                color: white;
+            }
+        }
+
+        &.visible {
+            transform: none;
+            opacity: 1;
+        }
+    }
+}

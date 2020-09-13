@@ -8,6 +8,7 @@ import selection from './selection';
 import sortable from './sortable';
 import stats from './stats';
 import templates from './templates';
+import toast from './toast';
 import tooltip from './tooltip';
 import ui from './ui';
 
@@ -23,6 +24,7 @@ $(() => {
     sortable.init();
     stats.init();
     templates.init();
+    toast.init();
     tooltip.init();
     ui.init();
 });

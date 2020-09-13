@@ -3,6 +3,7 @@ import data from './data';
 import dates from './dates';
 import history from './history';
 import selection from './selection';
+import toast from './toast';
 
 export default {
     view: 'full',
@@ -91,8 +92,16 @@ export default {
         // Hide day column
         $(document).on('click', '[data-tool="hide-weekday"]', e => {
             const $el = $(e.currentTarget);
+            $el.closest('[data-day]').removeClass('open');
+            $el.closest('.dropdown').removeClass('visible');
+
             const day = $el.closest('[data-day]').attr('data-day');
             this.showHideWeekday(day, false);
+
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            toast.show(`${days[day]} column hidden`, () => { this.showHideWeekday(day, true) }, 0);
+
+            return false;
         });
 
         $(document).on('click', '[data-view]', e => {
