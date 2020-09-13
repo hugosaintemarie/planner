@@ -46,14 +46,16 @@ export default {
 
         // Mouse enters a day in main calendar
         $(document).on('mouseenter', '.calendar-wrap .day', e => {
+            const date = $(e.currentTarget).attr('data-date');
+            if (this.lastHoveredDate === date) return;
+
+            this.lastHoveredDate = date;
+
             if (ui.toolIs('draw')) {
                 if (this.drawing) this.draw(e);
                 else if (this.dragging) this.dragEvent(e);
                 else if (this.resizing) this.resizeEvent(e);
-            } else if (ui.tool === 'select') {
-                const date = $(e.currentTarget).attr('data-date');
-                this.lastHoveredDate = date;
-    
+            } else if (ui.tool === 'select') {    
                 if (this.selectedDays.length) this.dragSelect(e);
             }
         });
