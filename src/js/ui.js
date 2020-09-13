@@ -1,6 +1,5 @@
 import calendars from './calendars';
 import data from './data';
-import dates from './dates';
 import history from './history';
 import selection from './selection';
 import toast from './toast';
@@ -63,7 +62,7 @@ export default {
         });
 
         // Scroll in linear mode
-        $(document).on('mousewheel', '.calendar-wrap .calendars, .col-left', e => {
+        $(document).on('wheel', '.calendar-wrap .calendars, .col-left', e => {
             if (this.viewIs('full')) return;
 
             // Keep scroll in sync

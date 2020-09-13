@@ -119,6 +119,7 @@
     }
 
     .calendars {
+        position: relative;
         overflow-x: hidden;
         overflow-y: auto;
         height: calc(100vh - 74px);
@@ -361,11 +362,11 @@
 }
 
 .new-event {
-    position: fixed;
+    position: absolute;
     width: 160px;
     top: 0;
     left: 0;
-    z-index: 100;
+    z-index: 10;
     padding: 4px 0;
     background-color: #222222;
     border: 1px solid #333333;

@@ -3,6 +3,7 @@ import data from './data';
 import dates from './dates';
 import events from './events';
 import inputs from './inputs';
+import newEvent from './newEvent';
 import panel from './panel';
 import selection from './selection';
 import sortable from './sortable';
@@ -19,6 +20,7 @@ $(() => {
     data.init();
     events.init();
     inputs.init();
+    newEvent.init();
     panel.init();
     selection.init();
     sortable.init();

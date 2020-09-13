@@ -3,6 +3,7 @@ import data from './data';
 import dates from './dates';
 import events from './events';
 import history from './history';
+import newEvent from './newEvent';
 import stats from './stats';
 import ui from './ui';
 
@@ -67,54 +68,6 @@ export default {
             this.renameEvent($el);
         });
 
-        // Hover new event type option
-        $(document).on('mouseenter', '.new-event ul li', e => {
-            const $el = $(e.currentTarget);
-            $('.new-event ul li.selected').removeClass('selected');
-            $el.addClass('selected');
-        });
-
-        // Click on new event type option
-        $(document).on('click', '.new-event ul li', e => {
-            const type = parseInt($(e.currentTarget).attr('data-type'));
-            this.changeType(type);
-        });
-
-        $(document).on('mousedown', '.new-event ul li', () => {
-            return false;
-        });
-
-        // Up/down arrow keys + enter key in new event type options
-        $(document).on('keydown', e => {
-            if (!this.event) return;
-            const $li = $('.new-event ul li.selected');
-            
-            if (e.which === 38) { // Up
-                if ($li.length) {
-                    if ($li.prev('li').length) $li.prev('li').addClass('selected');
-                    else $('.new-event ul li:last-child').addClass('selected');
-                    $li.removeClass('selected');
-                } else {
-                    $('.new-event ul li:last-child').addClass('selected');
-                }
-            } else if (e.which === 40) { // Down
-                if ($li.length) {
-                    if ($li.next('li').length) $li.next('li').addClass('selected');
-                    else $('.new-event ul li:first-child').addClass('selected');
-                    $li.removeClass('selected');
-                } else {
-                    $('.new-event ul li:first-child').addClass('selected');
-                }
-            } else if (e.which === 13) { // Enter
-                if ($li.length && $('.new-event').hasClass('visible')) {
-                    const type = parseInt($li.attr('data-type'));
-                    this.changeType(type);
-                } else {
-                    this.changeType();
-                }
-            }
-        });
-
         // Click on an event in main calendar
         $(document).on('mousedown', '.calendar-wrap .day .event:not(.new)', e => {
             if (ui.toolIs('draw')) return false;
@@ -129,13 +82,7 @@ export default {
         $(document).on('dblclick', '.calendar-wrap .day .event', e => {
             if (ui.toolIs('draw')) {
                 const $event = $(`.calendar-wrap .event.start[data-id="${$(e.currentTarget).attr('data-id')}"]`);
-
-                $('.new-event').css({
-                    'top': $event.offset().top + $event.outerHeight() + 8,
-                    'left': $event.offset().left
-                })
-                .html(this.buildEventsTypesOptions(events.data))
-                .addClass('visible');
+                newEvent.show($event);
 
                 return false;
             }
@@ -164,7 +111,7 @@ export default {
 
                 const multiSelect = e.metaKey || e.ctrlKey || e.shiftKey;
                 if (!multiSelect) $('.event.selected').removeClass('selected');
-                $('.new-event').removeClass('visible');
+                newEvent.hide();
 
                 const id = $event.attr('data-id');
                 if (!isNaN(id)) this.selectEventByID(id);
@@ -177,12 +124,12 @@ export default {
             // Click outside calendar submits new event
             // if (this.event && !$(e.target).closest('.calendar-wrap .calendar').length) this.changeType();
 
-            $('.new-event').removeClass('visible');
+            newEvent.hide();
             $('.event.selected').removeClass('selected');
         });
 
         $(document).on('mousedown', '.calendar-wrap .event .anchor', e => {
-            $('.new-event').removeClass('visible');
+            newEvent.hide();
             this.resizing = true;
             
             const $anchor = $(e.currentTarget);
@@ -267,19 +214,14 @@ export default {
 
         if (!events.data.length) return;
 
-        $('.new-event').css({
-            'top': $event.offset().top + $event.outerHeight() + 8,
-            'left': $event.offset().left
-        })
-        .html(this.buildEventsTypesOptions(events.data))
-        .addClass('visible');
+        newEvent.show($event);
     },
 
     cancelDraw() {
         this.event = null;
         events.eventID--;
         events.removeEvent({id: this.eventID });
-        $('.new-event').removeClass('visible');
+        newEvent.hide();
     },
 
     renameEvent($el) {
@@ -322,7 +264,7 @@ export default {
         event.calendar = calendar.id;
         events.updateEvent(event);
 
-        $('.new-event').removeClass('visible');
+        newEvent.hide();
 
         this.event = null;
         this.eventID = null;
@@ -335,12 +277,8 @@ export default {
         let eventsList = events.data;
         eventsList = eventsList.filter(e => e.title.toLowerCase().startsWith(title.toLowerCase()));
 
-        if (eventsList.length) $('.new-event').html(this.buildEventsTypesOptions(eventsList)).addClass('visible');
-        else $('.new-event').removeClass('visible');
-    },
-
-    buildEventsTypesOptions(events) {
-        return `<ul>${events.map(e => `<li data-type="${e.type}"><span class="event-icon" data-color="${e.color}"></span>${e.title}</li>`).join('')}</ul>`;
+        if (eventsList.length) newEvent.update();
+        else newEvent.hide();
     },
 
     select(e) {
@@ -667,7 +605,7 @@ export default {
         // If only one selected day, toggle it
         $onlySelectedDay.removeClass('selected');
 
-        $('.new-event').removeClass('visible');
+        newEvent.hide();
     },
         
     copySelection() {
