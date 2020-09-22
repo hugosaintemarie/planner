@@ -595,12 +595,23 @@ export default {
         }
     },
 
-    selectByWeekday(day, add = false) {
+    selectByWeekdays(days, add = false, remove = false) {
         const start = new Date($('#start').val());
         const end = new Date($('#end').val());
-        
-        if (add) this.selectedDays.push(...dates.range(start, end).filter(d => d.getDay() === parseInt(day)));
-        else this.selectedDays = dates.range(start, end).filter(d => d.getDay() === parseInt(day));
+
+        if (!add) this.selectedDays = [];
+
+        for (const day of days) {
+            this.selectedDays.push(...dates.range(start, end).filter(d => d.getDay() === parseInt(day)));
+            
+            const $day = $(`.head.full [data-day=${day}]`);
+            $day.addClass('selected');
+            
+            if (remove) {
+                this.selectedDays = this.selectedDays.filter(d => d.getDay() !== parseInt(day));
+                $day.removeClass('selected');
+            }
+        }
 
         this.highlightSelection();
     },

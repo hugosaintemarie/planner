@@ -86,12 +86,36 @@ export default {
 
             if (e.altKey) {
                 // Alt + click: select all days in column
-                const day = $el.closest('[data-day]').attr('data-day');
-                if (e.metaKey) selection.selectByWeekday(day, true);
-                else selection.selectByWeekday(day);
+                const $day = $el.closest('[data-day]')
+                let day = $day.attr('data-day');
 
-                // TODO: Meta + click should toggle off selected column
-                // TODO: Alt + shift for columns range
+                const $first = $('.head.full [data-day].selected-first');
+                
+                if (e.metaKey) {
+                    // Meta key: toggle (add to or remove from selection)
+                    if ($day.hasClass('selected')) selection.selectByWeekdays([day], true, true);
+                    else selection.selectByWeekdays([day], true);
+                } else if (e.shiftKey) {
+                    // Shift key: select range
+                    let first = $first.attr('data-day');
+
+                    day = (day == 0) ? 7 : day;
+                    first = (first == 0) ? 7 : first;
+
+                    const lowest = Math.min(day, first);
+                    const highest = Math.max(day, first);
+
+                    // Build array from lowest to highest day
+                    const days = Array(highest - lowest + 1).fill(0).map((_, i) => i + lowest).map(d => d === 7 ? '0' : d.toString());
+
+                    selection.selectByWeekdays(days);
+                } else {
+                    // Default selection
+                    selection.selectByWeekdays([day]);
+
+                    $first.removeClass('selected-first');
+                    $day.addClass('selected-first');
+                }                    
             } else {
                 $el.addClass('open');
                 $el.find('.dropdown').addClass('visible');
@@ -105,7 +129,7 @@ export default {
             const $el = $(e.currentTarget);
             const day = $el.closest('[data-day]').attr('data-day');
 
-            selection.selectByWeekday(day);
+            selection.selectByWeekdays([day]);
 
             $el.closest('[data-day]').removeClass('open');
             $el.closest('.dropdown').removeClass('visible');
