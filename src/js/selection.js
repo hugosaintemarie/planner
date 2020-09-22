@@ -81,9 +81,13 @@ export default {
         // Double-click on an event in main calendar
         $(document).on('dblclick', '.calendar-wrap .day .event', e => {
             if (ui.toolIs('draw')) {
-                if ($('.event.selected').length > 1) return false;
+                const $el = $(e.currentTarget);
+                
+                // Abort if we're selecting multiple elements
+                const count = new Set($('.event.selected').toArray().map(d => $(d).attr('data-id'))).size;
+                if (count > 1 || !$el.hasClass('selected')) return false;
 
-                const $event = $(`.calendar-wrap .event.start[data-id="${$(e.currentTarget).attr('data-id')}"]`);
+                const $event = $(`.calendar-wrap .event.start[data-id="${$el.attr('data-id')}"]`);
                 newEvent.show($event);
 
                 return false;
