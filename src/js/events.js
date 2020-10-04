@@ -69,7 +69,7 @@ export default {
         });
 
         // Save event rename on blur (for empty names)
-        $(document).on('blur', '.title', e => {
+        $(document).on('blur', '.events-wrap .title', e => {
             this.renameEvent($(e.currentTarget));
         });
 
@@ -211,6 +211,8 @@ export default {
     renameEvent($el) {
         const val = $el.text();
         const type = parseInt($el.closest('li').attr('data-type'));
+
+        console.log(type);
 
         $(`.event[data-type="${type}"] span`).text(val);
 
