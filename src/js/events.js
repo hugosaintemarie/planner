@@ -68,6 +68,11 @@ export default {
             $('.events-wrap ul li .title[contenteditable]').removeAttr('contenteditable');
         });
 
+        // Save event rename on blur (for empty names)
+        $(document).on('blur', '.title', e => {
+            this.renameEvent($(e.currentTarget));
+        });
+
         // Rename event
         $(document).on('click', '.events-wrap ul li [data-tool="rename"]', e => {
             const $title = $(e.target).closest('li').find('span.title');
