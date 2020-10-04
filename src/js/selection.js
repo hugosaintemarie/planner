@@ -684,6 +684,7 @@ export default {
                         // color: $el.css('background-color'),
                         // start: $el.attr('data-start'),
                         // end: $el.attr('data-end')
+                        calendar: parseInt($el.closest('.calendar').attr('data-id'))
                     }
         
                     eventsThatDay.push(event);
