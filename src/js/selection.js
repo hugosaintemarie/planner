@@ -283,7 +283,7 @@ export default {
         let eventsList = events.data;
         eventsList = eventsList.filter(e => e.title.toLowerCase().startsWith(title.toLowerCase()));
 
-        if (eventsList.length) newEvent.update();
+        if (eventsList.length) newEvent.update(eventsList);
         else newEvent.hide();
     },
 
