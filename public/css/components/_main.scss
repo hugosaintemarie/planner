@@ -239,10 +239,6 @@ main {
         flex: 0 0 240px;
         overflow-y: auto;
         z-index: 100;
-        
-        > * {
-            padding: 16px;
-        }
 
         &::-webkit-scrollbar {
             width: 0;

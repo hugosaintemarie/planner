@@ -8,6 +8,7 @@ export default {
     $sortedEl: null,
     sortedPosition: {},
     sortedOrigin: {},
+    parentScroll: null,
 
     init() {
         $(document).on('mousedown', '.sortable i[data-tool="sort"]', e => {
@@ -46,6 +47,7 @@ export default {
         this.$sortedEl.css('zIndex', '1');
     
         const $parent = this.$sortedEl.parent();
+        this.parentScroll = $parent.scrollTop();
     
         this.$sortedEl.parent().css({
             'width': $parent.outerWidth(),
@@ -70,9 +72,13 @@ export default {
     sort(e) {
         // const deltaX = e.clientX - this.sortedOrigin.x;
         const deltaY = e.clientY - this.sortedOrigin.y;
+        const top = this.$sortedEl.parent().position().top + parseInt(this.$sortedEl.parent().css('marginTop'));
     
         this.$sortedEl.css({
-            'top': Math.min(Math.max(this.sortedPosition.top + deltaY, this.$sortedEl.parent().position().top + parseInt(this.$sortedEl.parent().css('marginTop'), 10)), this.$sortedEl.parent().position().top + parseInt(this.$sortedEl.parent().css('marginTop'), 10) + this.$sortedEl.parent().outerHeight() - this.$sortedEl.outerHeight(true)),
+            'top': Math.min(
+                Math.max(this.sortedPosition.top + deltaY, top),
+                top + this.$sortedEl.parent().outerHeight() - this.$sortedEl.outerHeight(true)
+            ),
             // 'left': this.sortedPosition.left + deltaX
         });
     
@@ -120,6 +126,8 @@ export default {
 
             $el.attr('data-order', id);
         });
+
+        $parent.scrollTop(this.parentScroll);
 
         if ($parent.parents('.calendars-wrap').length) calendars.reorder();
         else if ($parent.parents('.events-wrap').length) events.reorder();
