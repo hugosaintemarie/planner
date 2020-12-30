@@ -116,6 +116,7 @@
     display: flex;
     justify-content: center;
     z-index: 100;
+    pointer-events: none;
 
     .toast {
         padding: 8px 16px;
@@ -127,6 +128,7 @@
         transform: translateY(8px);
         opacity: 0;
         transition: transform .1s ease, opacity .1s ease;
+        pointer-events: all;
 
         .small {
             color: #888;
