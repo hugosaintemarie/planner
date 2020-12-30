@@ -461,6 +461,9 @@ export default {
             // Linear: move to calendar under
             else if (ui.viewIs('linear')) calendars.selectNextCalendar();
         }
+
+        // TODO: check that _all_ days in selection fit in calendar?
+        if (!dates.isInArray(dates.range(calendars.shownStart, calendars.shownEnd), new Date(new Date(target).setHours(0)))) return;
     
         if (e.shiftKey) {
             const $selectedFirst = $('.selected-first');
