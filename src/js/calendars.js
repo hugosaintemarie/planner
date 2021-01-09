@@ -444,7 +444,9 @@ export default {
     },
 
     getCalendarHeight() {
-        return Math.max(...$('.calendar-wrap .event').map((_, el) => parseInt($(el).css('top')))) + 68;
+        let height = Math.max(...$('.calendar-wrap .event').map((_, el) => parseInt($(el).css('top')))) + 68;
+        if (!isFinite(height)) height = 68;
+        return height;
     },
 
     updateCalendarHeight(height) {
