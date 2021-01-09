@@ -1,95 +1,92 @@
 .events-wrap {
     padding: 16px 0 16px 16px;
 
-    .events-scroll-wrap {
+    ul {
         position: relative;
+        list-style: none;
+        height: 100%;
+        margin-top: 16px;
+        padding-right: 32px;
 
-        ul {
-            list-style: none;
-            height: 100%;
-            margin-top: 16px;
-            padding-right: 32px;
-    
-            li {
-                position: relative;
-                height: 50px;
+        li {
+            position: relative;
+            height: 50px;
+            border-radius: 4px;
+            padding: 12px 6px;
+            cursor: pointer;
+            background-color: grey;
+            transition: background-color .1s ease;
+
+            &:not(:last-child) {
+                margin-bottom: 12px;
+            }
+
+            @for $i from 0 through 19 {
+                &[data-color="#{$i}"] {
+                    color: var(--color-event-text-#{$i});
+                    background-color: var(--color-event-bg-#{$i});
+
+                    &.selected {
+                        color: white;
+                        background-color: var(--color-event-#{$i});
+                    }
+                }
+            }
+
+            .title {
+                font-weight: 600;
+                display: inline-block;
+                padding: 4px 8px;
                 border-radius: 4px;
-                padding: 12px 6px;
-                cursor: pointer;
-                background-color: grey;
-                transition: background-color .1s ease;
-    
-                &:not(:last-child) {
-                    margin-bottom: 12px;
+
+                &:focus {
+                    outline: none;
+                    background-color: rgba(0,0,0,.2);
                 }
-    
-                @for $i from 0 through 19 {
-                    &[data-color="#{$i}"] {
-                        color: var(--color-event-text-#{$i});
-                        background-color: var(--color-event-bg-#{$i});
-    
-                        &.selected {
-                            color: white;
-                            background-color: var(--color-event-#{$i});
-                        }
+                
+                &::selection {
+                    background-color: #333;
+                }
+            }
+
+            .tools {
+                position: absolute;
+                top: 0;
+                right: -28px;
+                padding: 0;
+                
+                > i {
+                    width: 24px;
+                    height: 24px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    opacity: 0;
+                    transition: opacity .1s ease;
+
+                    &:not(.far) {
+                        font-style: normal;
+                        font-weight: bold;
+                    }
+
+                    &[data-tool="sort"] {
+                        cursor: grab;
                     }
                 }
-    
-                .title {
-                    font-weight: 600;
-                    display: inline-block;
-                    padding: 4px 8px;
-                    border-radius: 4px;
-    
-                    &:focus {
-                        outline: none;
-                        background-color: rgba(0,0,0,.2);
-                    }
-                    
-                    &::selection {
-                        background-color: #333;
-                    }
+
+                .dropdown {
+                    right: 4px;
+                    top: 24px;
                 }
-    
+            }
+
+            &:hover {
                 .tools {
-                    position: absolute;
-                    top: 0;
-                    right: -28px;
-                    padding: 0;
-                    
                     > i {
-                        width: 24px;
-                        height: 24px;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        opacity: 0;
-                        transition: opacity .1s ease;
-    
-                        &:not(.far) {
-                            font-style: normal;
-                            font-weight: bold;
-                        }
-    
-                        &[data-tool="sort"] {
-                            cursor: grab;
-                        }
-                    }
-    
-                    .dropdown {
-                        right: 4px;
-                        top: 24px;
-                    }
-                }
-    
-                &:hover {
-                    .tools {
-                        > i {
-                            opacity: .5;
-    
-                            &:hover {
-                                opacity: 1;
-                            }
+                        opacity: .5;
+
+                        &:hover {
+                            opacity: 1;
                         }
                     }
                 }

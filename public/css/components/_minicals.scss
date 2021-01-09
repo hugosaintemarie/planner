@@ -63,7 +63,7 @@
         }
     }
 
-    .calendars-scroll-wrap {
+    .scroll-wrap {
         position: relative;
         flex: 1;
         overflow: auto;
@@ -76,8 +76,8 @@
         .calendars {
             position: relative;
             // height: 100%;
-            padding: 16px;
-            // margin: 16px 0;
+            padding: 0 16px;
+            margin: 16px 0;
             // overflow: auto;
 
             .calendar {

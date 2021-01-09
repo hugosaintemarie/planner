@@ -22,6 +22,10 @@ export default {
         $(document).on('mousemove', e => {
             if (this.$sortedEl) this.sort(e);
         });
+
+        $('.scroll-wrap').on('scroll', e => {
+            if (this.$sortedEl) this.sort(e);
+        });
     },
     
     startSort(e) {
@@ -47,7 +51,7 @@ export default {
         this.$sortedEl.css('zIndex', '1');
     
         const $parent = this.$sortedEl.parent();
-        this.parentScroll = $parent.scrollTop();
+        this.parentScroll = this.$sortedEl.parents('.scroll-wrap').scrollTop() || 0;
     
         this.$sortedEl.parent().css({
             'width': $parent.outerWidth(),
@@ -71,15 +75,18 @@ export default {
     
     sort(e) {
         // const deltaX = e.clientX - this.sortedOrigin.x;
-        const deltaY = e.clientY - this.sortedOrigin.y;
-        const top = this.$sortedEl.parent().position().top + parseInt(this.$sortedEl.parent().css('marginTop'));
+
+        if (e.clientY) this.lastClientY = e.clientY;
+
+        const scrollDeltaY = this.parentScroll - (this.$sortedEl.parents('.scroll-wrap').scrollTop() || 0);
+        const deltaY = this.sortedPosition.top + this.lastClientY - this.sortedOrigin.y - scrollDeltaY;
+        const maxTop = this.$sortedEl.parent().outerHeight() - this.$sortedEl.outerHeight(true);
+
+        const top = Math.min(Math.max(deltaY, 0), maxTop);
     
         this.$sortedEl.css({
-            'top': Math.min(
-                Math.max(this.sortedPosition.top + deltaY, top),
-                top + this.$sortedEl.parent().outerHeight() - this.$sortedEl.outerHeight(true)
-            ),
-            // 'left': this.sortedPosition.left + deltaX
+            'top': top,
+            // 'left': left
         });
     
         this.$sortedEl.nextAll().each((_, el) => {
