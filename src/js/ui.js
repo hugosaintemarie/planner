@@ -67,7 +67,6 @@ export default {
 
             // Keep scroll in sync
             const scrollTop = e.currentTarget.scrollTop;
-            console.log(scrollTop);
             $('.calendar-wrap .calendars, .calendars-wrap .scroll-wrap').scrollTop(scrollTop);
             
             this.moveEventsTitles();
