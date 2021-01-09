@@ -243,6 +243,8 @@ export default {
             const date = dates.toString(day);
             $(`.day[data-date="${date}"]`).addClass('out');
         }
+
+        this.buildCalendarHead();
     },
 
     newCalendar(calendar) {
