@@ -62,12 +62,13 @@ export default {
         });
 
         // Scroll in linear mode
-        $(document).on('wheel', '.calendar-wrap .calendars, .col-left', e => {
+        $(document).on('wheel', '.calendar-wrap .calendars, .calendars-wrap .scroll-wrap', e => {
             if (this.viewIs('full')) return;
 
             // Keep scroll in sync
             const scrollTop = e.currentTarget.scrollTop;
-            $('.calendar-wrap .calendars, .col-left').scrollTop(scrollTop);
+            console.log(scrollTop);
+            $('.calendar-wrap .calendars, .calendars-wrap .scroll-wrap').scrollTop(scrollTop);
             
             this.moveEventsTitles();
         });
