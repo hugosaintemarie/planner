@@ -6,6 +6,7 @@ export default {
     actionsIndex: 0,
 
     pushAction(action) {
+        // console.log(action);
         this.actions.length = this.actionsIndex;
         this.actions.push(action);
         this.actionsIndex += 1;
@@ -19,9 +20,13 @@ export default {
         this.actionsIndex -= 1;
         const action = this.actions[this.actionsIndex];
 
-        if (action.type === 'addEvents') for (const event of action.events) events.removeEvent(event);
-        else if (action.type === 'removeEvents') for (const event of action.events) events.buildEvent(event);
-        else if (action.type === 'replaceEvents') for (const event of action.events) events.replaceEvent(event, true);
+        if (action.type.includes('Events')) {
+            for (const event of action.events) {
+                if (action.type === 'addEvents') events.removeEvent(event);
+            else if (action.type === 'removeEvents') events.buildEvent(event);
+            else if (action.type === 'replaceEvents') events.replaceEvent(event, true);
+            }
+        }
 
         if (this.actionsIndex === 0) this.updateNav('undo');
         else this.updateNav('undo', -1);
@@ -34,10 +39,14 @@ export default {
     redo() {
         if (this.actionsIndex + 1 > this.actions.length) return;
         const action = this.actions[this.actionsIndex];
-        if (action.type === 'addEvents') for (const event of action.events) events.buildEvent(event);
-        else if (action.type === 'removeEvents') for (const event of action.events) events.removeEvent(event)
-        else if (action.type === 'replaceEvents') for (const event of action.events) events.replaceEvent(event);
-        ;
+
+        if (action.type.includes('Events')) {
+            for (const event of action.events) {
+                if (action.type === 'addEvents') events.buildEvent(event);
+                else if (action.type === 'removeEvents') events.removeEvent(event)
+                else if (action.type === 'replaceEvents') events.replaceEvent(event);
+            }
+        }
         
         this.actionsIndex += 1;
 
@@ -50,13 +59,15 @@ export default {
     },
 
     updateNav(type, actionIndex) {
+        const label = type === 'undo' ? 'Undo' : 'Redo';
+
         if (isNaN(actionIndex)) {
             // Disable nav undo/redo options
-            $(`nav [data-tool="${type}"]`).text(type === 'undo' ? 'Undo' : 'Redo').addClass('disabled');
+            $(`nav [data-tool="${type}"]`).text(label).addClass('disabled');
         } else {
             // Update nav undo/redo options text
-            const buildActionText = (action) => {
-                const n = action.type === 'addEvents' ? action.events.length : action.events.length / 2;
+            const buildActionText = action => {
+                const n = action.events.length;
                 const s = n > 1 ? 's' : '';
         
                 const text = {
@@ -69,7 +80,8 @@ export default {
             };
 
             const action = this.actions[this.actionsIndex + actionIndex];
-            $(`nav [data-tool="${type}"]`).text(`${type === 'undo' ? 'Undo' : 'Redo'} ${buildActionText(action)}`).removeClass('disabled');
+            const text = `${label} ${buildActionText(action)}`;
+            $(`nav [data-tool="${type}"]`).text(text).removeClass('disabled');
         }
     }
 }

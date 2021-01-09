@@ -7,12 +7,12 @@ import settings from './settings';
 import stats from './stats';
 
 export default {
-    data: [],
+    all: [],
     eventID: -1,
     type: -1,
 
     reset() {
-        this.data = [];
+        this.all = [];
         this.eventID = -1;
         this.type = -1;
 
@@ -39,7 +39,8 @@ export default {
             if ($el.is('.tools') || $el.parents().is('.tools')) return;
 
             const $event = $el.closest('li');
-            this.insertEvent($event);
+            const type = parseInt($event.attr('data-type'));
+            this.insertEvent(type);
         });
 
         // Open dropdown menu
@@ -134,7 +135,7 @@ export default {
             $(`.stat[data-type="${eventType}"] .event-icon`).attr('data-color', color);
 
             // Update data
-            this.data.find(e => e.type === eventType).color = parseInt($color.attr('data-color'));
+            this.all.find(e => e.type === eventType).color = parseInt($color.attr('data-color'));
             data.save();
 
             return false;
@@ -149,8 +150,8 @@ export default {
             stats.update();
 
             // Update data
-            const event = this.data.find(e => e.type === type);
-            this.data.splice(this.data.indexOf(event), 1);
+            const event = this.all.find(e => e.type === type);
+            this.all.splice(this.all.indexOf(event), 1);
             data.save();
         });
 
@@ -198,7 +199,7 @@ export default {
             if (!event) $ul.find('li:last-child .title').focus();
 
             // Save data
-            this.data.push({
+            this.all.push({
                 ...event,
                 type,
                 color
@@ -217,7 +218,7 @@ export default {
         $(`.event[data-type="${type}"] span`).text(val);
 
         // Update data
-        this.data.find(e => e.type === type).title = val;
+        this.all.find(e => e.type === type).title = val;
 
         stats.update();
         data.save();
@@ -232,36 +233,26 @@ export default {
         for (const day of selection.selectedDays) {
             const date = dates.toString(day);
 
-                // Edit all calendars or only selected one
-                let $events;
-                if ($('.calendars-wrap').hasClass('edit-all')) {
-                    $events = $(`.day[data-date="${date}"] .event`);
-                } else {
-                    $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
-                }
-
-                // Remove existing event if one event per day only
-                if (settings.oneEventPerDay) $events.remove();
-                    
-                const $day = $(`.calendar-wrap .day[data-date="${date}"]`);
-                
-                const event = {
+            // let $events;
+            let event;
+            
+            // Edit selected calendar(s)
+            for (const calendarID of calendars.getSelectedCalendars()) {
+                event = {
                     id: ++this.eventID,
-                    calendar: parseInt($('.calendars-wrap .calendar.selected').attr('data-id')),
-                    type: type,
-                    // title: $event.find('.title').text(),
-                    // color: $event.css('background-color'),
-                    start: $day.attr('data-date'),
-                    end: $day.attr('data-date')
+                    calendar: calendarID,
+                    type,
+                    start: date,
+                    end: date
                 };
-    
+
                 action.events.push(event);
-        
-                this.buildEvent(event);
             }
-    
-            history.pushAction(action);
+            
+            this.buildEvent(event);
         }
+
+        history.pushAction(action);
 
         stats.update();
         data.save();
@@ -270,7 +261,7 @@ export default {
     getEventsWrap(event, day) {
         const date = dates.toString(new Date(day));
         let $el;
-        if ($('.calendars-wrap').hasClass('edit-all')) {
+        if (calendars.editAll) {
             $el = $(`.day[data-date="${date}"] .events`);
         } else {
             $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
@@ -310,7 +301,7 @@ export default {
                 eventType = { title: '', color: 17 };
                 classname += ' new';
             } else {
-                eventType = this.data.find(e => e.type === event.type);
+                eventType = this.all.find(e => e.type === event.type);
             }
             
             // Find title and color from event
@@ -328,7 +319,7 @@ export default {
 
         // Save data
         const { id, type, start, end } = event;
-        calendars.data.find(c => c.id === event.calendar).events.push({
+        calendars.all.find(c => c.id === event.calendar).events.push({
             id,
             type,
             start,
@@ -346,7 +337,7 @@ export default {
     replaceEvent(event, undo = false) {
         // Edit all calendars or only selected one
         let $el;
-        if ($('.calendars-wrap').hasClass('edit-all')) {
+        if (calendars.editAll) {
             $el = $(`.event[data-id="${event.id}"]`);
         } else {
             $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .event[data-id="${event.id}"]`) : $(`.calendar.selected .event[data-id="${event.id}"], .calendar-wrap .event[data-id="${event.id}"]`);
@@ -361,7 +352,7 @@ export default {
         $el.attr('data-color', $target.attr('data-color'));
 
         // Update data
-        calendars.data.find(c => c.id === event.calendar).events.find(e => e.id === event.id).type = event.type;
+        calendars.all.find(c => c.id === event.calendar).events.find(e => e.id === event.id).type = event.type;
 
         stats.update();
     },
@@ -369,7 +360,7 @@ export default {
     removeEvent(event, updateHeight = true) {
         $(`.event[data-id="${event.id}"]`).remove();
 
-        const oldEvent = calendars.data.map(c => c.events).flat().find(e => e.id === event.id);
+        const oldEvent = calendars.all.map(c => c.events).flat().find(e => e.id === event.id);
         const start = oldEvent ? Math.min(new Date(oldEvent.start), new Date(event.start)) : event.start;
         const end = oldEvent ? Math.max(new Date(oldEvent.end), new Date(event.end)) : event.end;
 
@@ -401,7 +392,7 @@ export default {
         if (updateHeight) calendars.updateCalendarHeight();
 
         // Update data
-        calendars.data.forEach(c => c.events = c.events.filter(e => e.id !== event.id));
+        calendars.all.forEach(c => c.events = c.events.filter(e => e.id !== event.id));
     },
 
     removeEventsByType(type) {
@@ -440,6 +431,6 @@ export default {
     },
 
     reorder() {
-        this.data.forEach(e => e.order = parseInt($(`.events-wrap ul li[data-type="${e.type}"]`).attr('data-order')));
+        this.all.forEach(e => e.order = parseInt($(`.events-wrap ul li[data-type="${e.type}"]`).attr('data-order')));
     }
 }

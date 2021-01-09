@@ -1,3 +1,4 @@
+import calendars from './calendars';
 import dates from './dates';
 import events from './events';
 import selection from './selection';
@@ -129,7 +130,7 @@ export default {
     },
 
     buildEventsList(action, filter = false) {
-        const $calendars = $('.calendars-wrap').hasClass('edit-all') ? $('.calendars-wrap .calendar') : $('.calendars-wrap .calendar.selected');
+        const $calendars = calendars.editAll ? $('.calendars-wrap .calendar') : $('.calendars-wrap .calendar.selected');
 
         let list = $('.events-wrap ul li').map((_, el) => {
             const $el = $(el);
@@ -164,7 +165,8 @@ export default {
             $('.panel .head span').text(`Add ${selection.selectedDays.length} event${selection.selectedDays.length > 1 ? 's' : ''}…`)
         } else {
             const $event = $('.panel li.selected .event');
-            events.insertEvent($event);
+            const type = parseInt($event.attr('data-type'));
+            events.insertEvent(type);
             this.closePanel();
         }
     },

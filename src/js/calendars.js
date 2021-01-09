@@ -363,6 +363,11 @@ export default {
         data.save();
     },
 
+    getSelectedCalendars() {
+        if (this.editAll) return Object.values(this.all).map(d => d.id);
+        else return [this.selected];
+    },
+
     renameCalendar(val, $calendar = null) {
         let id;
         if ($calendar) {
