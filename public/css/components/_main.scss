@@ -239,6 +239,7 @@ main {
         flex: 0 0 240px;
         overflow-y: auto;
         z-index: 100;
+        background-color: #1e1e1e;
 
         &::-webkit-scrollbar {
             width: 0;

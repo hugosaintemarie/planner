@@ -62,32 +62,52 @@
         z-index: 30;
 
         > div {
-            position: relative;
-            padding: 16px 0;
-            text-align: center;
-            font-size: .8em;
-            opacity: .3;
+            width: 100%;
+            display: flex;
 
-            i {
-                width: 12px;
-                font-size: .625rem;
-                margin-left: 4px;
-                opacity: 0;
-                transition: opacity .2s ease;
+            > div {
+                position: relative;
+                padding: 16px 0;
+                text-align: center;
+                font-size: .8em;
+                opacity: .3;
+    
+                i {
+                    width: 12px;
+                    font-size: .625rem;
+                    margin-left: 4px;
+                    opacity: 0;
+                    transition: opacity .2s ease;
+                }
             }
         }
 
         &.linear {
             width: max-content;
+            height: 64px;
             background-color: #1e1e1e;
             margin-top: -16px;
-            padding-top: 16px;
+            // padding-top: 16px;
             display: none;
     
             > div {
-                display: inline-block;
-                width: 139px;
-                padding-left: 0;
+                &.months {
+                    height: 38px;
+                    padding: 12px 0 8px 0;
+                    
+                    > div {
+                        text-align: left;
+                        font-size: 1rem;
+                        opacity: 1;
+                        font-weight: bold;
+                    }
+                }
+
+                > div {
+                    display: inline-block;
+                    width: 139px;
+                    padding: 0;
+                }
             }
         }
 
@@ -95,31 +115,34 @@
             display: flex;
 
             > div {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex: 1;
-                padding-left: 12px;
-                cursor: pointer;
-                transition: opacity .2s ease;
 
-                &.open,
-                &:hover {
-                    opacity: 1;
-
-                    i {
+                > div {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex: 1;
+                    padding-left: 12px;
+                    cursor: pointer;
+                    transition: opacity .2s ease;
+    
+                    &.open,
+                    &:hover {
                         opacity: 1;
+    
+                        i {
+                            opacity: 1;
+                        }
                     }
-                }
-
-                .dropdown {
-                    top: 40px;
-                    text-align: initial;
-
-                    i {
-                        font-size: .875rem;
-                        width: 18px;
-                        text-align: center;
+    
+                    .dropdown {
+                        top: 40px;
+                        text-align: initial;
+    
+                        i {
+                            font-size: .875rem;
+                            width: 18px;
+                            text-align: center;
+                        }
                     }
                 }
             }

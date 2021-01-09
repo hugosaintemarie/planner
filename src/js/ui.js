@@ -69,7 +69,7 @@ export default {
             const scrollTop = e.currentTarget.scrollTop;
             $('.calendar-wrap .calendars, .calendars-wrap .scroll-wrap').scrollTop(scrollTop);
             
-            this.moveEventsTitles();
+            this.moveStickyLabels();
         });
 
         // Change tool
@@ -253,7 +253,7 @@ export default {
         $(`nav [data-radio="view"]`).removeClass('checked');
         $(`nav [data-radio="view"][data-value="linear"]`).addClass('checked');
 
-        this.moveEventsTitles();
+        this.moveStickyLabels();
     },
 
     viewIs(view) {
@@ -298,7 +298,9 @@ export default {
         data.save();
     },
 
-    moveEventsTitles() {
+    moveStickyLabels() {
+        const colWidth = $(window).width() <= 1120 ? 24 : 240;
+
         // Keep (visible) event titles in view
         $('.calendar-wrap .event .title:visible').each((_, el) => {
             const $title = $(el);
@@ -314,7 +316,6 @@ export default {
             
             const eventOffsetLeft = $event.offset().left;
             const eventOffsetRight = eventOffsetLeft + width;
-            const colWidth = $(window).width() <= 1120 ? 24 : 240;
             
             if (eventOffsetLeft < colWidth && eventOffsetRight > colWidth) {
                 const top = $event.offset().top + 2;
@@ -329,6 +330,34 @@ export default {
                 });
             } else {
                 $title.css({
+                    'position': '',
+                    'top': '',
+                    'left': ''
+                });
+            }
+        });
+
+        // Keep month label in view
+        $('.head.linear .months div').each((_, el) => {
+            const $wrap = $(el);
+            const $month = $wrap.find('span');
+            const wrapOffsetLeft = $wrap.offset().left;
+            const wrapOffsetRight = wrapOffsetLeft + $wrap.outerWidth();
+            
+            // if (wrapOffsetLeft - 16 < colWidth && wrapOffsetRight - $month.outerWidth() > colWidth) {
+            if (wrapOffsetLeft - 16 <= colWidth && wrapOffsetRight > colWidth) {
+                const top = $month.offset().top;
+
+                // Make label stick to right end of month
+                const left = colWidth + 16 + Math.min(wrapOffsetRight - $month.outerWidth() - colWidth - 32, 0);
+
+                $month.css({
+                    'position': 'fixed',
+                    'top': top,
+                    'left': left
+                });
+            } else {
+                $month.css({
                     'position': '',
                     'top': '',
                     'left': ''

@@ -96,7 +96,7 @@ export default {
 
     buildCalendarHead() {
         const days = ['Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays', 'Sundays'];
-        const headFull = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) =>
+        const headFull = `<div>${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) =>
             `<div data-day="${i === 6 ? 0 : i + 1}">
                 ${d}<i class="fas fa-chevron-down"></i>
                 <div class="dropdown">
@@ -104,16 +104,25 @@ export default {
                     <span class="border-top" data-tool="hide-weekday"><i class="fas fa-eye-slash"></i>Hide column</span>
                 </div>
             </div>`
-        ).join('');
+        ).join('')}</div>`;
 
         $('.head.full').html(headFull);
 
         this.getStartEnd();
         const range = dates.range(this.start, this.end);
 
-        const headLinear = range.map(day =>
-            `<div data-day="${day.getDay()}">${day.toLocaleDateString('en-US', { weekday: 'short' })} ${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</div>`
-        ).join('');
+        const months = range.reduce((acc, curr) => {
+            const month = curr.getMonth();
+            if (!acc[month]) acc[month] = 1;
+            else acc[month] += 1;
+            return acc;
+        }, {});
+
+        let headLinear = `<div class="months">${Object.keys(months).map(d => `<div style="width: ${139 * months[d]}px"><span>${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][parseInt(d)]}</span></div>`).join('')}</div>`;
+
+        headLinear += `<div>${range.map(day =>
+            `<div data-day="${day.getDay()}">${day.toLocaleDateString('en-US', { weekday: 'short' })} ${day.getDate()}</div>`
+        ).join('')}</div>`;
 
         $('.head.linear').html(headLinear);
     },
