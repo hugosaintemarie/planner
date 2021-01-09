@@ -5,28 +5,32 @@
     flex-flow: column wrap;
 
     &.edit-all {
-        .toggle-edit-all {
-            background-color: #292929;
-            color: white;
-            border-color: #393939;
-            
-            i {
-                &::before {
-                    content: "\f274";
-                    font-weight: bold;
+        > .row {
+            .toggle-edit-all {
+                background-color: #292929;
+                color: white;
+                border-color: #393939;
+                
+                i {
+                    &::before {
+                        content: "\f274";
+                        font-weight: bold;
+                    }
                 }
             }
         }
         
-        .calendars {
-            .calendar {
-                .content {
-                    .day {
-                        &.selected {
-                            background-color: #61a0ff20;
-    
-                            &::after {
-                                border-color: #61a0ffcc;
+        .scroll-wrap {
+            .calendars {
+                .calendar {
+                    .content {
+                        .day {
+                            &.selected {
+                                background-color: #61a0ff20;
+        
+                                &::after {
+                                    border-color: #61a0ffcc;
+                                }
                             }
                         }
                     }
