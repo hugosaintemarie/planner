@@ -220,7 +220,7 @@ export default {
         const $title = $event.find('.title');
         $title.attr('contenteditable', true).focus();
 
-        if (events.data.length) newEvent.show($event);
+        if (events.all.length) newEvent.show($event);
     },
 
     cancelDraw() {
@@ -247,12 +247,12 @@ export default {
         let calendar;
 
         if (typeof this.eventID === 'number') {
-            calendar = calendars.data.find(c => c.events.some(e => e.id === this.eventID));
+            calendar = calendars.all.find(c => c.events.some(e => e.id === this.eventID));
             event = calendar.events.find(e => e.id === this.eventID);
         } else {
             const $event = $('.calendar-wrap .event.start.selected').eq(0);
             const eventID = parseInt($event.attr('data-id'));
-            calendar = calendars.data.find(c => c.events.some(e => e.id === eventID));
+            calendar = calendars.all.find(c => c.events.some(e => e.id === eventID));
             event = calendar.events.find(e => e.id === eventID);
         }
 
@@ -280,7 +280,7 @@ export default {
     },
 
     filterTypes(title) {
-        let eventsList = events.data;
+        let eventsList = events.all;
         eventsList = eventsList.filter(e => e.title.toLowerCase().startsWith(title.toLowerCase()));
 
         if (eventsList.length) newEvent.update(eventsList);
@@ -570,7 +570,7 @@ export default {
             for (const day of this.selectedDays) {
                 const date = dates.toString(day);
                 let $events;
-                if ($('.calendars-wrap').hasClass('edit-all')) {
+                if (calendars.editAll) {
                     $events = $(`.calendars-wrap .day[data-date="${date}"] .event`);
                 } else {
                     $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event`);
@@ -817,7 +817,7 @@ export default {
 
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
-            const $events = $('.calendars-wrap').hasClass('edit-all') ? $(`.day[data-date="${date}"] .event[data-type="${from}"]`) : $(`.calendar.selected .day[data-date="${date}"] .event[data-type="${from}"]`);
+            const $events = calendars.editAll ? $(`.day[data-date="${date}"] .event[data-type="${from}"]`) : $(`.calendar.selected .day[data-date="${date}"] .event[data-type="${from}"]`);
 
             $events.each((_, el) => {
                 const $el = $(el);
@@ -854,7 +854,7 @@ export default {
 
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
-            const $events = $('.calendars-wrap').hasClass('edit-all') ? $(`.day[data-date="${date}"] .event[data-type="${type}"]`) : $(`.calendar.selected .day[data-date="${date}"] .event[data-type="${type}"]`);
+            const $events = calendars.editAll ? $(`.day[data-date="${date}"] .event[data-type="${type}"]`) : $(`.calendar.selected .day[data-date="${date}"] .event[data-type="${type}"]`);
 
             $events.each((_, el) => {
                 const $el = $(el);
@@ -882,7 +882,7 @@ export default {
     },
 
     allDaysEmpty() {
-        if ($('.calendars-wrap').hasClass('edit-all')) {
+        if (calendars.editAll) {
             return !this.selectedDays.some(day => $(`.day[data-date="${dates.toString(day)}"] .event`).length);
         } else {
             return !this.selectedDays.some(day => $(`.calendar.selected .day[data-date="${dates.toString(day)}"] .event`).length);

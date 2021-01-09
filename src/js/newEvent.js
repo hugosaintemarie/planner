@@ -73,7 +73,7 @@ export default {
             marginTop: $wrap.scrollTop(),
             marginLeft: $wrap.scrollLeft()
         })
-        .html(this.buildEventsTypesOptions(events.data))
+        .html(this.buildEventsTypesOptions(events.all))
         .addClass('visible');
     },
 

@@ -8,14 +8,15 @@ import tooltip from './tooltip';
 import ui from './ui';
 
 export default {
-    data: [],
+    all: [],
     calendarID: -1,
     selected: 0,
     start: null,
     end: null,
+    editAll: false,
 
     reset() {
-        this.data = [];
+        this.all = [];
         this.calendarID = -1;
         this.selected = 0;
         this.start = null;
@@ -83,6 +84,9 @@ export default {
         $(document).on('click', '.toggle-edit-all', () => {
             $('nav [data-tool="edit-all"]').toggleClass('checked');
             $('.calendars-wrap').toggleClass('edit-all');
+            
+            if ($('.calendars-wrap').is('.edit-all')) this.editAll = true;
+            else this.editAll = false;
         });
 
         this.buildCalendarHead();
@@ -280,7 +284,7 @@ export default {
         if (ui.viewIs('linear')) ui.linearView();
 
         // Save data
-        this.data.push({
+        this.all.push({
             id,
             title,
             order,
@@ -374,7 +378,7 @@ export default {
         }
 
         // Save data
-        this.data.find(c => c.id === id).title = val;
+        this.all.find(c => c.id === id).title = val;
         data.save();
     },
 
@@ -400,8 +404,8 @@ export default {
         if (ui.viewIs('linear')) ui.linearView();
 
         // Update data
-        const calendar = this.data.find(e => e.id === parseInt($calendar.attr('data-id')));
-        this.data.splice(this.data.indexOf(calendar), 1);
+        const calendar = this.all.find(e => e.id === parseInt($calendar.attr('data-id')));
+        this.all.splice(this.all.indexOf(calendar), 1);
 
         this.reorder();
         data.save();
@@ -470,13 +474,13 @@ export default {
     },
 
     getEventsById(id) {
-        return this.data.find(c => c.id === id).events;
+        return this.all.find(c => c.id === id).events;
     },
 
     reorder() {
         // Update linear view
         if (ui.viewIs('linear')) ui.linearView();
 
-        this.data.forEach(c => c.order = parseInt($(`.calendars-wrap .calendar[data-id="${c.id}"]`).attr('data-order')));
+        this.all.forEach(c => c.order = parseInt($(`.calendars-wrap .calendar[data-id="${c.id}"]`).attr('data-order')));
     }
 }

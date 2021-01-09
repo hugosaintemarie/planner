@@ -120,9 +120,11 @@ export default {
         if (isDown) {
             $('.calendars-wrap').addClass('edit-all');
             $('nav [data-tool="edit-all"]').addClass('checked');
+            calendars.editAll = true;
         } else {
             $('.calendars-wrap').removeClass('edit-all');
             $('nav [data-tool="edit-all"]').removeClass('checked');
+            calendars.editAll = false;
         }
     }
 }

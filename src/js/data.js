@@ -68,8 +68,8 @@ export default {
         const data = {
             start: $('#start').val(),
             end: $('#end').val(),
-            events: [...events.data],
-            calendars: [...calendars.data],
+            events: [...events.all],
+            calendars: [...calendars.all],
             selectedCalendar: calendars.selected,
             selectedTool: ui.tool,
             view: ui.view,
