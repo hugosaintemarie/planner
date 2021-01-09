@@ -223,37 +223,14 @@ export default {
         data.save();
     },
 
-    insertEvent($event) {
-        const type = parseInt($event.attr('data-type'));
-    
-        const selectedDaysEvents = selection.selectedDays.map(d => {
-            const date = dates.toString(d);
-            return $(`.calendar-wrap .day[data-date="${date}"] .event`).attr('data-type');
-        });
-    
-        if (settings.oneEventPerDay && selectedDaysEvents.every(e => e === type)) {
-            // If only one event per day and same type, remove event and don't recreate one
-            for (const day of selection.selectedDays) {
-                const date = dates.toString(day);
+    insertEvent(type) {
+        const action = {
+            type: 'addEvents',
+            events: []
+        };
 
-                // Edit all calendars or only selected one
-                let $events;
-                if ($('.calendars-wrap').hasClass('edit-all')) {
-                    $events = $(`.day[data-date="${date}"] .event`);
-                } else {
-                    $events = $(`.calendars-wrap .calendar.selected .day[data-date="${date}"] .event, .calendar-wrap .day[data-date="${date}"] .event`);
-                }
-
-                $events.remove();
-            }
-        } else {
-            const action = {
-                type: 'addEvents',
-                events: []
-            };
-    
-            for (const day of selection.selectedDays) {
-                const date = dates.toString(day);
+        for (const day of selection.selectedDays) {
+            const date = dates.toString(day);
 
                 // Edit all calendars or only selected one
                 let $events;
