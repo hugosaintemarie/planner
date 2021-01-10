@@ -84,6 +84,11 @@ export default {
                 const $el = $(e.target);
                 $el.blur();
 
+                if ($el.is('.calendar-wrap > .title > span')) {
+                    calendars.all[calendars.getSelectedCalendars()].description = $el.text();
+                    data.save();
+                }
+
                 // If leaving an event title, remove contenteditable
                 if ($el.is('.title')) $el.removeAttr('contenteditable');
 

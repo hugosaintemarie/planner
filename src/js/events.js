@@ -67,6 +67,9 @@ export default {
 
             // Remove contenteditable attr
             $('.events-wrap ul li .title[contenteditable]').removeAttr('contenteditable');
+            
+            // Unselect any selection
+            if (!$(e.target).is('[contenteditable]')) window.getSelection().removeAllRanges();
         });
 
         // Save event rename on blur (for empty names)

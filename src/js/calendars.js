@@ -255,6 +255,7 @@ export default {
         const id = calendar ? calendar.id : ++this.calendarID;
         const title = calendar ? calendar.title : `Calendar ${$('.calendars-wrap .calendar').length + 1}`;
         const order = calendar ? calendar.order : $('.calendars-wrap .calendar').length;
+        const description = calendar ? calendar.description : 'Add a description';
 
         // Create HTML
         const html = `<div class="calendar sortable" data-id="${id}">
@@ -287,6 +288,7 @@ export default {
         this.all.push({
             id,
             title,
+            description,
             order,
             events: []
         });
@@ -342,7 +344,8 @@ export default {
             $('.calendar-wrap .content').attr('data-id', $calendar.attr('data-id'));
         
             // Update title
-            $('.calendar-wrap h2').html($calendar.find('p span').html());
+            $('.calendar-wrap .title h2').html($calendar.find('p span').html());
+            $('.calendar-wrap .title span').html(this.all?.find(d => d.id === this.selected)?.description);
         
             // Update main calendar
             $('.calendar-wrap .content').html($calendar.find('.content').html()).addClass('selected');
