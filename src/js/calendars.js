@@ -116,13 +116,13 @@ export default {
         const range = dates.range(this.start, this.end);
 
         const months = range.reduce((acc, curr) => {
-            const month = curr.getMonth();
+            const month = `${curr.getMonth()}-${curr.getFullYear()}`;
             if (!acc[month]) acc[month] = 1;
             else acc[month] += 1;
             return acc;
         }, {});
 
-        let headLinear = `<div class="months">${Object.keys(months).map(d => `<div style="width: ${139 * months[d]}px"><span>${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][parseInt(d)]}</span></div>`).join('')}</div>`;
+        let headLinear = `<div class="months">${Object.keys(months).map(d => `<div style="width: ${139 * months[d]}px"><div class="title"><span>${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][parseInt(d.split('-')[0])]}</span><span class="year">${d.split('-')[1]}</span></div></div>`).join('')}</div>`;
 
         headLinear += `<div>${range.map(day =>
             `<div data-day="${day.getDay()}">${day.toLocaleDateString('en-US', { weekday: 'short' })} ${day.getDate()}</div>`

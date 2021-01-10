@@ -97,9 +97,18 @@
                     
                     > div {
                         text-align: left;
-                        font-size: 1rem;
                         opacity: 1;
-                        font-weight: bold;
+
+                        span {
+                            font-size: 1rem;
+                            font-weight: bold;
+
+                            &.year {
+                                opacity: .3;
+                                font-weight: normal;
+                                margin-left: 6px;
+                            }
+                        }
                     }
                 }
 

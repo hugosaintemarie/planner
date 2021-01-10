@@ -338,9 +338,9 @@ export default {
         });
 
         // Keep month label in view
-        $('.head.linear .months div').each((_, el) => {
+        $('.head.linear .months > div').each((_, el) => {
             const $wrap = $(el);
-            const $month = $wrap.find('span');
+            const $month = $wrap.find('.title');
             const wrapOffsetLeft = $wrap.offset().left;
             const wrapOffsetRight = wrapOffsetLeft + $wrap.outerWidth();
             
