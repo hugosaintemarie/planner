@@ -307,9 +307,9 @@ export default {
     duplicateCalendar($calendar) {
         const calendar = {
             id: ++this.calendarID,
-            title: `${$calendar.find('p span').text()} copy`, 
+            title: `${$calendar.find('p span').text()} copy`,
             order: $calendar.index() + 1,
-            events: this.getEventsById(parseInt($calendar.attr('data-id')))
+            events: this.getEventsById(parseInt($calendar.attr('data-id'))).map(d => ({...d, id: ++events.eventID })) // Reindex all events
         };
 
         this.newCalendar(calendar);
