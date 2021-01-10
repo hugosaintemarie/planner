@@ -6,7 +6,6 @@ export default {
     actionsIndex: 0,
 
     pushAction(action) {
-        // console.log(action);
         this.actions.length = this.actionsIndex;
         this.actions.push(action);
         this.actionsIndex += 1;

@@ -213,8 +213,6 @@ export default {
         const val = $el.text();
         const type = parseInt($el.closest('li').attr('data-type'));
 
-        console.log(type);
-
         $(`.event[data-type="${type}"] span`).text(val);
 
         // Update data
