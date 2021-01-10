@@ -828,18 +828,36 @@ export default {
         const highest = Math.min(...$('.calendar-wrap .day.selected').toArray().map(d => $(d).offset().top));
         const lowest = Math.max(...$('.calendar-wrap .day.selected').toArray().map(d => $(d).offset().top)) + height;
 
-
         const top = $('.calendar-wrap .calendars').offset().top;
-        const bottom = top + $('.calendar-wrap .calendar.selected').outerHeight();
 
-        if (dir === 'up' && highest - top < margin) {
-            const scrollTop = $('.calendar-wrap .calendar.selected').scrollTop() - (top - highest) - margin;
-            $('.calendar-wrap .calendar.selected').stop().animate({ scrollTop }, 200);
-        }
-        
-        if (dir === 'down' && lowest + margin > bottom) {
-            const scrollTop = $('.calendar-wrap .calendar.selected').scrollTop() - (bottom - lowest) + margin;
-            $('.calendar-wrap .calendar.selected').stop().animate({ scrollTop }, 200);
+        if (ui.viewIs('full')) {
+            const bottom = top + $('.calendar-wrap .calendar.selected').outerHeight();
+
+            if (dir === 'up' && highest - top < margin) {
+                const scrollTop = $('.calendar-wrap .calendar.selected').scrollTop() - (top - highest) - margin;
+                $('.calendar-wrap .calendar.selected').stop().animate({ scrollTop }, 200);
+            }
+            
+            if (dir === 'down' && lowest + margin > bottom) {
+                const scrollTop = $('.calendar-wrap .calendar.selected').scrollTop() - (bottom - lowest) + margin;
+                $('.calendar-wrap .calendar.selected').stop().animate({ scrollTop }, 200);
+            }
+        } else if (ui.viewIs('linear')) {
+            const bottom = top + $('.calendar-wrap .calendars').outerHeight();
+
+            const backToTop = !$('.calendars-wrap .calendar.selected').prevAll('.calendar:not(.hidden)').length;
+            const backToBottom = !$('.calendars-wrap .calendar.selected').nextAll('.calendar:not(.hidden)').length;
+
+            if ((dir === 'up' || backToTop) && highest - top < margin) {
+                console.log('!');
+                const scrollTop = $('.calendar-wrap .calendars').scrollTop() - (top - highest) - margin;
+                $('.calendar-wrap .calendars, .calendars-wrap .scroll-wrap').stop().animate({ scrollTop }, 200);
+            }
+
+            if ((dir === 'down' || backToBottom) && lowest + margin > bottom) {
+                const scrollTop = $('.calendar-wrap .calendars').scrollTop() - (bottom - lowest) + margin;
+                $('.calendar-wrap .calendars, .calendars-wrap .scroll-wrap').stop().animate({ scrollTop }, 200);
+            }
         }
     },
 
