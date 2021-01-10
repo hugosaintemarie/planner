@@ -11,8 +11,8 @@ export default {
             if (day < 4) {
                 weeknum = Math.floor((daynum + day - 1) / 7) + 1;
                 if (weeknum > 52) {
-                    nYear = new Date(this.getFullYear() + 1, 0, 1);
-                    nday = nYear.getDay() - dowOffset;
+                    const nYear = new Date(this.getFullYear() + 1, 0, 1);
+                    let nday = nYear.getDay() - dowOffset;
                     nday = nday >= 0 ? nday : nday + 7;
                     weeknum = nday < 4 ? 1 : 53;
                 }
@@ -69,7 +69,7 @@ export default {
             } else {
                 const lastWeek = acc[acc.length - 1];
 
-                if (curr.getWeek() === lastWeek[lastWeek.length - 1].getWeek()) lastWeek.push(curr);
+                if (curr.getWeek() === lastWeek[lastWeek.length - 1].getWeek() || curr.getWeek() === 0) lastWeek.push(curr);
                 else acc.push([curr]);
             }
 
