@@ -233,12 +233,9 @@ export default {
         for (const day of selection.selectedDays) {
             const date = dates.toString(day);
 
-            // let $events;
-            let event;
-            
             // Edit selected calendar(s)
             for (const calendarID of calendars.getSelectedCalendars()) {
-                event = {
+                const event = {
                     id: ++this.eventID,
                     calendar: calendarID,
                     type,
@@ -246,10 +243,9 @@ export default {
                     end: date
                 };
 
+                this.buildEvent(event);
                 action.events.push(event);
             }
-            
-            this.buildEvent(event);
         }
 
         history.pushAction(action);
@@ -261,11 +257,11 @@ export default {
     getEventsWrap(event, day) {
         const date = dates.toString(new Date(day));
         let $el;
-        if (calendars.editAll) {
-            $el = $(`.day[data-date="${date}"] .events`);
-        } else {
+        // if (calendars.editAll) {
+        //     $el = $(`.day[data-date="${date}"] .events`);
+        // } else {
             $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
-        }
+        // }
         return $el;
     },
 

@@ -246,7 +246,7 @@ export default {
         let event;
         let calendar;
 
-        if (typeof this.eventID === 'number') {
+        if (!isNaN(this.eventID)) {
             calendar = calendars.all.find(c => c.events.some(e => e.id === this.eventID));
             event = calendar.events.find(e => e.id === this.eventID);
         } else {
