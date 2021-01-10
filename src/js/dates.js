@@ -31,6 +31,10 @@ export default {
         return arr.some(d => d.getTime() === date.getTime());
     },
 
+    isInRange(start, end, date) {
+        return this.isInArray(this.range(start, end), date);
+    },
+
     relativeDate(date, n) {
         return new Date(new Date(date).setDate(date.getDate() + n));
     },

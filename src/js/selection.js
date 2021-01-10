@@ -815,28 +815,22 @@ export default {
             events: []
         };
 
-        for (const day of this.selectedDays) {
-            const date = dates.toString(day);
-            const $events = calendars.editAll ? $(`.day[data-date="${date}"] .event[data-type="${from}"]`) : $(`.calendar.selected .day[data-date="${date}"] .event[data-type="${from}"]`);
+        const options = {
+            calendars: calendars.getSelectedCalendars(),
+            days: this.selectedDays,
+            type: from
+        };
+        const eventsToReplace = events.findEvents(options);
 
-            $events.each((_, el) => {
-                const $el = $(el);
+        for (const event of eventsToReplace) {
+            event.from = event.type;
+            event.type = to;
 
-                const event = {
-                    id: parseInt($el.attr('data-id')),
-                    calendar: parseInt($el.closest('.calendar').attr('data-id')),
-                    type: to,
-                    from,
-                    start: date,
-                    end: date
-                };
+            // Replace event
+            events.replaceEvent(event);
 
-                // Replace event
-                events.replaceEvent(event);
-
-                // Save event in action
-                action.events.push(event);
-            });
+            // Save event in action
+            action.events.push(event);
         }
 
         // Save action in history

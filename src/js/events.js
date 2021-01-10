@@ -329,30 +329,44 @@ export default {
         if (updateHeight) calendars.updateCalendarHeight();
     },
 
+    getAllEvents() {
+        const events = [];
+        for (const calendar of Object.values(calendars.all)) {
+            for (const event of calendar.events) {
+                events.push({ ...event, calendar: calendar.id });
+            }
+        }
+        return events;
+    },
+
+    findEvents(options) {
+        let events = this.getAllEvents();
+
+        // Filter events
+        if (options.calendars) events = events.filter(e => options.calendars.includes(e.calendar));
+        if (options.days) events = events.filter(e => options.days.some(d => dates.isInRange(e.start, e.end, d)));
+        if (!isNaN(options.type)) events = events.filter(e => e.type === options.type);
+
+        return events;
+    },
+
     updateEvent(event, updateHeight) {
         this.removeEvent(event, updateHeight);
         this.buildEvent(event, updateHeight);
     },
 
     replaceEvent(event, undo = false) {
-        // Edit all calendars or only selected one
-        let $el;
-        if (calendars.editAll) {
-            $el = $(`.event[data-id="${event.id}"]`);
-        } else {
-            $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .event[data-id="${event.id}"]`) : $(`.calendar.selected .event[data-id="${event.id}"], .calendar-wrap .event[data-id="${event.id}"]`);
-        }
+        const $el = $(`.event[data-id="${event.id}"]`);
 
-        let $target;
-        if (!undo) $target = $(`.events-wrap ul li[data-type="${event.type}"]`);
-        else $target = $(`.events-wrap ul li[data-type="${event.from}"]`);
+        const to = undo ? event.from : event.type;
+        const $target = $(`.events-wrap ul li[data-type="${to}"]`);
 
         $el.find('.title').text($target.find('.title').text());
         $el.attr('data-type', $target.attr('data-type'));
         $el.attr('data-color', $target.attr('data-color'));
 
         // Update data
-        calendars.all.find(c => c.id === event.calendar).events.find(e => e.id === event.id).type = event.type;
+        calendars.all.find(c => c.id === event.calendar).events.find(e => e.id === event.id).type = to;
 
         stats.update();
     },

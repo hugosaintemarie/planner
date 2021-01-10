@@ -23,8 +23,8 @@ export default {
         if (action.type.includes('Events')) {
             for (const event of action.events) {
                 if (action.type === 'addEvents') events.removeEvent(event);
-            else if (action.type === 'removeEvents') events.buildEvent(event);
-            else if (action.type === 'replaceEvents') events.replaceEvent(event, true);
+                else if (action.type === 'removeEvents') events.buildEvent(event);
+                else if (action.type === 'replaceEvents') events.replaceEvent(event, true);
             }
         }
 
