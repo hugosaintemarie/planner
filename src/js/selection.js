@@ -82,6 +82,7 @@ export default {
         $(document).on('dblclick', '.calendar-wrap .day .event', e => {
             if (ui.toolIs('draw')) {
                 const $el = $(e.currentTarget);
+                this.eventID = parseInt($el.attr('data-id'));
                 
                 // Abort if we're selecting multiple elements
                 const count = new Set($('.event.selected').toArray().map(d => $(d).attr('data-id'))).size;
