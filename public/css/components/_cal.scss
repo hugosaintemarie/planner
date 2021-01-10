@@ -40,7 +40,7 @@
         }
     }
 
-    .title {
+    > .title {
         &::selection {
             background-color: #333;
         }
@@ -509,7 +509,7 @@ main.linear {
             margin-left: -1px;
         }
     
-        .title {
+        > .title {
             display: none;
         }
 
