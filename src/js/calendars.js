@@ -96,6 +96,17 @@ export default {
     getStartEnd() {
         this.start = new Date(new Date($('#start').val()).setHours(0));
         this.end = new Date(new Date($('#end').val()).setHours(0));
+
+        const first = dates.relativeFirstWeekDay(this.start);
+        this.shownStart = first;
+
+        // Create range from first day to end
+        const days = dates.range(first, this.end);
+    
+        // Fill last week
+        while (days.length % 7 !== 0) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+
+        this.shownEnd = days[days.length - 1];
     },
 
     buildCalendarHead() {
@@ -136,15 +147,12 @@ export default {
     
         // Find first week day
         const first = dates.relativeFirstWeekDay(this.start);
-        this.shownStart = first;
 
         // Create range from first day to end
         const days = dates.range(first, this.end);
     
         // Fill last week
         while (days.length % 7 !== 0) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
-
-        this.shownEnd = days[days.length - 1];
 
         // Convert days 1D array to weeks 2D array
         const weeks = dates.toWeeksArray(days);
