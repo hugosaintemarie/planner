@@ -682,19 +682,19 @@ export default {
                     const $el = $(el);
         
                     const event = {
-                        // id: 
                         type: parseInt($el.attr('data-type')),
-                        // title: $el.find('.title').text(),
-                        // color: $el.css('background-color'),
-                        // start: $el.attr('data-start'),
-                        // end: $el.attr('data-end')
-                        calendar: parseInt($el.closest('.calendar').attr('data-id'))
+                        calendar: parseInt($el.closest('.calendar').attr('data-id')),
+                        id: parseInt($el.attr('data-id'))
+                    };
+
+                    if (events.flat().some(e => e?.id === event.id)) {
+                        const _e = events.flat().find(e => e?.id === event.id);
+                        _e.duration = _e.duration ? _e.duration + 1 : 2;
+                    } else {
+                        eventsThatDay.push(event);
                     }
-        
-                    eventsThatDay.push(event);
                 });
                 events.push(eventsThatDay);
-
             } else {
                 events.push(null);
             }
@@ -732,21 +732,25 @@ export default {
                 for (const _event of eventsThatDay) {
                     // Find target day
                     const target = new Date(new Date(date).setDate(date.getDate() + j * 7 + i));
-                    const eventDate = dates.toString(target);
+                    const start = dates.toString(target);
+                    const end = dates.toString(dates.relativeDate(start, _event.duration - 1 || 0));
 
-                    // Create event
-                    const event = {
-                        ..._event,
-                        id: ++events.eventID,
-                        start: eventDate,
-                        end: eventDate
-                    };
+                    for (const calendarID of calendars.getSelectedCalendars()) {
+                        // Create event
+                        const event = {
+                            ..._event,
+                            id: ++events.eventID,
+                            calendar: calendarID,
+                            start,
+                            end
+                        };
+                
+                        // Build event
+                        events.buildEvent(event);
             
-                    // Build event
-                    events.buildEvent(event);
-        
-                    // Save event in action
-                    action.events.push(event);
+                        // Save event in action
+                        action.events.push(event);
+                    }
                 }
             }
         }

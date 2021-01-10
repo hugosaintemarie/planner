@@ -36,7 +36,7 @@ export default {
     },
 
     relativeDate(date, n) {
-        return new Date(new Date(date).setDate(date.getDate() + n));
+        return new Date(new Date(date).setDate(new Date(date).getDate() + n));
     },
 
     relativeFirstWeekDay(date) {
