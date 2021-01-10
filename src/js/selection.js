@@ -529,6 +529,7 @@ export default {
         }
     
         this.highlightSelection();
+        this.scrollInView(e.which);
     },
 
     emptySelection() {
@@ -800,9 +801,9 @@ export default {
             });
         }
 
-        for (const eventID of [...selectedEvents]) {
-            // this.selectEventByID(eventID);
-        }
+        // for (const eventID of [...selectedEvents]) {
+        //     this.selectEventByID(eventID);
+        // }
 
         if (this.selectedDays.length || $('.event.selected').length) {
             $('nav [data-tool="cut"]').removeClass('disabled');
@@ -810,6 +811,35 @@ export default {
         } else {
             $('nav [data-tool="cut"]').addClass('disabled');
             $('nav [data-tool="copy"]').addClass('disabled');
+        }
+    },
+
+    scrollInView(key) {
+        const dir = {
+            '37': 'left',
+            '38': 'up',
+            '39': 'right',
+            '40': 'down'
+        }[key];
+
+        const height = calendars.getCalendarHeight();
+        const margin = height * 1.5;
+
+        const highest = Math.min(...$('.calendar-wrap .day.selected').toArray().map(d => $(d).offset().top));
+        const lowest = Math.max(...$('.calendar-wrap .day.selected').toArray().map(d => $(d).offset().top)) + height;
+
+
+        const top = $('.calendar-wrap .calendars').offset().top;
+        const bottom = top + $('.calendar-wrap .calendar.selected').outerHeight();
+
+        if (dir === 'up' && highest - top < margin) {
+            const scrollTop = $('.calendar-wrap .calendar.selected').scrollTop() - (top - highest) - margin;
+            $('.calendar-wrap .calendar.selected').stop().animate({ scrollTop }, 200);
+        }
+        
+        if (dir === 'down' && lowest + margin > bottom) {
+            const scrollTop = $('.calendar-wrap .calendar.selected').scrollTop() - (bottom - lowest) + margin;
+            $('.calendar-wrap .calendar.selected').stop().animate({ scrollTop }, 200);
         }
     },
 
