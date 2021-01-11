@@ -17,7 +17,7 @@ body {
 }
 
 h2 {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
 }
 
 .row {
@@ -111,12 +111,12 @@ header {
     nav {
         height: 100%;
     }
-
+    
     ul {
         list-style: none;
         display: flex;
         height: 100%;
-
+        
         li {
             position: relative;
             display: flex;
@@ -125,6 +125,7 @@ header {
             align-items: center;
             background-color: #1e1e1e;
             padding: 0 16px;
+            font-size: .875rem;
             cursor: pointer;
 
             &.sub {
