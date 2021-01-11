@@ -20,6 +20,8 @@ export default {
         const action = this.actions[this.actionsIndex];
 
         if (action.type.includes('Events')) {
+            if (action.deleted) events.newEvent(action.event);
+
             for (const event of action.events) {
                 if (action.type === 'addEvents') events.removeEvent(event);
                 else if (action.type === 'removeEvents') events.buildEvent(event);
@@ -40,6 +42,8 @@ export default {
         const action = this.actions[this.actionsIndex];
 
         if (action.type.includes('Events')) {
+            if (action.deleted) events.deleteEvent(action.event.type);
+
             for (const event of action.events) {
                 if (action.type === 'addEvents') events.buildEvent(event);
                 else if (action.type === 'removeEvents') events.removeEvent(event)
@@ -66,14 +70,22 @@ export default {
         } else {
             // Update nav undo/redo options text
             const buildActionText = action => {
-                const n = action.events.length;
-                const s = n > 1 ? 's' : '';
-        
-                const text = {
-                    'addEvents': `add ${n} event${s}`,
-                    'removeEvents': `remove ${n} event${s}`,
-                    'replaceEvents': `replace ${n} event${s}`
-                }[action.type];
+                let text;
+
+                if (action.type.includes('Events')) {
+                    const n = action.events.length;
+                    const s = n > 1 ? 's' : '';
+
+                    if (action.deleted) {
+                        text = `delete event ${action.event.title}`;
+                    } else {
+                        text = {
+                            'addEvents': `add ${n} event${s}`,
+                            'removeEvents': `remove ${n} event${s}`,
+                            'replaceEvents': `replace ${n} event${s}`
+                        }[action.type];
+                    }
+                }
         
                 return text;
             };

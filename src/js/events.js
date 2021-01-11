@@ -146,16 +146,17 @@ export default {
 
         // Delete event
         $(document).on('click', '.events-wrap ul li [data-tool="delete"]', e => {
-            const $el = $(e.target).closest('li');
-            const type = parseInt($el.attr('data-type'));
-            $el.remove();
-            this.removeEventsByType(type);
-            stats.update();
+            const $event = $(e.target).closest('li');
+            const type = parseInt($event.attr('data-type'));
+            const event = {
+                title: $event.find('.title').text(),
+                type,
+                index: $event.index(),
+                color: $event.attr('data-color')
+            };
 
-            // Update data
-            const event = this.all.find(e => e.type === type);
-            this.all.splice(this.all.indexOf(event), 1);
-            data.save();
+            this.deleteEvent(type);
+            this.removeEventsByType(type, event);
         });
 
         // Selected event
@@ -192,7 +193,9 @@ export default {
             </li>`;
 
             const $ul = $('.events-wrap ul');
-            $ul.append(li);
+            if (event.index) $ul.find('li').eq(event.index - 1).after(li);
+            else if (event.index === 0) $ul.prepend(li);
+            else $ul.append(li);
 
             // Select new event
             // $ul.find('li.selected').removeClass('selected');
@@ -222,6 +225,18 @@ export default {
         this.all.find(e => e.type === type).title = val;
 
         stats.update();
+        data.save();
+    },
+
+    deleteEvent(type) {
+        const $event = $(`.events-wrap ul li[data-type="${type}"]`);
+        $event.remove();
+
+        stats.update();
+
+        // Update data
+        const _e = this.all.find(e => e.type === type);
+        this.all.splice(this.all.indexOf(_e), 1);
         data.save();
     },
 
@@ -324,6 +339,7 @@ export default {
         });
 
         if (updateHeight) calendars.updateCalendarHeight();
+        stats.update();
     },
 
     getAllEvents() {
@@ -406,12 +422,17 @@ export default {
         calendars.all.forEach(c => c.events = c.events.filter(e => e.id !== event.id));
     },
 
-    removeEventsByType(type) {
+    removeEventsByType(type, event) {
         // Create action for history
-        const action = {
+        let action = {
             type: 'removeEvents',
             events: []
         };
+
+        if (event) {
+            action.deleted = true;
+            action.event = event;
+        }
 
         for (const minical of $('.calendars-wrap .calendar').toArray()) {
             const $events = $(minical).find(`.event[data-type="${type}"]`);
@@ -422,7 +443,7 @@ export default {
                 const event = {
                     id: parseInt($el.attr('data-id')),
                     calendar: parseInt($(minical).attr('data-id')),
-                    type: $el.attr('data-type'),
+                    type: parseInt($el.attr('data-type')),
                     // title: $el.find('.title').text(),
                     // color: $el.css('background-color'),
                     start: $el.closest('.day').attr('data-date'),
