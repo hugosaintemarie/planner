@@ -1,4 +1,5 @@
 import calendars from './calendars';
+import categories from './categories';
 import data from './data';
 import dates from './dates';
 import events from './events';
@@ -8,16 +9,16 @@ import tooltip from './tooltip';
 import ui from './ui';
 
 export default {
-    all: [],
-    calendarID: -1,
+    list: {},
+    id: -1,
     selected: 0,
     start: null,
     end: null,
     editAll: false,
 
     reset() {
-        this.all = [];
-        this.calendarID = -1;
+        this.list = {};
+        this.id = -1;
         this.selected = 0;
         this.start = null;
         this.end = null;
@@ -43,7 +44,7 @@ export default {
 
         // Add new calendar
         $(document).on('click', '.calendars-wrap .add', () => {
-            calendars.newCalendar();
+            calendars.build();
         });
 
         // Rename calendar in sidebar
@@ -259,8 +260,8 @@ export default {
         this.buildCalendarHead();
     },
 
-    newCalendar(calendar) {
-        const id = calendar ? calendar.id : ++this.calendarID;
+    build(calendar) {
+        const id = calendar ? calendar.id : ++this.id;
         const title = calendar ? calendar.title : `Calendar ${$('.calendars-wrap .calendar').length + 1}`;
         const order = calendar ? calendar.order : $('.calendars-wrap .calendar').length;
         const description = calendar ? calendar.description : 'Add a description';
@@ -293,18 +294,18 @@ export default {
         if (ui.viewIs('linear')) ui.linearView();
 
         // Save data
-        this.all.push({
+        this.list[id] = {
             id,
             title,
             description,
             order,
-            events: []
-        });
+            // events: []
+        };
 
         // Build events (for calendar duplication)
         if (calendar && calendar.events) {
             for (const event of calendar.events) {
-                events.buildEvent({
+                events.build({
                     ...event,
                     calendar: id
                 });
@@ -316,13 +317,13 @@ export default {
 
     duplicateCalendar($calendar) {
         const calendar = {
-            id: ++this.calendarID,
+            id: ++this.id,
             title: `${$calendar.find('p span').text()} copy`,
             order: $calendar.index() + 1,
-            events: this.getEventsById(parseInt($calendar.attr('data-id'))).map(d => ({...d, id: ++events.eventID })) // Reindex all events
+            events: this.getEventsById(parseInt($calendar.attr('data-id'))).map(d => ({...d, id: ++categories.id })) // Reindex all events
         };
 
-        this.newCalendar(calendar);
+        this.build(calendar);
 
         // Unselect any selection
         window.getSelection().removeAllRanges();
@@ -353,7 +354,7 @@ export default {
         
             // Update title
             $('.calendar-wrap .title h2').html($calendar.find('p span').html());
-            $('.calendar-wrap .title span').html(this.all?.find(d => d.id === this.selected)?.description);
+            $('.calendar-wrap .title span').html(this.list[this.selected]?.description);
         
             // Update main calendar
             $('.calendar-wrap .content').html($calendar.find('.content').html()).addClass('selected');
@@ -375,7 +376,7 @@ export default {
     },
 
     getSelectedCalendars() {
-        if (this.editAll) return Object.values(this.all).map(d => d.id);
+        if (this.editAll) return Object.values(this.list).map(d => d.id);
         else return [this.selected];
     },
 
@@ -394,7 +395,7 @@ export default {
         }
 
         // Save data
-        this.all.find(c => c.id === id).title = val;
+        this.list.find(c => c.id === id).title = val;
         data.save();
     },
 
@@ -420,8 +421,8 @@ export default {
         if (ui.viewIs('linear')) ui.linearView();
 
         // Update data
-        const calendar = this.all.find(e => e.id === parseInt($calendar.attr('data-id')));
-        this.all.splice(this.all.indexOf(calendar), 1);
+        const calendar = this.list.find(e => e.id === parseInt($calendar.attr('data-id')));
+        this.list.splice(this.list.indexOf(calendar), 1);
 
         this.reorder();
         data.save();
@@ -490,13 +491,13 @@ export default {
     },
 
     getEventsById(id) {
-        return this.all.find(c => c.id === id).events;
+        return this.list.find(c => c.id === id).events;
     },
 
     reorder() {
         // Update linear view
         if (ui.viewIs('linear')) ui.linearView();
 
-        this.all.forEach(c => c.order = parseInt($(`.calendars-wrap .calendar[data-id="${c.id}"]`).attr('data-order')));
+        this.list.forEach(c => c.order = parseInt($(`.calendars-wrap .calendar[data-id="${c.id}"]`).attr('data-order')));
     }
 }

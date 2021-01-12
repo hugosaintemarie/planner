@@ -1,6 +1,6 @@
 import calendars from './calendars';
 import dates from './dates';
-import events from './events';
+import categories from './categories';
 import selection from './selection';
 
 export default {
@@ -120,9 +120,9 @@ export default {
 
         if (tool === 'add') this.addEvent();
         else if (tool === 'add-event') this.addEvent(true);
-        else if (tool === 'replace') this.replaceEvent();
-        else if (tool === 'from-event') this.replaceEvent(true);
-        else if (tool === 'to-event') this.replaceEvent(true, true);
+        else if (tool === 'replace') this.replaceCategory();
+        else if (tool === 'from-event') this.replaceCategory(true);
+        else if (tool === 'to-event') this.replaceCategory(true, true);
         else if (tool === 'remove') this.removeEvent();
         else if (tool === 'remove-event') this.removeEvent(true);
 
@@ -132,12 +132,12 @@ export default {
     buildEventsList(action, filter = false) {
         const $calendars = calendars.editAll ? $('.calendars-wrap .calendar') : $('.calendars-wrap .calendar.selected');
 
-        let list = $('.events-wrap ul li').map((_, el) => {
+        let list = $('.categories-wrap ul li').map((_, el) => {
             const $el = $(el);
-            const type = $el.attr('data-type');
+            const type = $el.attr('data-category');
             const count = selection.selectedDays.reduce((acc, curr) => {
                 const date = dates.toString(curr);
-                const $events = $calendars.find(`.day[data-date="${date}"] .event[data-type="${type}"]`);
+                const $events = $calendars.find(`.day[data-date="${date}"] .event[data-category="${type}"]`);
 
                 const ids = $events.toArray().map(e => $(e).attr('data-id'));
                 ids.map(id => acc.add(id));
@@ -145,12 +145,12 @@ export default {
                 return acc;
             }, new Set()).size;
 
-            return `<li data-tool="${action}-event"><span class="event" data-type="${type}" data-color="${$el.attr('data-color')}"><span class="title">${$el.find('.title').text()}</span></span>${action === 'from' ? `<span class="count">${count}</span>` : ''}</li>`;
+            return `<li data-tool="${action}-event"><span class="event" data-category="${type}" data-color="${$el.attr('data-color')}"><span class="title">${$el.find('.title').text()}</span></span>${action === 'from' ? `<span class="count">${count}</span>` : ''}</li>`;
         }).toArray();
 
         if (filter) {
-            const eventsInSelection = selection.selectedDays.map(day => $(`.day[data-date="${dates.toString(day)}"] .event`).map((_, el) => $(el).attr('data-type')).toArray()).flat();
-            list = list.filter(li => eventsInSelection.includes($(li).find('.event').attr('data-type')));
+            const eventsInSelection = selection.selectedDays.map(day => $(`.day[data-date="${dates.toString(day)}"] .event`).map((_, el) => $(el).attr('data-category')).toArray()).flat();
+            list = list.filter(li => eventsInSelection.includes($(li).find('.event').attr('data-category')));
         }
 
         return list;
@@ -165,13 +165,13 @@ export default {
             $('.panel .head span').text(`Add ${selection.selectedDays.length} event${selection.selectedDays.length > 1 ? 's' : ''}…`)
         } else {
             const $event = $('.panel li.selected .event');
-            const type = parseInt($event.attr('data-type'));
-            events.insertEvent(type);
+            const type = parseInt($event.attr('data-category'));
+            events.insert(type);
             this.closePanel();
         }
     },
 
-    replaceEvent(from, to) {
+    replaceCategory(from, to) {
         if (!from) {
             // Initiate replacement window
             const $html = $(this.layouts['replace']);
@@ -188,14 +188,14 @@ export default {
             $('.panel ul.from li.selected').addClass('picked').removeClass('selected');
 
             // Don't show picked "from" option in "to" options list (don't replace an event with itself)
-            $(`.panel ul.to li .event[data-type="${$('.panel ul.from li.picked .event').attr('data-type')}"]`).parent('li').remove();
+            $(`.panel ul.to li .event[data-category="${$('.panel ul.from li.picked .event').attr('data-category')}"]`).parent('li').remove();
 
             // Select first "to" option
             $('.panel ul.to li:first-child').addClass('selected');
         } else {
             // Replace events
-            const from = parseInt($('.panel ul.from li.picked .event').attr('data-type'));
-            const to = parseInt($('.panel ul.to li.selected .event').attr('data-type'));
+            const from = parseInt($('.panel ul.from li.picked .event').attr('data-category'));
+            const to = parseInt($('.panel ul.to li.selected .event').attr('data-category'));
 
             selection.replaceEvents(from, to);
             this.closePanel();
@@ -210,7 +210,7 @@ export default {
             $('.panel').html($html);
         } else {
             // Remove events
-            const type = parseInt($('.panel ul li.selected .event').attr('data-type'));
+            const type = parseInt($('.panel ul li.selected .event').attr('data-category'));
             selection.removeEvents(type);
             this.closePanel();
         }

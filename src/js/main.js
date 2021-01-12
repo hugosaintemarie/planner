@@ -1,7 +1,7 @@
 import calendars from './calendars';
 import data from './data';
 import dates from './dates';
-import events from './events';
+import categories from './categories';
 import inputs from './inputs';
 import newEvent from './newEvent';
 import panel from './panel';
@@ -18,7 +18,7 @@ $(() => {
     
     calendars.init();
     data.init();
-    events.init();
+    categories.init();
     inputs.init();
     newEvent.init();
     panel.init();

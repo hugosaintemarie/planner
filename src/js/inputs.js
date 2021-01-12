@@ -1,6 +1,6 @@
 import calendars from './calendars';
 import data from './data';
-import events from './events';
+import categories from './categories';
 import history from './history';
 import panel from './panel';
 import selection from './selection';
@@ -85,7 +85,7 @@ export default {
                 $el.blur();
 
                 if ($el.is('.calendar-wrap > .title > span')) {
-                    calendars.all[calendars.getSelectedCalendars()].description = $el.text();
+                    calendars.list[calendars.getSelectedCalendars()].description = $el.text();
                     data.save();
                 }
 

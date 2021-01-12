@@ -1,246 +1,22 @@
 import calendars from './calendars';
-import data from './data';
+import categories from './categories';
 import dates from './dates';
-import history from './history';
-import selection from './selection';
-import settings from './settings';
 import stats from './stats';
 
 export default {
-    all: [],
-    eventID: -1,
-    type: -1,
+    list: {},
+    id: -1,
 
     reset() {
-        this.all = [];
-        this.eventID = -1;
-        this.type = -1;
-
-        $('.events-wrap ul').empty();
-        $('.stats-wrap .stats').empty();
+        this.list = {};
+        this.id = -1;
     },
 
-    init() {
-        // Add new event
-        $(document).on('click', '.events-wrap .add', () => {
-            this.newEvent();
-            return false;
-        });
-
-        // Rename event
-        $(document).on('input', '.events-wrap ul span', e => {
-            const $el = $(e.target);
-            this.renameEvent($el);
-        });
-
-        // Insert event instances
-        $(document).on('click', '.events-wrap ul li', e => {
-            const $el = $(e.target);
-            if ($el.is('.tools') || $el.parents().is('.tools')) return;
-
-            const $event = $el.closest('li');
-            const type = parseInt($event.attr('data-type'));
-            this.insertEvent(type);
-        });
-
-        // Open dropdown menu
-        $(document).on('click', '.events-wrap ul li [data-tool="dropdown"]', e => {
-            // Close any open dropdown menu
-            $('.dropdown.visible').removeClass('visible');
-            $('#color-swatch').removeClass('visible');
-
-            const $dropdown = $(e.target).closest('li').find('.dropdown');
-            $dropdown.toggleClass('visible');
-            e.stopPropagation();
-        });
-
-        // Click outside
-        $(document).on('click', e => {
-            if ($(e.target).is('#color-swatch')) return;
-
-            // Close dropdown menu
-            $('.dropdown.visible').removeClass('visible');
-            $('[data-day].open').removeClass('open');
-            $('#color-swatch').removeClass('visible');
-
-            if ($(e.target).parents().is('[data-tool="dropdown"], .dropdown')) return;
-
-            // Remove contenteditable attr
-            $('.events-wrap ul li .title[contenteditable]').removeAttr('contenteditable');
-            
-            // Unselect any selection
-            if (!$(e.target).is('[contenteditable]')) window.getSelection().removeAllRanges();
-        });
-
-        // Save event rename on blur (for empty names)
-        $(document).on('blur', '.events-wrap .title', e => {
-            this.renameEvent($(e.currentTarget));
-        });
-
-        // Rename event
-        $(document).on('click', '.events-wrap ul li [data-tool="rename"]', e => {
-            const $title = $(e.target).closest('li').find('span.title');
-            $title.attr('contenteditable', 'true').focus();
-
-            const setEndOfContenteditable = (contentEditableElement) => {
-                let range = document.createRange();
-                range.selectNodeContents(contentEditableElement);
-                range.collapse(false);
-                let selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(range);
-            }
-
-            setEndOfContenteditable($title[0]);
-
-            // Close dropdown menu
-            $('.dropdown.visible').removeClass('visible');
-
-            // Prevent li click
-            return false;
-        });
-
-        // Open color swatch
-        $(document).on('click', '.events-wrap ul li [data-tool="color"]', e => {
-            const $el = $(e.target.closest('li'));
-
-            // Select current event color
-            $('#color-swatch .color.selected').removeClass('selected');
-            $($('#color-swatch .color').toArray().find(c => $(c).attr('data-color') === $el.attr('data-color'))).addClass('selected');
-
-            // Open swatch
-            $('#color-swatch')
-            .css({
-                'top': $el.position().top + $el.outerHeight(),
-                'left': $el.position().left
-            })
-            .addClass('visible')
-            .attr('data-type', $el.attr('data-type'));
-
-            // Close dropdown
-            $('.dropdown.visible').removeClass('visible');
-
-            return false;
-        });
-
-        // Change event color
-        $(document).on('click', '#color-swatch .color', e => {
-            const $color = $(e.target);
-            const eventType = parseInt($('#color-swatch').attr('data-type'));
-
-            // Select color
-            $('#color-swatch .color.selected').removeClass('selected');
-            $color.addClass('selected');
-
-            // Update event, occurences and stats
-            const color = $color.attr('data-color');
-            $(`.events-wrap ul li[data-type="${eventType}"], .event[data-type="${eventType}"]`).attr('data-color', color);
-            $(`.stat[data-type="${eventType}"] .event-icon`).attr('data-color', color);
-
-            // Update data
-            this.all.find(e => e.type === eventType).color = parseInt($color.attr('data-color'));
-            data.save();
-
-            return false;
-        });
-
-        // Delete event
-        $(document).on('click', '.events-wrap ul li [data-tool="delete"]', e => {
-            const $event = $(e.target).closest('li');
-            const type = parseInt($event.attr('data-type'));
-            const event = {
-                title: $event.find('.title').text(),
-                type,
-                index: $event.index(),
-                color: $event.attr('data-color')
-            };
-
-            this.deleteEvent(type);
-            this.removeEventsByType(type, event);
-        });
-
-        // Selected event
-        // $(document).on('mousedown', '.events-wrap ul li', e => {
-        //     const $el = $(e.currentTarget);
-        //     $el.siblings('.selected').removeClass('selected');
-        //     $el.toggleClass('selected');
-        // });
-
-        for (let i = 0; i <= 19; i += 1) {
-            $('#color-swatch').append(`<div class="color" data-color="${i}"></div>`);
-        }
+    get() {
+        return this.list;
     },
 
-    newEvent(events) {
-        if (!Array.isArray(events)) events = [events];
-
-        for (const event of events) {
-            this.type++;
-            const type = event && !isNaN(event.type) ? event.type : this.type;
-            const color = event && !isNaN(event.color) ? event.color : type;
-
-            const li = `<li data-type="${type}" class="sortable" data-color="${color}">
-                <span class="title" ${!event ? 'contenteditable' : ''} spellcheck="false">${event && event.title ? event.title : ''}</span>
-                <span class="tools">
-                    <i class="fas fa-angle-down" data-tool="dropdown"></i>
-                    <i data-tool="sort">⋮⋮</i>
-                    <span class="dropdown">
-                        <span data-tool="rename"><i class="fas fa-pen"></i>Rename</span>
-                        <span data-tool="color"><i class="fas fa-palette"></i>Change color</span>
-                        <span class="border-top" data-tool="delete"><i class="far fa-trash-alt"></i>Delete</span>
-                    </span>
-                </span>
-            </li>`;
-
-            const $ul = $('.events-wrap ul');
-            if (event.index) $ul.find('li').eq(event.index - 1).after(li);
-            else if (event.index === 0) $ul.prepend(li);
-            else $ul.append(li);
-
-            // Select new event
-            // $ul.find('li.selected').removeClass('selected');
-            // $ul.find('li:last-child').addClass('selected');
-
-            // Focus span if empty
-            if (!event) $ul.find('li:last-child .title').focus();
-
-            // Save data
-            this.all.push({
-                ...event,
-                type,
-                color
-            });
-        }
-
-        stats.update();
-    },
-
-    renameEvent($el) {
-        const val = $el.text();
-        const type = parseInt($el.closest('li').attr('data-type'));
-
-        $(`.event[data-type="${type}"] span`).text(val);
-
-        // Update data
-        this.all.find(e => e.type === type).title = val;
-
-        stats.update();
-        data.save();
-    },
-
-    deleteEvent(type) {
-        const $event = $(`.events-wrap ul li[data-type="${type}"]`);
-        $event.remove();
-
-        stats.update();
-
-        // Update data
-        const _e = this.all.find(e => e.type === type);
-        this.all.splice(this.all.indexOf(_e), 1);
-        data.save();
-    },
-
-    insertEvent(type) {
+    insert(category) {
         const action = {
             type: 'addEvents',
             events: []
@@ -252,14 +28,14 @@ export default {
             // Edit selected calendar(s)
             for (const calendarID of calendars.getSelectedCalendars()) {
                 const event = {
-                    id: ++this.eventID,
+                    id: ++this.id,
                     calendar: calendarID,
-                    type,
+                    category,
                     start: date,
                     end: date
                 };
 
-                this.buildEvent(event);
+                this.build(event);
                 action.events.push(event);
             }
         }
@@ -270,124 +46,15 @@ export default {
         data.save();
     },
 
-    getEventsWrap(event, day) {
-        const date = dates.toString(new Date(day));
-        let $el;
-        // if (calendars.editAll) {
-        //     $el = $(`.day[data-date="${date}"] .events`);
-        // } else {
-            $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
-        // }
-        return $el;
+    update(event, updateHeight) {
+        this.remove(event, updateHeight);
+        this.build(event, updateHeight);
     },
 
-    getEventTopCoordinate(event) {
-        const range = dates.range(event.start, event.end);
-
-        // Get first available top coordinate for multi-days event
-        const top = new Array(32).fill(0).map(d => d).findIndex((_, i) => {
-            return range.map(day => {
-                const events = this.getEventsWrap(event, day).eq(0).find(`.event[data-id!="${event.id}"]`).toArray();
-                return events.every(ev => parseInt($(ev).css('top')) !== i * 32);
-            }).every(d => d);
-        });
-
-        return top;
-    },
-
-    buildEvent(event, updateHeight = true) {
-        const range = dates.range(event.start, event.end);
-
-        const top = this.getEventTopCoordinate(event);
-
-        for (const day of range) {
-            const $events = this.getEventsWrap(event, day);
-    
-            // Build classname
-            let classname = '';
-            if (day.valueOf() === new Date(event.start).valueOf()) classname += ' start';
-            if (day.valueOf() === new Date(event.end).valueOf()) classname += ' end';
-
-            let eventType;
-            if (event.type === undefined) {
-                eventType = { title: '', color: 17 };
-                classname += ' new';
-            } else {
-                eventType = this.all.find(e => e.type === event.type);
-            }
-            
-            // Find title and color from event
-            const { title, color } = eventType;
-
-            const html = `<div data-id="${event.id}" data-type="${event.type}" data-color="${color}" class="event${classname}" style="top: ${top * 32}px">
-                ${classname.includes('start') || day.getDay() === 1 ? `<span class="title${!classname.includes('start') ? ' not-linear' : ''}">${title}</span>` : ''}
-                ${classname.includes('start') ? '<div class="anchor anchor-start"></div>' : ''}
-                ${classname.includes('end') ? '<div class="anchor anchor-end"></div>' : ''}
-            </div>`;
-
-            // Add event
-            $events.append(html);
-        }
-
-        // Save data
-        const { id, type, start, end } = event;
-        calendars.all.find(c => c.id === event.calendar).events.push({
-            id,
-            type,
-            start,
-            end
-        });
-
-        if (updateHeight) calendars.updateCalendarHeight();
-        stats.update();
-    },
-
-    getAllEvents() {
-        const events = [];
-        for (const calendar of Object.values(calendars.all)) {
-            for (const event of calendar.events) {
-                events.push({ ...event, calendar: calendar.id });
-            }
-        }
-        return events;
-    },
-
-    findEvents(options) {
-        let events = this.getAllEvents();
-
-        // Filter events
-        if (options.calendars) events = events.filter(e => options.calendars.includes(e.calendar));
-        if (options.days) events = events.filter(e => options.days.some(d => dates.isInRange(e.start, e.end, d)));
-        if (!isNaN(options.type)) events = events.filter(e => e.type === options.type);
-
-        return events;
-    },
-
-    updateEvent(event, updateHeight) {
-        this.removeEvent(event, updateHeight);
-        this.buildEvent(event, updateHeight);
-    },
-
-    replaceEvent(event, undo = false) {
-        const $el = $(`.event[data-id="${event.id}"]`);
-
-        const to = undo ? event.from : event.type;
-        const $target = $(`.events-wrap ul li[data-type="${to}"]`);
-
-        $el.find('.title').text($target.find('.title').text());
-        $el.attr('data-type', $target.attr('data-type'));
-        $el.attr('data-color', $target.attr('data-color'));
-
-        // Update data
-        calendars.all.find(c => c.id === event.calendar).events.find(e => e.id === event.id).type = to;
-
-        stats.update();
-    },
-
-    removeEvent(event, updateHeight = true) {
+    remove(event, updateHeight = true) {
         $(`.event[data-id="${event.id}"]`).remove();
 
-        const oldEvent = calendars.all.map(c => c.events).flat().find(e => e.id === event.id);
+        const oldEvent = this.list[event.id];
         const start = oldEvent ? Math.min(new Date(oldEvent.start), new Date(event.start)) : event.start;
         const end = oldEvent ? Math.max(new Date(oldEvent.end), new Date(event.end)) : event.end;
 
@@ -412,17 +79,35 @@ export default {
             };
 
             // Update top coordinate
-            const top = this.getEventTopCoordinate(event);
+            const top = this.getTopCoordinate(event);
             $(`.event[data-id="${id}"]`).css('top', top * 32);
         }
 
         if (updateHeight) calendars.updateCalendarHeight();
 
         // Update data
-        calendars.all.forEach(c => c.events = c.events.filter(e => e.id !== event.id));
+        delete this.list[event.id];
     },
 
-    removeEventsByType(type, event) {
+    replace(event, undo = false) {
+        const $el = $(`.event[data-id="${event.id}"]`);
+
+        const to = undo ? event.from : event.category;
+        const $target = $(`.categories-wrap ul li[data-category="${to}"]`);
+
+        $el.find('.title').text($target.find('.title').text());
+        $el.attr('data-category', $target.attr('data-category'));
+        $el.attr('data-color', $target.attr('data-color'));
+
+        // Update data
+        this.list[id].category = to;
+
+        stats.update();
+    },
+
+    removeBy(options, event) {
+        const category = options.category;
+
         // Create action for history
         let action = {
             type: 'removeEvents',
@@ -435,7 +120,7 @@ export default {
         }
 
         for (const minical of $('.calendars-wrap .calendar').toArray()) {
-            const $events = $(minical).find(`.event[data-type="${type}"]`);
+            const $events = $(minical).find(`.event[data-category="${category}"]`);
 
             $events.each((_, el) => {
                 const $el = $(el);
@@ -443,7 +128,7 @@ export default {
                 const event = {
                     id: parseInt($el.attr('data-id')),
                     calendar: parseInt($(minical).attr('data-id')),
-                    type: parseInt($el.attr('data-type')),
+                    category: parseInt($el.attr('data-category')),
                     // title: $el.find('.title').text(),
                     // color: $el.css('background-color'),
                     start: $el.closest('.day').attr('data-date'),
@@ -462,7 +147,81 @@ export default {
         history.pushAction(action);
     },
 
-    reorder() {
-        this.all.forEach(e => e.order = parseInt($(`.events-wrap ul li[data-type="${e.type}"]`).attr('data-order')));
+    build(event, updateHeight = true) {
+        const range = dates.range(event.start, event.end);
+
+        const top = this.getTopCoordinate(event);
+
+        for (const day of range) {
+            const $events = this.getEventsWrap(event, day);
+    
+            // Build classname
+            let classname = '';
+            if (day.valueOf() === new Date(event.start).valueOf()) classname += ' start';
+            if (day.valueOf() === new Date(event.end).valueOf()) classname += ' end';
+
+            let category;
+            if (event.category === undefined) {
+                category = { title: '', color: 17 };
+                classname += ' new';
+            } else {
+                category = categories.list[event.category];
+                // category = categories.findBy({ category: event.category });
+            }
+
+            // Find title and color from category
+            const { title, color } = category;
+
+            const html = `<div data-id="${event.id}" data-category="${event.category}" data-color="${color}" class="event${classname}" style="top: ${top * 32}px">
+                ${classname.includes('start') || day.getDay() === 1 ? `<span class="title${!classname.includes('start') ? ' not-linear' : ''}">${title}</span>` : ''}
+                ${classname.includes('start') ? '<div class="anchor anchor-start"></div>' : ''}
+                ${classname.includes('end') ? '<div class="anchor anchor-end"></div>' : ''}
+            </div>`;
+
+            // Add event
+            $events.append(html);
+        }
+
+        // Save data
+        this.list[event.id] = event;
+
+        if (updateHeight) calendars.updateCalendarHeight();
+        stats.update();
+    },
+
+    getEventsWrap(event, day) {
+        const date = dates.toString(new Date(day));
+        let $el;
+        // if (calendars.editAll) {
+        //     $el = $(`.day[data-date="${date}"] .events`);
+        // } else {
+            $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
+        // }
+        return $el;
+    },
+
+    getTopCoordinate(event) {
+        const range = dates.range(event.start, event.end);
+
+        // Get first available top coordinate for multi-days event
+        const top = new Array(32).fill(0).map(d => d).findIndex((_, i) => {
+            return range.map(day => {
+                const events = this.getEventsWrap(event, day).eq(0).find(`.event[data-id!="${event.id}"]`).toArray();
+                return events.every(ev => parseInt($(ev).css('top')) !== i * 32);
+            }).every(d => d);
+        });
+
+        return top;
+    },
+
+    filter(options) {
+        let events = this.list;
+
+        // Filter events
+        if (options.calendars) events = events.filter(e => options.calendars.includes(e.calendar));
+        if (options.days) events = events.filter(e => options.days.some(d => dates.isInRange(e.start, e.end, d)));
+        if (!isNaN(options.category)) events = events.filter(e => e.category === options.category);
+
+        return events;
     }
 }

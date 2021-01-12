@@ -1,6 +1,6 @@
 import calendars from './calendars';
+import categories from './categories';
 import data from './data';
-import events from './events';
 import stats from './stats';
 import tooltip from './tooltip';
 
@@ -137,7 +137,7 @@ export default {
         $parent.scrollTop(this.parentScroll);
 
         if ($parent.parents('.calendars-wrap').length) calendars.reorder();
-        else if ($parent.parents('.events-wrap').length) events.reorder();
+        else if ($parent.parents('.categories-wrap').length) categories.reorder();
 
         this.$sortedEl.removeClass('sorting');
     

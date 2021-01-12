@@ -1,4 +1,4 @@
-import events from './events';
+import categories from './categories';
 import selection from './selection';
 import ui from './ui';
 
@@ -13,8 +13,8 @@ export default {
     
         // Click on new event type option
         $(document).on('click', '.new-event ul li', e => {
-            const type = parseInt($(e.currentTarget).attr('data-type'));
-            selection.changeType(type);
+            const id = parseInt($(e.currentTarget).attr('data-category'));
+            selection.changeCategory(id);
         });
     
         $(document).on('mousedown', '.new-event ul li', () => {
@@ -44,10 +44,10 @@ export default {
                 }
             } else if (e.which === 13) { // Enter
                 if ($li.length && $('.new-event').hasClass('visible')) {
-                    const type = parseInt($li.attr('data-type'));
-                    selection.changeType(type);
+                    const id = parseInt($li.attr('data-category'));
+                    selection.changeCategory(id);
                 } else {
-                    selection.changeType();
+                    selection.changeCategory();
                 }
             }
         });
@@ -61,7 +61,7 @@ export default {
     },
 
     buildEventsTypesOptions(events) {
-        return `<ul>${events.map(e => `<li data-type="${e.type}"><span class="event-icon" data-color="${e.color}"></span>${e.title}</li>`).join('')}</ul>`;
+        return `<ul>${events.map(e => `<li data-category="${e.category}"><span class="event-icon" data-color="${e.color}"></span>${e.title}</li>`).join('')}</ul>`;
     },
 
     show($event) {
@@ -73,7 +73,7 @@ export default {
             marginTop: $wrap.scrollTop(),
             marginLeft: $wrap.scrollLeft()
         })
-        .html(this.buildEventsTypesOptions(events.all))
+        .html(this.buildEventsTypesOptions(events.list))
         .addClass('visible');
     },
 

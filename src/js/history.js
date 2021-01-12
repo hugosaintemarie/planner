@@ -1,5 +1,5 @@
 import data from './data';
-import events from './events';
+import categories from './categories';
 
 export default {
     actions: [],
@@ -20,12 +20,12 @@ export default {
         const action = this.actions[this.actionsIndex];
 
         if (action.type.includes('Events')) {
-            if (action.deleted) events.newEvent(action.event);
+            if (action.deleted) categories.build(action.event);
 
             for (const event of action.events) {
-                if (action.type === 'addEvents') events.removeEvent(event);
-                else if (action.type === 'removeEvents') events.buildEvent(event);
-                else if (action.type === 'replaceEvents') events.replaceEvent(event, true);
+                if (action.type === 'addEvents') categories.removeCategory(event);
+                else if (action.type === 'removeEvents') events.build(event);
+                else if (action.type === 'replaceEvents') events.replace(event, true);
             }
         }
 
@@ -42,12 +42,12 @@ export default {
         const action = this.actions[this.actionsIndex];
 
         if (action.type.includes('Events')) {
-            if (action.deleted) events.deleteEvent(action.event.type);
+            if (action.deleted) categories.delete(action.event.category);
 
             for (const event of action.events) {
-                if (action.type === 'addEvents') events.buildEvent(event);
-                else if (action.type === 'removeEvents') events.removeEvent(event)
-                else if (action.type === 'replaceEvents') events.replaceEvent(event);
+                if (action.type === 'addEvents') events.build(event);
+                else if (action.type === 'removeEvents') categories.removeCategory(event)
+                else if (action.type === 'replaceEvents') events.replace(event);
             }
         }
         

@@ -1,4 +1,5 @@
 import calendars from './calendars';
+import categories from './categories';
 import data from './data';
 import dates from './dates';
 import events from './events';
@@ -109,7 +110,7 @@ export default {
                     this.event = {
                         id,
                         calendar: parseInt($event.closest('.calendar').attr('data-id')),
-                        type: parseInt($event.attr('data-type')),
+                        category: parseInt($event.attr('data-category')),
                         start: $(`.event.start[data-id="${id}"]`).closest('.day').attr('data-date'),
                         end: $(`.event.end[data-id="${id}"]`).closest('.day').attr('data-date'),
                         dragging: $event.closest('.day').attr('data-date')
@@ -146,7 +147,7 @@ export default {
             this.event = {
                 id,
                 calendar: parseInt($event.closest('.calendar').attr('data-id')),
-                type: parseInt($event.attr('data-type')),
+                category: parseInt($event.attr('data-category')),
                 start: $(`.event.start[data-id="${id}"]`).closest('.day').attr('data-date'),
                 end: $(`.event.end[data-id="${id}"]`).closest('.day').attr('data-date'),
                 anchor: $anchor.hasClass('anchor-start') ? 'start' : 'end'
@@ -176,7 +177,7 @@ export default {
         const date = $day.attr('data-date');
 
         this.event = {
-            id: ++events.eventID,
+            id: ++events.id,
             calendar: parseInt($day.parents('.calendar').attr('data-id')),
             start: date,
             end: date,
@@ -198,7 +199,7 @@ export default {
             this.event.end = this.event.startingDate;
         }
 
-        events.updateEvent(this.event, false);
+        events.update(this.event, false);
 
         this.maxHeight = Math.max(this.maxHeight, calendars.getCalendarHeight());
         calendars.updateCalendarHeight(this.maxHeight);
@@ -214,20 +215,20 @@ export default {
         // Ignore single click
         if (!$event.length) {
             this.event = null;
-            events.eventID--;
+            categories.id--;
             return;
         }
 
         const $title = $event.find('.title');
         $title.attr('contenteditable', true).focus();
 
-        if (events.all.length) newEvent.show($event);
+        if (events.list.length) newEvent.show($event);
     },
 
     cancelDraw() {
         this.event = null;
-        events.eventID--;
-        events.removeEvent({id: this.eventID });
+        categories.id--;
+        categories.removeCategory({id: this.eventID });
         newEvent.hide();
     },
 
@@ -243,33 +244,33 @@ export default {
         $(`.event[data-id="${id}"] .title:not(:focus)`).text(title);
     },
 
-    changeType(type) {
+    changeCategory(id) {
         let event;
         let calendar;
 
         if (!isNaN(this.eventID)) {
-            calendar = calendars.all.find(c => c.events.some(e => e.id === this.eventID));
+            calendar = calendars.list.find(c => c.events.some(e => e.id === this.eventID));
             event = calendar.events.find(e => e.id === this.eventID);
         } else {
             const $event = $('.calendar-wrap .event.start.selected').eq(0);
             const eventID = parseInt($event.attr('data-id'));
-            calendar = calendars.all.find(c => c.events.some(e => e.id === eventID));
+            calendar = calendars.list.find(c => c.events.some(e => e.id === eventID));
             event = calendar.events.find(e => e.id === eventID);
         }
 
-        if (isNaN(type)) {
+        if (isNaN(id)) {
             // New event
-            events.newEvent({
+            categories.build({
                 title: this.eventTitle || 'New event',
                 color: 17
             });
-            event.type = events.type;
+            event.category = events.category;
         } else {
-            event.type = type;
+            event.category = id;
         }
 
         event.calendar = calendar.id;
-        events.updateEvent(event);
+        events.update(event);
 
         newEvent.hide();
 
@@ -281,7 +282,7 @@ export default {
     },
 
     filterTypes(title) {
-        let eventsList = events.all;
+        let eventsList = events.list;
         eventsList = eventsList.filter(e => e.title.toLowerCase().startsWith(title.toLowerCase()));
 
         if (eventsList.length) newEvent.update(eventsList);
@@ -552,12 +553,12 @@ export default {
                 const event = {
                     id,
                     calendar: parseInt($el.parents('.calendar').attr('data-id')),
-                    type: parseInt($el.attr('data-type')),
+                    category: parseInt($el.attr('data-category')),
                     start,
                     end
                 };
                 
-                events.removeEvent(event);
+                categories.removeCategory(event);
                 
                 // Save events in action
                 action.events.push(event);
@@ -683,7 +684,7 @@ export default {
                     const $el = $(el);
         
                     const event = {
-                        type: parseInt($el.attr('data-type')),
+                        category: parseInt($el.attr('data-category')),
                         calendar: parseInt($el.closest('.calendar').attr('data-id')),
                         id: parseInt($el.attr('data-id'))
                     };
@@ -740,14 +741,14 @@ export default {
                         // Create event
                         const event = {
                             ..._event,
-                            id: ++events.eventID,
+                            id: ++categories.id,
                             calendar: calendarID,
                             start,
                             end
                         };
                 
                         // Build event
-                        events.buildEvent(event);
+                        events.build(event);
             
                         // Save event in action
                         action.events.push(event);
@@ -901,19 +902,18 @@ export default {
             events: []
         };
 
-        const options = {
+        const eventsToReplace = events.filter({
             calendars: calendars.getSelectedCalendars(),
             days: this.selectedDays,
-            type: from
-        };
-        const eventsToReplace = events.findEvents(options);
+            category: from
+        });
 
         for (const event of eventsToReplace) {
-            event.from = event.type;
-            event.type = to;
+            event.from = event.category;
+            event.category = to;
 
             // Replace event
-            events.replaceEvent(event);
+            events.replace(event);
 
             // Save event in action
             action.events.push(event);
@@ -934,7 +934,7 @@ export default {
 
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
-            const $events = calendars.editAll ? $(`.day[data-date="${date}"] .event[data-type="${type}"]`) : $(`.calendar.selected .day[data-date="${date}"] .event[data-type="${type}"]`);
+            const $events = calendars.editAll ? $(`.day[data-date="${date}"] .event[data-category="${type}"]`) : $(`.calendar.selected .day[data-date="${date}"] .event[data-category="${type}"]`);
 
             $events.each((_, el) => {
                 const $el = $(el);
@@ -942,13 +942,13 @@ export default {
                 const event = {
                     id: parseInt($el.attr('data-id')),
                     calendar: parseInt($el.closest('.calendar').attr('data-id')),
-                    type: parseInt($el.attr('data-type')),
+                    category: parseInt($el.attr('data-category')),
                     start: date,
                     end: date
                 };
 
                 // Remove event
-                events.removeEvent(event);
+                categories.removeCategory(event);
 
                 // Save event in action
                 action.events.push(event);
@@ -985,7 +985,7 @@ export default {
         this.event.end = dates.relativeDate(new Date(this.event.end), delta);
         this.event.dragging = dates.relativeDate(new Date(this.event.dragging), delta);
 
-        events.updateEvent(this.event, false);
+        events.update(this.event, false);
 
         this.maxHeight = Math.max(this.maxHeight, calendars.getCalendarHeight());
         calendars.updateCalendarHeight(this.maxHeight);
@@ -1010,7 +1010,7 @@ export default {
         if (this.event.anchor === 'start' && date <= this.event.end) this.event.start = date;
         else if (this.event.anchor === 'end' && date >= this.event.start) this.event.end = date;
 
-        events.updateEvent(this.event, false);
+        events.update(this.event, false);
 
         this.maxHeight = Math.max(this.maxHeight, calendars.getCalendarHeight());
         calendars.updateCalendarHeight(this.maxHeight);

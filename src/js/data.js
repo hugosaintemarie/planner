@@ -1,4 +1,5 @@
 import calendars from './calendars';
+import categories from './categories';
 import events from './events';
 import toast from './toast';
 import ui from './ui';
@@ -18,30 +19,36 @@ export default {
     load(data) {
         this.loading = true;
 
-        ui.changeTool(data.selectedTool);
-        if (data.view === 'linear') ui.linearView();
+        ui.changeTool(data.ui.selectedTool);
+        if (data.ui.view === 'linear') ui.linearView();
 
-        if (data.start) $('#start').val(data.start);
-        if (data.end) $('#end').val(data.end);
+        if (data.settings.start) $('#start').val(data.settings.start);
+        if (data.settings.end) $('#end').val(data.settings.end);
+
+        console.log(data);
 
         calendars.getStartEnd();
         calendars.buildCalendarHead();
 
-        // Add events
-        for (const event of data.events.sort((a, b) => a.order < b.order ? -1 : 1)) events.newEvent(event);
-        
         // Add calendars
-        for (const calendar of data.calendars.sort((a, b) => a.order < b.order ? -1 : 1)) calendars.newCalendar(calendar);
+        for (const calendar of Object.values(data.calendars).sort((a, b) => a.order < b.order ? -1 : 1)) calendars.build(calendar);
 
-        calendars.selectCalendar($(`.calendars-wrap .calendar[data-id="${data.selectedCalendar}"]`));
+        // Add categories
+        for (const category of Object.values(data.categories).sort((a, b) => a.order < b.order ? -1 : 1)) categories.build(category);
+
+        // Add events
+        for (const event of Object.values(data.events)) events.build(event);
 
         // Save current ids
-        calendars.calendarID = Math.max(...data.calendars.map(c => c.id), -1);
-        events.eventID = Math.max(...data.calendars.map(c => c.events.map(e => e.id)).flat(), -1);
-        events.type = Math.max(...data.events.map(e => e.type), -1);
+        calendars.id = Math.max(...Object.keys(data.calendars));
+        categories.id = Math.max(...Object.keys(data.categories));
+        events.id = Math.max(...Object.keys(data.events));
+
+        // Select selected calendar
+        calendars.selectCalendar($(`.calendars-wrap .calendar[data-id="${data.ui.selectedCalendar}"]`));
 
         // Hide days if necessary
-        if (data.daysShown) for (const [day, show] of data.daysShown.entries()) {
+        if (data.ui.daysShown) for (const [day, show] of data.ui.daysShown.entries()) {
             if (!show) ui.showHideWeekday(day, show);
         }
 
@@ -66,14 +73,19 @@ export default {
 
     getData() {
         const data = {
-            start: $('#start').val(),
-            end: $('#end').val(),
-            events: [...events.all],
-            calendars: [...calendars.all],
-            selectedCalendar: calendars.selected,
-            selectedTool: ui.tool,
-            view: ui.view,
-            daysShown: ui.daysShown
+            calendars: calendars.list,
+            categories: categories.list,
+            events: events.list,
+            ui: {
+                view: ui.view,
+                selectedTool: ui.tool,
+                selectedCalendar: calendars.selected,
+                daysShown: ui.daysShown
+            },
+            settings: {
+                start: $('#start').val(),
+                end: $('#end').val()
+            }
         };
 
         return data;
@@ -117,7 +129,8 @@ export default {
     },
 
     reset() {
-        events.reset();
         calendars.reset();
+        categories.reset();
+        events.reset();
     }
 }

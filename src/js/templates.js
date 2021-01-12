@@ -1,4 +1,5 @@
 import calendars from './calendars';
+import categories from './categories';
 import data from './data';
 import dates from './dates';
 import events from './events';
@@ -13,45 +14,55 @@ export default {
 
         if (template === 'default') {
             // 1 calendar
-            // 3 events
+            // 3 categories
             
             this.createCalendars(1);
-            events.newEvent([{ title: 'Workout', color: 5 }, { title: 'Tennis', color: 13 }, { title: 'Jogging', color: 9 }]);
 
-        } else if (template === 'filled') {
+            categories.build([
+                { title: 'Workout', color: 5 },
+                { title: 'Tennis', color: 13 },
+                { title: 'Jogging', color: 9 }
+            ]);
+        }
+        else if (template === 'filled') {
             // 3 calendars
-            // 3 events
-            // 30 random occurences
+            // 3 categories
+            // 30 events
 
             this.createCalendars(3);
-            events.newEvent([{ title: 'Workout', color: 5 }, { title: 'Tennis', color: 13 }, { title: 'Jogging', color: 9 }]);
+
+            categories.build([
+                { title: 'Workout', color: 5 },
+                { title: 'Tennis', color: 13 },
+                { title: 'Jogging', color: 9 }
+            ]);
 
             for (let i = 0; i < 30; i += 1) {
                 const range = dates.range(calendars.start, calendars.end);
                 const date = range[Math.floor(Math.random() * range.length)];
                 
-                // Get a random event
-                const $events = $('.events-wrap ul li');
-                const $event = $events.eq(Math.floor(Math.random() * $events.length));
+                // Get a random category
+                // const $categories = $('.categories-wrap ul li');
+                // const $category = $categories.eq(Math.floor(Math.random() * $categories.length));
 
-                events.buildEvent({
-                    id: ++events.eventID,
+                events.build({
+                    id: ++events.id,
                     calendar: Math.floor(Math.random() * 3),
-                    type: Math.floor(Math.random() * 3),
+                    category: Math.floor(Math.random() * 3),
                     start: date,
                     end: new Date(new Date(date).setDate(date.getDate() + Math.floor(Math.random() * 3)))
                 });
             }
 
             stats.update();
-
-        } else if (template === 'events') {
+        }
+        else if (template === 'events') {
             // 1 calendar
-            // 20 events (for events colors testing)
-            // 20 occurences (one per event type)
+            // 20 categories (to test all 20 colors)
+            // 20 events (one per category)
 
             this.createCalendars(1);
-            events.newEvent([
+            categories.build([
                 { title: 'A', color: 0 },
                 { title: 'B', color: 1 },
                 { title: 'C', color: 2 },
@@ -77,10 +88,10 @@ export default {
             for (let i = 0; i < 20; i += 1) {
                 const date = dates.relativeDate(calendars.start, i);
 
-                events.buildEvent({
-                    id: ++events.eventID,
+                events.build({
+                    id: ++categories.id,
                     calendar: 0,
-                    type: i,
+                    category: i,
                     start: date,
                     end: date
                 });
@@ -90,7 +101,7 @@ export default {
 
     createCalendars(n = 1) {
         calendars.getStartEnd();
-        for (let i = 0; i < n; i += 1) calendars.newCalendar();
+        for (let i = 0; i < n; i += 1) calendars.build();
 
         calendars.selectFirstCalendar();
     }
