@@ -227,7 +227,7 @@
             // width: calc(100% / 7 + 1px);
             flex: 1;
             border: 1px solid #444;
-            height: 72px;
+            height: var(--day-height);
             max-height: 240px;
             padding: 8px;
             margin-left: -1px;

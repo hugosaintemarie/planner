@@ -468,7 +468,7 @@ export default {
     updateHeight(height) {
         if (!height) height = this.getHeight();
 
-        $('.calendar-wrap .day').css('height', `${height}px`);
+        $(':root').css('--day-height', `${height}px`);
 
         if (ui.viewIs('linear')) $('.calendars-wrap .calendar').css('height', `${height}px`);
         else $('.calendars-wrap .calendar').css('height', '');
