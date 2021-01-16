@@ -502,16 +502,16 @@ export default {
             const diff = target - date;
 
             // Move .selected-first and .selected-last classes
-            const $sF = $('.selected-first');
-            const dateSF = new Date($sF.attr('data-date'));
+            const $selectedFirst = $('.selected-first');
+            const dateSF = new Date($selectedFirst.attr('data-date'));
             dateSF.setTime(dateSF.getTime() + diff);
-            $sF.removeClass('selected-first');
+            $selectedFirst.removeClass('selected-first');
             $(`.calendar-wrap .day[data-date=${dates.toString(dateSF)}]`).addClass('selected-first');
 
-            const $sL = $('.selected-last');
-            const dateSL = new Date($sL.attr('data-date'));
+            const $selectedLast = $('.selected-last');
+            const dateSL = new Date($selectedLast.attr('data-date'));
             dateSL.setTime(dateSL.getTime() + diff);
-            $sL.removeClass('selected-last');
+            $selectedLast.removeClass('selected-last');
             $(`.calendar-wrap .day[data-date=${dates.toString(dateSL)}]`).addClass('selected-last');
 
             // For each already selected day, move by diff between first selected day and target
