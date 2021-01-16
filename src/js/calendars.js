@@ -178,17 +178,7 @@ export default {
         if (toAdd.length > 1) {
             const weeks = dates.toWeeksArray(toAdd);
 
-            let html = '';
-            for (const week of weeks) {
-                html += '<div>';
-
-                for (const day of week) {
-                    const date = dates.toString(day);
-                    html += this.buildDay(day);
-                }
-
-                html += '</div>';
-            }
+            const html = weeks.map(week => `<div>${week.map(day => this.buildDay(day)).join('')}</div>`).join('');
 
             if (oldStart > start) $('.calendar.content, .calendar > .content').prepend(html);
             else if (oldEnd < end) $('.calendar.content, .calendar > .content').append(html);
