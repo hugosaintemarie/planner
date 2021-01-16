@@ -1,6 +1,5 @@
 import calendars from './calendars';
 import data from './data';
-import categories from './categories';
 import history from './history';
 import panel from './panel';
 import selection from './selection';

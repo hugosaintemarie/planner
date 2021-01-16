@@ -212,9 +212,9 @@ export default {
         const filter = func => { events = Object.fromEntries(Object.entries(events).filter(func)) };
 
         // Filter events
-        if (options.calendars) filter(([key, val]) => options.calendars.includes(val.calendar));
-        if (!isNaN(options.category)) filter(([key, val]) => val.category === options.category);
-        if (options.days) filter(([key, val]) => options.days.some(d => dates.isInRange(val.start, val.end, d)));
+        if (options.calendars) filter(([_, val]) => options.calendars.includes(val.calendar));
+        if (!isNaN(options.category)) filter(([_, val]) => val.category === options.category);
+        if (options.days) filter(([_, val]) => options.days.some(d => dates.isInRange(val.start, val.end, d)));
 
         return events;
     }

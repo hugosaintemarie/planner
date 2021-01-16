@@ -57,7 +57,7 @@ export default {
             return false;
         });
 
-        $(document).on('click', '', e => {
+        $(document).on('click', '', () => {
             $('header ul li.open').removeClass('open');
         });
 
