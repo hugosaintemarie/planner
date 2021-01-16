@@ -157,6 +157,7 @@ export default {
 
             // TODO: don't pass category
             events.removeBy({ category: id }, category);
+            data.save();
         });
 
         // Selected event
