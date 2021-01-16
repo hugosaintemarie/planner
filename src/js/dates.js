@@ -43,7 +43,7 @@ export default {
     },
 
     relativeLastWeekDay(date) {
-        return new Date(new Date(date).setDate(date.getDay() === 0 ? date.getDate() : (date.getDate() + 7 - date.getDay())))
+        return new Date(new Date(date).setDate(date.getDay() === 0 ? date.getDate() : (date.getDate() + 7 - date.getDay())));
     },
 
     // Build array of all days from start to end

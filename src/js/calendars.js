@@ -422,7 +422,7 @@ export default {
         $calendar.removeClass('selected');
 
         // Select previous visible calendar
-        if ($calendar.prevAll('.calendar:not(.hidden)').length) $calendar = $calendar.prevAll('.calendar:not(.hidden)').eq(0)
+        if ($calendar.prevAll('.calendar:not(.hidden)').length) $calendar = $calendar.prevAll('.calendar:not(.hidden)').eq(0);
 
         // Else, select last visible calendar
         else $calendar = $('.calendars-wrap .calendar:not(.hidden)').last();

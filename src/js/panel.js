@@ -88,7 +88,7 @@ export default {
         this.isOpen = true;
         $('.panel').html(this.layouts['default']);
 
-        $('.panel [data-tool="add"] span').text(`Add ${selection.selectedDays.length} event${selection.selectedDays.length > 1 ? 's' : ''}…`)
+        $('.panel [data-tool="add"] span').text(`Add ${selection.selectedDays.length} event${selection.selectedDays.length > 1 ? 's' : ''}…`);
 
         // Disable replace and remove if selection is empty
         if (selection.allDaysEmpty()) $('.panel li[data-tool="replace"], .panel li[data-tool="remove"]').attr('disabled', true);
@@ -162,7 +162,7 @@ export default {
             $html.find('ul').html(this.buildEventsList('add'));
             $html.find('li:first-child').addClass('selected');
             $('.panel').html($html);
-            $('.panel .head span').text(`Add ${selection.selectedDays.length} event${selection.selectedDays.length > 1 ? 's' : ''}…`)
+            $('.panel .head span').text(`Add ${selection.selectedDays.length} event${selection.selectedDays.length > 1 ? 's' : ''}…`);
         } else {
             const $event = $('.panel li.selected .event');
             const type = parseInt($event.attr('data-category'));

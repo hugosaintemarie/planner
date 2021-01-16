@@ -86,7 +86,7 @@ export default {
 
             if (e.altKey) {
                 // Alt + click: select all days in column
-                const $day = $el.closest('[data-day]')
+                const $day = $el.closest('[data-day]');
                 let day = $day.attr('data-day');
 
                 const $first = $('.head.full [data-day].selected-first');
@@ -192,7 +192,7 @@ export default {
 
         if (radio === 'view') {
             const view = $target.attr('data-value');
-            if (view === 'full') this.fullView()
+            if (view === 'full') this.fullView();
             else if (view === 'linear') this.linearView();
             data.save();
         }
