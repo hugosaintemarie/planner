@@ -24,7 +24,7 @@ export default {
             if (action.deleted) categories.build(action.event);
 
             for (const event of action.events) {
-                if (action.type === 'addEvents') categories.removeCategory(event);
+                if (action.type === 'addEvents') events.remove(event);
                 else if (action.type === 'removeEvents') events.build(event);
                 else if (action.type === 'replaceEvents') events.replace(event, true);
             }
@@ -47,7 +47,7 @@ export default {
 
             for (const event of action.events) {
                 if (action.type === 'addEvents') events.build(event);
-                else if (action.type === 'removeEvents') categories.removeCategory(event)
+                else if (action.type === 'removeEvents') events.remove(event);
                 else if (action.type === 'replaceEvents') events.replace(event, true);
             }
         }
