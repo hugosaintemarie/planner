@@ -167,7 +167,7 @@ export default {
             return false;
         });
 
-        this.maxHeight = calendars.getCalendarHeight();
+        this.maxHeight = calendars.getHeight();
     },
 
     startDraw(e) {
@@ -201,8 +201,8 @@ export default {
 
         events.update(this.event, false);
 
-        this.maxHeight = Math.max(this.maxHeight, calendars.getCalendarHeight());
-        calendars.updateCalendarHeight(this.maxHeight);
+        this.maxHeight = Math.max(this.maxHeight, calendars.getHeight());
+        calendars.updateHeight(this.maxHeight);
     },
 
     endDraw() {
@@ -426,7 +426,7 @@ export default {
             if (ui.viewIs('full')) target = dates.relativeDate(date, -7);
 
             // Linear: calendar above
-            else if (ui.viewIs('linear')) calendars.selectPreviousCalendar();
+            else if (ui.viewIs('linear')) calendars.selectPrevious();
 
         } else if (e.which === 39) {
             if (e.metaKey) { // Meta + right
@@ -451,7 +451,7 @@ export default {
             if (ui.viewIs('full')) target = dates.relativeDate(date, 7);
             
             // Linear: move to calendar under
-            else if (ui.viewIs('linear')) calendars.selectNextCalendar();
+            else if (ui.viewIs('linear')) calendars.selectNext();
         }
 
         // TODO: check that _all_ days in selection fit in calendar?
@@ -577,7 +577,7 @@ export default {
         // Save action in history
         history.pushAction(action);
 
-        calendars.updateCalendarHeight();
+        calendars.updateHeight();
         stats.update();
         data.save();
     },
@@ -727,7 +727,7 @@ export default {
                     const start = dates.toString(target);
                     const end = dates.toString(dates.relativeDate(start, _event.duration - 1 || 0));
 
-                    for (const calendarID of calendars.getSelectedCalendars()) {
+                    for (const calendarID of calendars.getSelected()) {
                         // Create event
                         const event = {
                             ..._event,
@@ -815,7 +815,7 @@ export default {
 
         const duration = 150;
 
-        const height = calendars.getCalendarHeight();
+        const height = calendars.getHeight();
         const marginV = height * 1.5;
 
         const highest = Math.min(...$('.calendar-wrap .day.selected').toArray().map(d => $(d).offset().top));
@@ -893,7 +893,7 @@ export default {
         };
 
         const eventsToReplace = events.filter({
-            calendars: calendars.getSelectedCalendars(),
+            calendars: calendars.getSelected(),
             days: this.selectedDays,
             category: from
         });
@@ -977,8 +977,8 @@ export default {
 
         events.update(this.event, false);
 
-        this.maxHeight = Math.max(this.maxHeight, calendars.getCalendarHeight());
-        calendars.updateCalendarHeight(this.maxHeight);
+        this.maxHeight = Math.max(this.maxHeight, calendars.getHeight());
+        calendars.updateHeight(this.maxHeight);
 
         this.selectEventByID(this.event.id);
     },
@@ -988,7 +988,7 @@ export default {
 
         this.dragging = false;
 
-        calendars.updateCalendarHeight();
+        calendars.updateHeight();
 
         data.save();
     },
@@ -1002,8 +1002,8 @@ export default {
 
         events.update(this.event, false);
 
-        this.maxHeight = Math.max(this.maxHeight, calendars.getCalendarHeight());
-        calendars.updateCalendarHeight(this.maxHeight);
+        this.maxHeight = Math.max(this.maxHeight, calendars.getHeight());
+        calendars.updateHeight(this.maxHeight);
     },
 
     endResize() {
@@ -1012,8 +1012,8 @@ export default {
         this.resizing = false;
         $('.calendar.resizing').removeClass('resizing');
 
-        this.maxHeight = calendars.getCalendarHeight();
-        calendars.updateCalendarHeight();
+        this.maxHeight = calendars.getHeight();
+        calendars.updateHeight();
 
         data.save();
     }

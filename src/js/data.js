@@ -31,7 +31,7 @@ export default {
         console.log(data);
 
         calendars.getStartEnd();
-        calendars.buildCalendarHead();
+        calendars.buildHead();
 
         // Add calendars
         for (const calendar of Object.values(data.calendars).sort((a, b) => a.order < b.order ? -1 : 1)) calendars.build(calendar);
@@ -48,7 +48,7 @@ export default {
         events.id = Math.max(...Object.keys(data.events));
 
         // Select selected calendar
-        calendars.selectCalendar($(`.calendars-wrap .calendar[data-id="${data.ui.selectedCalendar}"]`));
+        calendars.select($(`.calendars-wrap .calendar[data-id="${data.ui.selectedCalendar}"]`));
 
         // Hide days if necessary
         if (data.ui.daysShown) for (const [day, show] of data.ui.daysShown.entries()) {

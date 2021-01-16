@@ -34,8 +34,8 @@ export default {
                 if (panel.isOpen) return;
 
                 if (ctrlOrMeta && [38, 40].includes(e.which)) {
-                    if (e.which === 38) calendars.selectPreviousCalendar();       // Cmd + up
-                    if (e.which === 40) calendars.selectNextCalendar();           // Cmd + down
+                    if (e.which === 38) calendars.selectPrevious();       // Cmd + up
+                    if (e.which === 40) calendars.selectNext();           // Cmd + down
                 } else {
                     selection.moveSelection(e);                                   // Cmd + right/left
                 }
@@ -43,7 +43,7 @@ export default {
             else if (e.which === 18 && this.isMouseDown) selection.dragSelect(e); // Alt + click
             else if (ctrlOrMeta && e.which === 8) {                               // Cmd + backspace
                 const $calendar = $('.calendars-wrap .calendar.selected');
-                calendars.deleteCalendar($calendar);
+                calendars.delete($calendar);
             }
             else if (e.which === 8) selection.emptySelection();                   // Backspace
             else if (e.which === 27) {                                            // Esc
@@ -59,7 +59,7 @@ export default {
             }
             else if (ctrlOrMeta && e.which === 72) {                              // Cmd + H
                 const $calendar = $('.calendars-wrap .calendar.selected');
-                calendars.toggleCalendar($calendar);
+                calendars.toggle($calendar);
                 return false;
             }
             else if (ctrlOrMeta && e.which === 75) data.clear();                  // Cmd + K
@@ -85,7 +85,7 @@ export default {
                 $el.blur();
 
                 if ($el.is('.calendar-wrap > .title > span')) {
-                    calendars.list[calendars.getSelectedCalendars()].description = $el.text();
+                    calendars.list[calendars.getSelected()].description = $el.text();
                     data.save();
                 }
 

@@ -29,7 +29,7 @@ export default {
             const date = dates.toString(day);
 
             // Edit selected calendar(s)
-            for (const calendarID of calendars.getSelectedCalendars()) {
+            for (const calendarID of calendars.getSelected()) {
                 const event = {
                     id: ++this.id,
                     calendar: calendarID,
@@ -88,7 +88,7 @@ export default {
             $(`.event[data-id="${id}"]`).css('top', top * 32);
         }
 
-        if (updateHeight) calendars.updateCalendarHeight();
+        if (updateHeight) calendars.updateHeight();
 
         // Update data
         delete this.list[event.id];
@@ -177,7 +177,7 @@ export default {
         // Save data
         this.list[event.id] = event;
 
-        if (updateHeight) calendars.updateCalendarHeight();
+        if (updateHeight) calendars.updateHeight();
         stats.update();
     },
 

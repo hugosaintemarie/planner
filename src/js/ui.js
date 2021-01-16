@@ -212,10 +212,10 @@ export default {
 
         // Select current calendar
         const $selectedCalendar = $('.calendars-wrap .calendar.selected');
-        calendars.selectCalendar($selectedCalendar);
+        calendars.select($selectedCalendar);
 
         // Update height
-        calendars.updateCalendarHeight();
+        calendars.updateHeight();
 
         // Check option in menu (when switched from shorcut)
         $(`nav [data-radio="view"]`).removeClass('checked');
@@ -244,10 +244,10 @@ export default {
 
         // Select current calendar and restore .selected-first and .selected-last classes
         const $selectedCalendar = $('.calendars-wrap .calendar.selected');
-        calendars.selectCalendar($selectedCalendar, selectedFirst, selectedLast);
+        calendars.select($selectedCalendar, selectedFirst, selectedLast);
 
         // Update height
-        calendars.updateCalendarHeight();
+        calendars.updateHeight();
 
         // Check option in menu (when switched from shorcut)
         $(`nav [data-radio="view"]`).removeClass('checked');

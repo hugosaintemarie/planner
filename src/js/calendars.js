@@ -32,52 +32,52 @@ export default {
     init() {
         // Update calendars start and end
         $(document).on('change', '#start, #end', () => {
-            this.updateCalendars();
+            this.update();
             data.save();
         });
 
         // Switch calendar
         $(document).on('click', '.calendars-wrap .calendar:not(.selected)', e => {
             const $calendar = $(e.target).closest('.calendar');
-            calendars.selectCalendar($calendar);
+            this.select($calendar);
         });
 
         // Add new calendar
         $(document).on('click', '.calendars-wrap .add', () => {
-            calendars.build();
+            this.build();
         });
 
         // Rename calendar in sidebar
         $(document).on('input', '.calendars-wrap p span', e => {
             const $calendar = $(e.target).closest('.calendar');
             const val = $(e.target).text();
-            calendars.renameCalendar(val, $calendar);
+            this.rename(val, $calendar);
         });
 
         // Rename selected calendar
         $(document).on('input', '.calendar-wrap h2', e => {
             const val = $(e.target).text();
-            calendars.renameCalendar(val);
+            this.rename(val);
         });
 
         // Toggle calendar visibility
         $(document).on('click', '.calendars-wrap [data-tool="toggle"]', e => {
             const $calendar = $(e.target).closest('.calendar');
-            calendars.toggleCalendar($calendar);
+            this.toggle($calendar);
             return false;
         });
 
         // Duplicate calendar
         $(document).on('click', '.calendar .tools [data-tool="duplicate"]', e => {
             const $calendar = $(e.target).closest('.calendar');
-            calendars.duplicate($calendar);
+            this.duplicate($calendar);
             return false;
         });
 
         // Delete calendar
         $(document).on('click', '.calendar .tools [data-tool="delete"]', e => {
             const $calendar = $(e.target).closest('.calendar');
-            calendars.deleteCalendar($calendar);
+            this.delete($calendar);
             return false;
         });
 
@@ -90,7 +90,7 @@ export default {
             else this.editAll = false;
         });
 
-        this.buildCalendarHead();
+        this.buildHead();
     },
 
     // Get start and end dates
@@ -110,7 +110,7 @@ export default {
         this.shownEnd = days[days.length - 1];
     },
 
-    buildCalendarHead() {
+    buildHead() {
         const days = ['Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays', 'Sundays'];
         const headFull = `<div>${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d, i) =>
             `<div data-day="${i === 6 ? 0 : i + 1}">
@@ -142,34 +142,8 @@ export default {
 
         $('.head.linear').html(headLinear);
     },
-    
-    buildCalendar() {
-        if (this.end < this.start) return;
-    
-        // Find first week day
-        const first = dates.relativeFirstWeekDay(this.start);
 
-        // Create range from first day to end
-        const days = dates.range(first, this.end);
-    
-        // Fill last week
-        while (days.length % 7 !== 0) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
-
-        // Convert days 1D array to weeks 2D array
-        const weeks = dates.toWeeksArray(days);
-
-        // Build HTML
-        let html = '';
-        for (const week of weeks) {
-            html += '<div>';
-            for (const day of week) html += this.buildDayHTML(day);
-            html += '</div>';
-        }
-    
-        return html;
-    },
-
-    buildDayHTML(day) {
+    buildDay(day) {
         const date = dates.toString(day);
         day.setHours(0);
 
@@ -182,7 +156,7 @@ export default {
         return html;
     },
 
-    updateCalendars() {
+    update() {
         let toAdd = [];
         let toDelete = [];
         let toSetIn = [];
@@ -225,7 +199,7 @@ export default {
 
                 for (const day of week) {
                     const date = dates.toString(day);
-                    html += this.buildDayHTML(day);
+                    html += this.buildDay(day);
                 }
 
                 html += '</div>';
@@ -234,7 +208,7 @@ export default {
             if (oldStart > start) $('.calendar.content, .calendar > .content').prepend(html);
             else if (oldEnd < end) $('.calendar.content, .calendar > .content').append(html);
 
-            this.updateCalendarHeight();
+            this.updateHeight();
         }
 
         // Remove 'out' class for days that are now in scope
@@ -257,14 +231,35 @@ export default {
             $(`.day[data-date="${date}"]`).addClass('out');
         }
 
-        this.buildCalendarHead();
+        this.buildHead();
     },
 
     build(calendar) {
+        if (this.end < this.start) return;
+
         const id = calendar ? calendar.id : ++this.id;
         const title = calendar ? calendar.title : `Calendar ${$('.calendars-wrap .calendar').length + 1}`;
         const order = calendar ? calendar.order : $('.calendars-wrap .calendar').length;
         const description = calendar ? calendar.description : 'Add a description';
+        
+        // Find first week day
+        const first = dates.relativeFirstWeekDay(this.start);
+
+        // Create range from first day to end
+        const days = dates.range(first, this.end);
+    
+        // Fill last week
+        while (days.length % 7 !== 0) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+
+        // Convert days 1D array to weeks 2D array
+        const weeks = dates.toWeeksArray(days);
+
+        let content = '';
+        for (const week of weeks) {
+            content += '<div>';
+            for (const day of week) content += this.buildDay(day);
+            content += '</div>';
+        }
 
         // Create HTML
         const html = `<div class="calendar sortable" data-id="${id}">
@@ -274,7 +269,7 @@ export default {
                 <i data-tool="duplicate" class="far fa-clone" data-tooltip="Duplicate<span class='shortcut'>⌘D</span>" data-tooltip-side="right"></i>
                 <i data-tool="delete" class="far fa-trash-alt" data-tooltip="Delete<span class='shortcut'>⌘⌫</span>" data-tooltip-side="right"></i>
             </div>
-            <div class="content">${ this.buildCalendar() }</div>
+            <div class="content">${content}</div>
             <p><span contenteditable spellcheck="false">${title}</span></p>
         </div>`;
         
@@ -288,7 +283,7 @@ export default {
         }
 
         // Select new calendar
-        this.selectCalendar($calendar);
+        this.select($calendar);
 
         // Update linear view
         if (ui.viewIs('linear')) ui.linearView();
@@ -337,7 +332,7 @@ export default {
         data.save();
     },
 
-    selectCalendar($calendar, selectedFirst, selectedLast) {
+    select($calendar, selectedFirst, selectedLast) {
         this.selected = parseInt($calendar.attr('data-id'));
 
         // Store .selected-first and .selected-last dates if not passed
@@ -374,17 +369,17 @@ export default {
         $(`.calendar-wrap .calendar.selected .day[data-date="${selectedFirst}"]`).addClass('selected-first');
         $(`.calendar-wrap .calendar.selected .day[data-date="${selectedLast}"]`).addClass('selected-last');
 
-        this.updateCalendarHeight();
+        this.updateHeight();
         stats.update();
         data.save();
     },
 
-    getSelectedCalendars() {
+    getSelected() {
         if (this.editAll) return Object.values(this.list).map(d => d.id);
         else return [this.selected];
     },
 
-    renameCalendar(val, $calendar = null) {
+    rename(val, $calendar = null) {
         let id;
         if ($calendar) {
             // Edited in sidebar, replace in main
@@ -403,7 +398,7 @@ export default {
         data.save();
     },
 
-    toggleCalendar($calendar) {
+    toggle($calendar) {
         $calendar.toggleClass('hidden');
 
         if (ui.viewIs('linear')) {
@@ -415,11 +410,11 @@ export default {
             }, 500);
         }
 
-        this.selectAnotherCalendar($calendar);
+        this.selectAnother($calendar);
     },
 
-    deleteCalendar($calendar) {
-        this.selectAnotherCalendar($calendar);
+    delete($calendar) {
+        this.selectAnother($calendar);
         $calendar.remove();
 
         if (ui.viewIs('linear')) ui.linearView();
@@ -434,7 +429,7 @@ export default {
         tooltip.hide();
     },
 
-    selectPreviousCalendar() {
+    selectPrevious() {
         // Find selected calendar
         let $calendar = $('.calendars-wrap .calendar.selected');
 
@@ -447,10 +442,10 @@ export default {
         // Else, select last visible calendar
         else $calendar = $('.calendars-wrap .calendar:not(.hidden)').last();
 
-        this.selectCalendar($calendar);
+        this.select($calendar);
     },
 
-    selectNextCalendar() {
+    selectNext() {
         // Find selected calendar
         let $calendar = $('.calendars-wrap .calendar.selected');
 
@@ -463,30 +458,30 @@ export default {
         // Else, select first visible calendar
         else $calendar = $('.calendars-wrap .calendar:not(.hidden)').first();
 
-        this.selectCalendar($calendar);
+        this.select($calendar);
     },
 
-    selectFirstCalendar() {
+    selectFirst() {
         const $calendar = $('.calendars-wrap .calendar').eq(0);
-        this.selectCalendar($calendar);
+        this.select($calendar);
     },
 
-    selectAnotherCalendar($calendar) {
+    selectAnother($calendar) {
         // Select next (or previous) visible calendar
         if ($calendar.hasClass('selected')) {
             const $calendarToSelect = $calendar.nextAll(':not(.hidden)').eq(0).length ? $calendar.nextAll(':not(.hidden)').eq(0) : $calendar.prevAll(':not(.hidden)').length ? $calendar.prevAll(':not(.hidden)').eq(0) : null;
-            if ($calendarToSelect) this.selectCalendar($calendarToSelect);
+            if ($calendarToSelect) this.select($calendarToSelect);
         }
     },
 
-    getCalendarHeight() {
+    getHeight() {
         let height = Math.max(...$('.calendar-wrap .event').map((_, el) => parseInt($(el).css('top')))) + 68;
         if (!isFinite(height)) height = 68;
         return height;
     },
 
-    updateCalendarHeight(height) {
-        if (!height) height = this.getCalendarHeight();
+    updateHeight(height) {
+        if (!height) height = this.getHeight();
 
         $('.calendar-wrap .day').css('height', `${height}px`);
         

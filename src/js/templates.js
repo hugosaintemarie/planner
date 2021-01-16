@@ -103,6 +103,6 @@ export default {
         calendars.getStartEnd();
         for (let i = 0; i < n; i += 1) calendars.build();
 
-        calendars.selectFirstCalendar();
+        calendars.selectFirst();
     }
 }
