@@ -128,6 +128,21 @@ header {
             font-size: .875rem;
             cursor: pointer;
 
+            svg {
+                position: absolute;
+                top: 0;
+                left: 0;
+                // background-color: hsla(0, 100%, 50%, .5);
+                z-index: 1000;
+                pointer-events: none;
+
+                polygon {
+                    fill: transparent;
+                    // fill: hsla(120, 100%, 50%, .5);
+                    pointer-events: all;
+                }
+            }
+
             &.sub {
                 &::after {
                     content: "\f054";

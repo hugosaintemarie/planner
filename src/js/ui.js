@@ -28,6 +28,43 @@ export default {
             return false;
         });
 
+        // Create triangle safezone
+        $(document).on('mouseenter', 'header nav li', e => {
+            const $el = $(e.target);
+            if ($el.is('.disabled')) return;
+
+            const w = $el.outerWidth();
+            const h = $el.outerHeight();
+            if ($el.find('ul').length) $el.append(`<svg width="${w}px">
+                <polygon points="0,${h} ${w},${h} 0,0" />
+            </svg>`);
+        });
+
+        // Remove triangle safezone
+        $(document).on('mouseleave', 'header nav li', () => {
+            $('nav svg').remove();
+        });
+
+        // Update triangle safezone
+        $(document).on('click mousemove', 'header nav li', e => {
+            const $el = $(e.target).closest('li');
+            const $ul = $el.children('ul');
+            if (!$ul.length) return;
+
+            const $svg = $el.find('svg');
+            const $polygon = $el.find('polygon');
+
+            const under = $el.parent().parent().is('nav');
+
+            const w = under && $el.is('.open') ? Math.max($el.outerWidth(), $ul.outerWidth()) : $el.outerWidth();
+            const h = under ? $el.outerHeight() : Math.max($el.outerHeight(), $ul.outerHeight());
+
+            $svg.attr('width', `${w}px`);
+            $svg.attr('height', `${h}px`);
+            if (under) $polygon.attr('points', `0,${h} ${w},${h} ${e.offsetX},${e.offsetY}`);
+            else $polygon.attr('points', `${w},0 ${w},${h} ${e.offsetX},${e.offsetY}`);
+        });
+
         $(document).on('click', 'header nav li:not(.disabled)', e => {
             const $target = $(e.currentTarget);
 
