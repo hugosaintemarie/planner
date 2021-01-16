@@ -498,6 +498,6 @@ export default {
         // Update linear view
         if (ui.viewIs('linear')) ui.linearView();
 
-        this.list.forEach(c => c.order = parseInt($(`.calendars-wrap .calendar[data-id="${c.id}"]`).attr('data-order')));
+        Object.values(this.list).forEach(c => c.order = parseInt($(`.calendars-wrap .calendar[data-id="${c.id}"]`).attr('data-order')));
     }
 }
