@@ -395,7 +395,7 @@ export default {
         }
 
         // Save data
-        this.list.find(c => c.id === id).title = val;
+        this.list[id].title = val;
         data.save();
     },
 
@@ -421,8 +421,8 @@ export default {
         if (ui.viewIs('linear')) ui.linearView();
 
         // Update data
-        const calendar = this.list.find(e => e.id === parseInt($calendar.attr('data-id')));
-        this.list.splice(this.list.indexOf(calendar), 1);
+        const id = parseInt($calendar.attr('data-id'));
+        delete this.list[id];
 
         this.reorder();
         data.save();
@@ -491,7 +491,7 @@ export default {
     },
 
     getEventsById(id) {
-        return this.list.find(c => c.id === id).events;
+        return this.list[id].events;
     },
 
     reorder() {

@@ -23,7 +23,7 @@ export default {
         // Click on a day in main calendar
         $(document).on('mousedown', '.calendar-wrap .day', e => {
             if (ui.toolIs('draw')) {
-                if (this.event) this.changeType();
+                if (this.event) this.changeCategory();
                 this.startDraw(e);
             }
             else if (ui.tool === 'select') this.select(e);
@@ -70,7 +70,7 @@ export default {
         });
 
         // Click on an event in main calendar
-        $(document).on('mousedown', '.calendar-wrap .day .event:not(.new)', e => {
+        $(document).on('mousedown', '.calendar-wrap .day .event:not(.new)', () => {
             if (ui.toolIs('draw')) return false;
         });
 
@@ -101,7 +101,7 @@ export default {
             if (ui.toolIs('draw')) {
                 const $event = $(e.currentTarget);
 
-                if (this.event) this.changeType();
+                if (this.event) this.changeCategory();
                 else {
                     this.dragging = true;
 
@@ -215,20 +215,21 @@ export default {
         // Ignore single click
         if (!$event.length) {
             this.event = null;
-            categories.id--;
+            events.id--;
             return;
         }
 
         const $title = $event.find('.title');
         $title.attr('contenteditable', true).focus();
 
-        if (events.list.length) newEvent.show($event);
+        if (Object.values(categories.list).length) newEvent.show($event);
     },
 
     cancelDraw() {
         this.event = null;
-        categories.id--;
-        categories.removeCategory({id: this.eventID });
+        this.drawing = false;
+        events.id--;
+        events.remove({id: this.eventID });
         newEvent.hide();
     },
 
@@ -237,7 +238,7 @@ export default {
 
         this.eventTitle = title;
 
-        this.filterTypes(title);
+        this.filterCategories(title);
 
         // Duplicate text to other title fields (event on multiple weeks)
         const id = $el.closest('.event').attr('data-id');
@@ -245,31 +246,21 @@ export default {
     },
 
     changeCategory(id) {
-        let event;
-        let calendar;
+        const eventID = isNaN(this.eventID) ? parseInt($('.calendar-wrap .event.start.selected').eq(0).attr('data-id')) : this.eventID;
 
-        if (!isNaN(this.eventID)) {
-            calendar = calendars.list.find(c => c.events.some(e => e.id === this.eventID));
-            event = calendar.events.find(e => e.id === this.eventID);
-        } else {
-            const $event = $('.calendar-wrap .event.start.selected').eq(0);
-            const eventID = parseInt($event.attr('data-id'));
-            calendar = calendars.list.find(c => c.events.some(e => e.id === eventID));
-            event = calendar.events.find(e => e.id === eventID);
-        }
+        const event = events.list[eventID];
 
         if (isNaN(id)) {
-            // New event
+            // New category
             categories.build({
                 title: this.eventTitle || 'New event',
                 color: 17
             });
-            event.category = events.category;
+            event.category = categories.id;
         } else {
             event.category = id;
         }
 
-        event.calendar = calendar.id;
         events.update(event);
 
         newEvent.hide();
@@ -281,11 +272,10 @@ export default {
         data.save();
     },
 
-    filterTypes(title) {
-        let eventsList = events.list;
-        eventsList = eventsList.filter(e => e.title.toLowerCase().startsWith(title.toLowerCase()));
+    filterCategories(title) {
+        const categoriesList = Object.values(categories.list).filter(e => e.title.toLowerCase().startsWith(title.toLowerCase()));
 
-        if (eventsList.length) newEvent.update(eventsList);
+        if (categoriesList.length) newEvent.update(categoriesList);
         else newEvent.hide();
     },
 
@@ -558,7 +548,7 @@ export default {
                     end
                 };
                 
-                categories.removeCategory(event);
+                events.remove(event);
                 
                 // Save events in action
                 action.events.push(event);
@@ -741,7 +731,7 @@ export default {
                         // Create event
                         const event = {
                             ..._event,
-                            id: ++categories.id,
+                            id: ++events.id,
                             calendar: calendarID,
                             start,
                             end
@@ -908,8 +898,6 @@ export default {
             category: from
         });
 
-        console.log(eventsToReplace);
-
         for (const event of Object.values(eventsToReplace)) {
             event.from = event.category;
             event.category = to;
@@ -927,7 +915,7 @@ export default {
         data.save();
     },
 
-    removeEvents(type) {
+    removeEvents(category) {
         // Create action for history
         const action = {
             type: 'removeEvents',
@@ -936,7 +924,7 @@ export default {
 
         for (const day of this.selectedDays) {
             const date = dates.toString(day);
-            const $events = calendars.editAll ? $(`.day[data-date="${date}"] .event[data-category="${type}"]`) : $(`.calendar.selected .day[data-date="${date}"] .event[data-category="${type}"]`);
+            const $events = calendars.editAll ? $(`.day[data-date="${date}"] .event[data-category="${category}"]`) : $(`.calendar.selected .day[data-date="${date}"] .event[data-category="${category}"]`);
 
             $events.each((_, el) => {
                 const $el = $(el);
@@ -950,7 +938,7 @@ export default {
                 };
 
                 // Remove event
-                categories.removeCategory(event);
+                events.remove(event);
 
                 // Save event in action
                 action.events.push(event);

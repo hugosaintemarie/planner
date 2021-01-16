@@ -1,4 +1,5 @@
 import categories from './categories';
+import events from './events';
 import selection from './selection';
 import ui from './ui';
 
@@ -60,8 +61,8 @@ export default {
         });
     },
 
-    buildEventsTypesOptions(events) {
-        return `<ul>${events.map(e => `<li data-category="${e.category}"><span class="event-icon" data-color="${e.color}"></span>${e.title}</li>`).join('')}</ul>`;
+    buildCategoriesList(categories) {
+        return `<ul>${Object.values(categories).map(e => `<li data-category="${e.id}"><span class="event-icon" data-color="${e.color}"></span>${e.title}</li>`).join('')}</ul>`;
     },
 
     show($event) {
@@ -73,12 +74,12 @@ export default {
             marginTop: $wrap.scrollTop(),
             marginLeft: $wrap.scrollLeft()
         })
-        .html(this.buildEventsTypesOptions(events.list))
+        .html(this.buildCategoriesList(categories.list))
         .addClass('visible');
     },
 
-    update(eventsList) {
-        $('.new-event').html(this.buildEventsTypesOptions(eventsList)).addClass('visible');
+    update(categoriesList) {
+        $('.new-event').html(this.buildCategoriesList(categoriesList)).addClass('visible');
     },
 
     hide() {

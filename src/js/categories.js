@@ -1,4 +1,5 @@
 import data from './data';
+import events from './events';
 import stats from './stats';
 
 export default {
@@ -66,7 +67,7 @@ export default {
             $('.categories-wrap ul li .title[contenteditable]').removeAttr('contenteditable');
 
             // Unselect any selection
-            if (!$(e.target).is('[contenteditable]')) window.getSelection().removeAllRanges();
+            // if (!$(e.target).is('[contenteditable]')) window.getSelection().removeAllRanges();
         });
 
         // Save category rename on blur (for empty names)
@@ -174,11 +175,10 @@ export default {
         if (!Array.isArray(categories)) categories = [categories];
 
         for (const category of categories) {
-            const id = ++this.id;
-            // const id = category && !isNaN(category.id) ? category.id : this.id;
+            const id = category && !isNaN(category.id) ? category.id : ++this.id;
             const color = category && !isNaN(category.color) ? category.color : this.id;
 
-            const li = `<li data-category="${this.id}" class="sortable" data-color="${color}">
+            const li = `<li data-category="${id}" class="sortable" data-color="${color}">
                 <span class="title" ${!category ? 'contenteditable' : ''} spellcheck="false">${category && category.title ? category.title : ''}</span>
                 <span class="tools">
                     <i class="fas fa-angle-down" data-tool="dropdown"></i>
@@ -192,8 +192,8 @@ export default {
             </li>`;
 
             const $ul = $('.categories-wrap ul');
-            if (category.index) $ul.find('li').eq(category.index - 1).after(li);
-            else if (category.index === 0) $ul.prepend(li);
+            if (category && category.index) $ul.find('li').eq(category.index - 1).after(li);
+            else if (category && category.index === 0) $ul.prepend(li);
             else $ul.append(li);
 
             // Select new event

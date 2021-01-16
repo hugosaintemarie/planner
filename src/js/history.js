@@ -21,7 +21,7 @@ export default {
         const action = this.actions[this.actionsIndex];
 
         if (action.type.includes('Events')) {
-            if (action.deleted) categories.build(action.event);
+            if (action.deleted) categories.build(action.category);
 
             for (const event of action.events) {
                 if (action.type === 'addEvents') events.remove(event);
@@ -43,7 +43,7 @@ export default {
         const action = this.actions[this.actionsIndex];
 
         if (action.type.includes('Events')) {
-            if (action.deleted) categories.delete(action.event.category);
+            if (action.deleted) categories.delete(action.category.id);
 
             for (const event of action.events) {
                 if (action.type === 'addEvents') events.build(event);
@@ -78,7 +78,7 @@ export default {
                     const s = n > 1 ? 's' : '';
 
                     if (action.deleted) {
-                        text = `delete event ${action.event.title}`;
+                        text = `delete event ${action.category.title}`;
                     } else {
                         text = {
                             'addEvents': `add ${n} event${s}`,

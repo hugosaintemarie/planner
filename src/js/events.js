@@ -75,11 +75,13 @@ export default {
         }
 
         for (const id of eventIDs) {
-            const event = { id,
-                start: $(`.event[data-id="${id}"].start`).eq(0).closest('.day').attr('data-date'),
-                end: $(`.event[data-id="${id}"].end`).eq(0).closest('.day').attr('data-date'), 
-                calendar: parseInt($(`.event[data-id="${id}"].start`).eq(0).closest('.calendar').attr('data-id'))
-            };
+            // const event = {
+            //     id,
+            //     start: $(`.event[data-id="${id}"].start`).eq(0).closest('.day').attr('data-date'),
+            //     end: $(`.event[data-id="${id}"].end`).eq(0).closest('.day').attr('data-date'), 
+            //     calendar: parseInt($(`.event[data-id="${id}"].start`).eq(0).closest('.calendar').attr('data-id'))
+            // };
+            const event = this.list[id];
 
             // Update top coordinate
             const top = this.getTopCoordinate(event);
@@ -111,42 +113,26 @@ export default {
         stats.update();
     },
 
-    removeBy(options, event) {
-        const category = options.category;
-
+    removeBy(options, category) {
         // Create action for history
         let action = {
             type: 'removeEvents',
             events: []
         };
 
-        if (event) {
+        if (category) {
             action.deleted = true;
-            action.event = event;
+            action.category = category;
         }
 
-        for (const minical of $('.calendars-wrap .calendar').toArray()) {
-            const $events = $(minical).find(`.event[data-category="${category}"]`);
+        const eventsToRemove = this.filter(options);
 
-            $events.each((_, el) => {
-                const $el = $(el);
+        for (const event of Object.values(eventsToRemove)) {
+            // Remove event
+            this.remove(event);
 
-                const event = {
-                    id: parseInt($el.attr('data-id')),
-                    calendar: parseInt($(minical).attr('data-id')),
-                    category: parseInt($el.attr('data-category')),
-                    // title: $el.find('.title').text(),
-                    // color: $el.css('background-color'),
-                    start: $el.closest('.day').attr('data-date'),
-                    end: $el.closest('.day').attr('data-date')
-                };
-
-                // Remove event
-                this.removeEvent(event);
-
-                // Save event in action
-                action.events.push(event);
-            });
+            // Save event in action
+            action.events.push(event);
         }
 
         // Save action in history
