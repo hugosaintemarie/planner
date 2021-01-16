@@ -72,9 +72,14 @@
                 &::after {
                     content: "Add a description";
                     user-select: none;
+                    color: #999999;
                 }
             }
-    
+            
+            &:not(:empty) {
+                color: #999999;
+            }
+            
             &:focus {
                 outline: none;
                 background-color: #111;
