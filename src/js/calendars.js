@@ -70,7 +70,7 @@ export default {
         // Duplicate calendar
         $(document).on('click', '.calendar .tools [data-tool="duplicate"]', e => {
             const $calendar = $(e.target).closest('.calendar');
-            calendars.duplicateCalendar($calendar);
+            calendars.duplicate($calendar);
             return false;
         });
 
@@ -315,12 +315,16 @@ export default {
         data.save();
     },
 
-    duplicateCalendar($calendar) {
+    duplicate($calendar) {
+        const id = parseInt($calendar.attr('data-id'));
+        const _events = Object.values(events.filter({ calendars: [id] }))
+            .map(d => ({ ...d, id: ++events.id })); // Reindex all events
+
         const calendar = {
             id: ++this.id,
             title: `${$calendar.find('p span').text()} copy`,
             order: $calendar.index() + 1,
-            events: this.getEventsById(parseInt($calendar.attr('data-id'))).map(d => ({...d, id: ++categories.id })) // Reindex all events
+            events: _events
         };
 
         this.build(calendar);
@@ -488,10 +492,6 @@ export default {
         
         if (ui.viewIs('linear')) $('.calendars-wrap .calendar').css('height', `${height}px`);
         else $('.calendars-wrap .calendar').css('height', '');
-    },
-
-    getEventsById(id) {
-        return this.list[id].events;
     },
 
     reorder() {

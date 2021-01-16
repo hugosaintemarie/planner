@@ -54,7 +54,7 @@ export default {
             else if (ctrlOrMeta && e.which === 67) selection.copySelection();     // Cmd + C
             else if (ctrlOrMeta && e.which === 68) {                              // Cmd + D
                 const $calendar = $('.calendars-wrap .calendar.selected');
-                calendars.duplicateCalendar($calendar);
+                calendars.duplicate($calendar);
                 return false;
             }
             else if (ctrlOrMeta && e.which === 72) {                              // Cmd + H
