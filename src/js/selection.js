@@ -4,7 +4,7 @@ import data from './data';
 import dates from './dates';
 import events from './events';
 import history from './history';
-import newEvent from './newEvent';
+import switcher from './switcher';
 import stats from './stats';
 import ui from './ui';
 
@@ -90,7 +90,7 @@ export default {
                 if (count > 1 || !$el.hasClass('selected')) return false;
 
                 const $event = $(`.calendar-wrap .event.start[data-id="${$el.attr('data-id')}"]`);
-                newEvent.show($event);
+                switcher.show($event);
 
                 return false;
             }
@@ -119,7 +119,7 @@ export default {
 
                 const multiSelect = e.metaKey || e.ctrlKey || e.shiftKey;
                 if (!multiSelect) $('.event.selected').removeClass('selected');
-                newEvent.hide();
+                switcher.hide();
 
                 const id = $event.attr('data-id');
                 if (!isNaN(id)) this.selectEventByID(id, true);
@@ -129,14 +129,14 @@ export default {
 
         // Mousedown anywhere
         $(document).on('mousedown', e => {
-            newEvent.hide();
+            switcher.hide();
             const multiSelect = e.metaKey || e.ctrlKey || e.shiftKey;
             if (multiSelect) return false;
             $('.event.selected').removeClass('selected');
         });
 
         $(document).on('mousedown', '.calendar-wrap .event .anchor', e => {
-            newEvent.hide();
+            switcher.hide();
             this.resizing = true;
 
             const $anchor = $(e.currentTarget);
@@ -222,7 +222,7 @@ export default {
         const $title = $event.find('.title');
         $title.attr('contenteditable', true).focus();
 
-        if (Object.values(categories.list).length) newEvent.show($event);
+        if (Object.values(categories.list).length) switcher.show($event);
     },
 
     cancelDraw() {
@@ -230,7 +230,7 @@ export default {
         this.drawing = false;
         events.id--;
         events.remove({ id: this.eventID });
-        newEvent.hide();
+        switcher.hide();
     },
 
     renameEvent($el) {
@@ -263,7 +263,7 @@ export default {
 
         events.update(event);
 
-        newEvent.hide();
+        switcher.hide();
 
         this.event = null;
         this.eventID = null;
@@ -275,8 +275,8 @@ export default {
     filterCategories(title) {
         const categoriesList = Object.values(categories.list).filter(e => e.title.toLowerCase().startsWith(title.toLowerCase()));
 
-        if (categoriesList.length) newEvent.update(categoriesList);
-        else newEvent.hide();
+        if (categoriesList.length) switcher.update(categoriesList);
+        else switcher.hide();
     },
 
     select(e) {
@@ -631,7 +631,7 @@ export default {
         // If only one selected day, toggle it
         $onlySelectedDay.removeClass('selected');
 
-        newEvent.hide();
+        switcher.hide();
     },
 
     copySelection() {
