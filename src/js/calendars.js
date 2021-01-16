@@ -70,7 +70,7 @@ export default {
         $(document).on('click', '.toggle-edit-all', () => {
             $('nav [data-tool="edit-all"]').toggleClass('checked');
             $('.calendars-wrap').toggleClass('edit-all');
-            
+
             if ($('.calendars-wrap').is('.edit-all')) this.editAll = true;
             else this.editAll = false;
         });
@@ -88,7 +88,7 @@ export default {
 
         // Create range from first day to end
         const days = dates.range(first, this.end);
-    
+
         // Fill last week
         while (days.length % 7 !== 0) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
 
@@ -211,7 +211,7 @@ export default {
         }
 
         // Set out remaining out-of-scope days
-        for (const day of toSetOut) { 
+        for (const day of toSetOut) {
             const date = dates.toString(day);
             $(`.day[data-date="${date}"]`).addClass('out');
         }
@@ -226,13 +226,13 @@ export default {
         const title = calendar ? calendar.title : `Calendar ${$('.calendars-wrap .calendar').length + 1}`;
         const order = calendar ? calendar.order : $('.calendars-wrap .calendar').length;
         const description = calendar ? calendar.description : '';
-        
+
         // Find first week day
         const first = dates.relativeFirstWeekDay(this.start);
 
         // Create range from first day to end
         const days = dates.range(first, this.end);
-    
+
         // Fill last week
         while (days.length % 7 !== 0) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
 
@@ -257,7 +257,7 @@ export default {
             <div class="content">${content}</div>
             <p><span contenteditable spellcheck="false">${title}</span></p>
         </div>`;
-        
+
         let $calendar;
         if (order) {
             $('.calendars-wrap .calendar').eq(order - 1).after(html);
@@ -335,18 +335,18 @@ export default {
         } else {
             // Update ID
             $('.calendar-wrap .content').attr('data-id', $calendar.attr('data-id'));
-        
+
             // Update title
             $('.calendar-wrap .title h2').html($calendar.find('p span').html());
             $('.calendar-wrap .title span').html(this.list[this.selected]?.description);
-        
+
             // Update main calendar
             $('.calendar-wrap .content').html($calendar.find('.content').html()).addClass('selected');
         }
 
         // Unselect any selection
         window.getSelection().removeAllRanges();
-    
+
         selection.highlightSelection();
 
         // Restore .selected-first and .selected-last classes
@@ -469,7 +469,7 @@ export default {
         if (!height) height = this.getHeight();
 
         $('.calendar-wrap .day').css('height', `${height}px`);
-        
+
         if (ui.viewIs('linear')) $('.calendars-wrap .calendar').css('height', `${height}px`);
         else $('.calendars-wrap .calendar').css('height', '');
     },

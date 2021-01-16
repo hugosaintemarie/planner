@@ -15,7 +15,7 @@ export default {
         if (template === 'default') {
             // 1 calendar
             // 3 categories
-            
+
             this.createCalendars(1);
 
             categories.build([
@@ -40,7 +40,7 @@ export default {
             for (let i = 0; i < 30; i += 1) {
                 const range = dates.range(calendars.start, calendars.end);
                 const date = range[Math.floor(Math.random() * range.length)];
-                
+
                 // Get a random category
                 // const $categories = $('.categories-wrap ul li');
                 // const $category = $categories.eq(Math.floor(Math.random() * $categories.length));

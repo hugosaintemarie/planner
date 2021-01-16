@@ -4,7 +4,7 @@ export default {
 
     init() {
         $(document).on('click', '.toast', () => {
-           this.hide();
+            this.hide();
         });
 
         $(document).on('click', '.toast [data-tool="undo"]', () => {

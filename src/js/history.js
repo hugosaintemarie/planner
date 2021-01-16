@@ -51,7 +51,7 @@ export default {
                 else if (action.type === 'replaceEvents') events.replace(event, true);
             }
         }
-        
+
         this.actionsIndex += 1;
 
         if (this.actions[this.actionsIndex]) this.updateNav('redo', 0);
@@ -87,7 +87,7 @@ export default {
                         }[action.type];
                     }
                 }
-        
+
                 return text;
             };
 

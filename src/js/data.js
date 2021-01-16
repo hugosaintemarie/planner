@@ -18,7 +18,7 @@ export default {
             console.error(err);
         }
     },
-    
+
     load(data) {
         this.loading = true;
 
@@ -113,7 +113,7 @@ export default {
         input.accept = '.planner';
         input.addEventListener('change', e => {
             const file = e.target.files[0];
-            
+
             const reader = new FileReader();
             reader.addEventListener('load', _e => {
                 const result = _e.target.result;
@@ -121,7 +121,7 @@ export default {
                 this.reset();
                 this.load(data);
                 this.save();
-                
+
                 $('header ul li.open').removeClass('open');
             });
 

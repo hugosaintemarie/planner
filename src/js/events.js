@@ -146,7 +146,7 @@ export default {
 
         for (const day of range) {
             const $events = this.getEventsWrap(event, day);
-    
+
             // Build classname
             let classname = '';
             if (day.valueOf() === new Date(event.start).valueOf()) classname += ' start';
@@ -187,7 +187,7 @@ export default {
         // if (calendars.editAll) {
         //     $el = $(`.day[data-date="${date}"] .events`);
         // } else {
-            $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
+        $el = $(`.calendar[data-id="${event.calendar}"]`).length ? $(`.calendar[data-id="${event.calendar}"] .day[data-date="${date}"] .events`) : $(`.calendar.selected .day[data-date="${date}"] .events, .calendar-wrap .day[data-date="${date}"] .events`);
         // }
         return $el;
     },

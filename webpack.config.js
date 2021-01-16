@@ -7,12 +7,12 @@ module.exports = {
         path: path.resolve(__dirname, 'public/js'),
         filename: 'bundle.js'
     },
-    module: {   
+    module: {
         rules: [
-            { 
+            {
                 test: /\.js$/, exclude: /node_modules/, loader: "babel-loader"
             }
-        ] 
+        ]
     },
     watch: process.env.NODE_ENV === 'production' ? false : true,
     stats: 'errors-only'

@@ -58,7 +58,7 @@ export default {
                 if (this.drawing) this.draw(e);
                 else if (this.dragging) this.dragEvent(e);
                 else if (this.resizing) this.resizeEvent(e);
-            } else if (ui.tool === 'select') {    
+            } else if (ui.tool === 'select') {
                 if (this.selectedDays.length) this.dragSelect(e);
             }
         });
@@ -84,7 +84,7 @@ export default {
             if (ui.toolIs('draw')) {
                 const $el = $(e.currentTarget);
                 this.eventID = parseInt($el.attr('data-id'));
-                
+
                 // Abort if we're selecting multiple elements
                 const count = new Set($('.event.selected').toArray().map(d => $(d).attr('data-id'))).size;
                 if (count > 1 || !$el.hasClass('selected')) return false;
@@ -138,7 +138,7 @@ export default {
         $(document).on('mousedown', '.calendar-wrap .event .anchor', e => {
             newEvent.hide();
             this.resizing = true;
-            
+
             const $anchor = $(e.currentTarget);
             const $event = $anchor.closest('.event');
 
@@ -208,7 +208,7 @@ export default {
     endDraw() {
         if (!this.event) return;
         this.drawing = false;
-        
+
         // Find new event start
         const $event = $(`.calendar-wrap .event.new.start[data-id="${this.event.id}"]`);
 
@@ -229,7 +229,7 @@ export default {
         this.event = null;
         this.drawing = false;
         events.id--;
-        events.remove({id: this.eventID });
+        events.remove({ id: this.eventID });
         newEvent.hide();
     },
 
@@ -304,16 +304,15 @@ export default {
 
             if (ui.viewIs('full')) {
                 const _selectedDays = [new Date($selectedFirst.attr('data-date')), new Date(date)];
-    
+
                 const lowestWeekDay = Math.min(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
                 const highestWeekDay = Math.max(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
-    
-    
+
                 start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
                 end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
-                
+
                 days = dates.range(start, end);
-    
+
                 // Filter out days out of rectangle
                 days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
             } else {
@@ -336,10 +335,10 @@ export default {
             // if (this.selectedDays.length && this.selectedDays[0].getTime() === new Date(date).getTime()) {
             //     this.selectedDays = []; 
             // } else {
-                this.selectedDays = [new Date(date)]; 
-                $('.calendar-wrap .day.selected-first').removeClass('selected-first');
-                $('.calendar-wrap .day.selected-last').removeClass('selected-last');
-                $day.addClass('selected-first selected-last');
+            this.selectedDays = [new Date(date)];
+            $('.calendar-wrap .day.selected-first').removeClass('selected-first');
+            $('.calendar-wrap .day.selected-last').removeClass('selected-last');
+            $day.addClass('selected-first selected-last');
             // }
         }
 
@@ -365,16 +364,16 @@ export default {
 
             if (ui.viewIs('full')) {
                 const _selectedDays = [new Date($selectedFirst.attr('data-date')), new Date(date)];
-    
+
                 const lowestWeekDay = Math.min(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
                 const highestWeekDay = Math.max(..._selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
-                
+
                 if (!e.altKey) {
                     // Rectangle mode, move start date to top left corner and end date to bottom right corner
                     start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
                     end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
                 }
-                
+
                 days = dates.range(start, end);
 
                 // Filter out days out of rectangle
@@ -382,7 +381,7 @@ export default {
             } else {
                 days = dates.range(start, end);
             }
-        }   
+        }
 
         if (!$selectedFirst.hasClass('selected')) {
             this.selectedDays = this.selectedDays.filter(d => d.getTime() !== new Date(date).getTime());
@@ -398,11 +397,11 @@ export default {
         // Ignore if no selection
         const $selected = $('.calendar-wrap .day.selected-last');
         if (!$selected.length) return;
-    
+
         // Target set to same date by default (for linear mode)
         const date = new Date($selected.attr('data-date'));
         let target = date;
-    
+
         if (e.which === 37) {
             if (e.metaKey) { // Meta + left
                 // Full: beginning of week
@@ -415,7 +414,7 @@ export default {
 
                 // One day before
                 target = dates.relativeDate(date, -1);
-                
+
                 // Prevent changing week with shift key
                 if (ui.viewIs('full') && target.getDay() === 0 && e.shiftKey) return;
             }
@@ -438,10 +437,10 @@ export default {
                 else if (ui.viewIs('linear')) target = dates.relativeDate(date, 7);
 
             } else { // Right
-                
+
                 // One day after
                 target = dates.relativeDate(date, 1);
-        
+
                 // Prevent changing week with shift key
                 if (ui.viewIs('full') && target.getDay() === 1 && e.shiftKey) return;
             }
@@ -449,22 +448,22 @@ export default {
         } else if (e.which === 40) { // Down
             // Full: one week after
             if (ui.viewIs('full')) target = dates.relativeDate(date, 7);
-            
+
             // Linear: move to calendar under
             else if (ui.viewIs('linear')) calendars.selectNext();
         }
 
         // TODO: check that _all_ days in selection fit in calendar?
         if (!dates.isInArray(dates.range(calendars.shownStart, calendars.shownEnd), new Date(new Date(target).setHours(0)))) return;
-    
+
         if (e.shiftKey) {
             const $selectedFirst = $('.selected-first');
             $('.selected-last').removeClass('selected-last');
-    
+
             const targetDate = dates.toString(target);
             const $target = $(`.calendar-wrap .day[data-date="${targetDate}"]`);
             $target.addClass('selected-last');
-    
+
             this.selectedDays = [new Date($selectedFirst.attr('data-date')), new Date(targetDate)];
 
             const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date(target)].sort((a, b) => a > b ? 1 : -1);
@@ -473,31 +472,31 @@ export default {
             if (ui.viewIs('full')) {
                 const lowestWeekDay = Math.min(...this.selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
                 const highestWeekDay = Math.max(...this.selectedDays.map(d => d.getDay()).map(w => w === 0 ? 7 : w));
-        
+
                 start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
                 end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
-                
+
                 days = dates.range(start, end);
-        
+
                 // Filter out days out of rectangle
                 days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
             } else {
                 days = dates.range(start, end);
             }
-    
+
             this.selectedDays = days;
         } else if (e.altKey) {
             const $selectedFirst = $('.selected-first');
             $('.selected-last').removeClass('selected-last');
-    
+
             const targetDate = dates.toString(target);
             const $target = $(`.calendar-wrap .day[data-date="${targetDate}"]`);
             $target.addClass('selected-last');
-    
+
             const [start, end] = [new Date($selectedFirst.attr('data-date')), new Date(target)].sort((a, b) => a > b ? 1 : -1);
-    
+
             const days = dates.range(start, end);
-    
+
             this.selectedDays = days;
         } else {
             const diff = target - date;
@@ -518,7 +517,7 @@ export default {
             // For each already selected day, move by diff between first selected day and target
             this.selectedDays = this.selectedDays.map(date => new Date(date.getTime() + diff));
         }
-    
+
         this.highlightSelection();
         this.scrollInView(e.which);
     },
@@ -539,7 +538,7 @@ export default {
                 const end = $(`.event[data-id="${id}"].end`).closest('.day').attr('data-date');
 
                 if (!start || !end) return;
-                
+
                 const event = {
                     id,
                     calendar: parseInt($el.parents('.calendar').attr('data-id')),
@@ -547,17 +546,17 @@ export default {
                     start,
                     end
                 };
-                
+
                 events.remove(event);
-                
+
                 // Save events in action
                 action.events.push(event);
             });
         }
-        
+
         if (ui.toolIs('draw')) {
             const $events = $('.event.selected');
-            removeEvents($events);    
+            removeEvents($events);
         }
         else if (ui.tool === 'select') {
             for (const day of this.selectedDays) {
@@ -573,7 +572,7 @@ export default {
                 removeEvents($events);
             }
         }
-    
+
         // Save action in history
         history.pushAction(action);
 
@@ -581,14 +580,14 @@ export default {
         stats.update();
         data.save();
     },
-    
+
     selectAll() {
         if (ui.toolIs('select')) {
             const start = new Date($('#start').val());
             const end = new Date($('#end').val());
-    
+
             this.selectedDays = dates.range(start, end);
-    
+
             this.highlightSelection();
         } else if (ui.toolIs('draw')) {
             $('.calendar.selected .event').addClass('selected');
@@ -603,10 +602,10 @@ export default {
 
         for (const day of days) {
             this.selectedDays.push(...dates.range(start, end).filter(d => d.getDay() === parseInt(day)));
-            
+
             const $day = $(`.head.full [data-day=${day}]`);
             $day.addClass('selected');
-            
+
             if (remove) {
                 this.selectedDays = this.selectedDays.filter(d => d.getDay() !== parseInt(day));
                 $day.removeClass('selected');
@@ -625,35 +624,35 @@ export default {
 
         $('.selected-last').removeClass('selected-last');
         $selectedFirst.addClass('selected-last');
-        
+
         this.selectedDays = [date];
         this.highlightSelection();
-        
+
         // If only one selected day, toggle it
         $onlySelectedDay.removeClass('selected');
 
         newEvent.hide();
     },
-        
+
     copySelection() {
         this.clipboard = [];
-    
+
         // Find selection's bounding rectangle
         let start = new Date(Math.min(...this.selectedDays));
         let end = new Date(Math.max(...this.selectedDays));
 
         const lowestWeekDay = dates.findLowestWeekDay(this.selectedDays);
         const highestWeekDay = dates.findHighestWeekDay(this.selectedDays);
-    
+
         start.setDate(start.getDate() - ((start.getDay() === 0 ? 7 : start.getDay()) - lowestWeekDay));
         end.setDate(end.getDate() + (highestWeekDay - (end.getDay() === 0 ? 7 : end.getDay())));
-    
+
         // Create range from start to end of bounding rectangle
         let days = dates.range(start, end);
-    
+
         // Filter out days out of bounding rectangle
         days = days.filter(d => (d.getDay() === 0 ? 7 : d.getDay()) >= lowestWeekDay && (d.getDay() === 0 ? 7 : d.getDay()) <= highestWeekDay);
-    
+
         // Create array of events for selected days, keep null for an empty day
         const events = [];
         for (const day of days) {
@@ -664,15 +663,15 @@ export default {
                 events.push(null);
                 continue;
             };
-    
+
             const date = dates.toString(day);
             const $events = $(`.calendar-wrap .day[data-date="${date}"] .event`);
-    
+
             // Copy day events to clipboard
             if ($events.length) {
                 $events.each((_, el) => {
                     const $el = $(el);
-        
+
                     const event = {
                         category: parseInt($el.attr('data-category')),
                         calendar: parseInt($el.closest('.calendar').attr('data-id')),
@@ -691,19 +690,19 @@ export default {
                 events.push(null);
             }
         }
-    
+
         // Convert 1D array of events to 2D array to mimic selection bounding rectangle layout
         while (events.length) this.clipboard.push(events.splice(0, highestWeekDay - lowestWeekDay + 1));
 
         if (this.clipboard.length) $('nav [data-tool="paste"').removeClass('disabled');
         else $('nav [data-tool="paste"').addClass('disabled');
     },
-    
+
     cutSelection() {
         this.copySelection();
         this.emptySelection();
     },
-    
+
     pasteSelection() {
         // Push action in history
         const action = {
@@ -714,7 +713,7 @@ export default {
         // Clipboard paste starts at selected day
         const $selected = $('.calendar-wrap .day.selected-first');
         const date = new Date($selected.attr('data-date'));
-    
+
         for (let j = 0; j < this.clipboard.length; j += 1) {
             for (let i = 0; i < this.clipboard[0].length; i += 1) {
                 // Find event in clipboard if any
@@ -736,10 +735,10 @@ export default {
                             start,
                             end
                         };
-                
+
                         // Build event
                         events.build(event);
-            
+
                         // Save event in action
                         action.events.push(event);
                     }
@@ -766,7 +765,7 @@ export default {
 
             // Select day
             $el.addClass('selected');
-            
+
             // Add styles classes (for borders)
             const dayBeforeSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, -1));
             const dayAfterSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, 1));
@@ -774,7 +773,7 @@ export default {
             if (ui.viewIs('full')) {
                 const dayWeekBeforeSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, -7));
                 const dayWeekAfterSelected = dates.isInArray(this.selectedDays, dates.relativeDate(day, 7));
-                
+
                 if (dayBeforeSelected && day.getDay() !== 1) $el.addClass('no-left');
                 if (dayAfterSelected && day.getDay() !== 0) $el.addClass('no-right');
                 if (dayWeekBeforeSelected) $el.addClass('no-top');
@@ -830,7 +829,7 @@ export default {
                 const scrollTop = $('.calendar-wrap .calendar.selected').scrollTop() - (top - highest) - marginV;
                 $('.calendar-wrap .calendar.selected').stop().animate({ scrollTop }, duration);
             }
-            
+
             if (dir === 'down' && lowest + marginV > bottom) {
                 const scrollTop = $('.calendar-wrap .calendar.selected').scrollTop() - (bottom - lowest) + marginV;
                 $('.calendar-wrap .calendar.selected').stop().animate({ scrollTop }, duration);
@@ -1008,7 +1007,7 @@ export default {
 
     endResize() {
         this.event = null;
-        
+
         this.resizing = false;
         $('.calendar.resizing').removeClass('resizing');
 

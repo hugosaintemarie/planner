@@ -23,7 +23,7 @@ export default {
             }
         });
 
-        
+
         let html = '';
         for (const event of events) {
             const count = $(`.calendar-wrap .calendar.selected .event[data-category="${event.category}"]`).length;

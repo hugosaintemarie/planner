@@ -4,9 +4,8 @@ export default {
             const newYear = new Date(this.getFullYear(), 0, 1);
             let day = newYear.getDay() - dowOffset;
             day = (day >= 0 ? day : day + 7);
-            const daynum = Math.floor((this.getTime() - newYear.getTime() - 
-            (this.getTimezoneOffset() - newYear.getTimezoneOffset()) * 60000) / 86400000) + 1;
-            
+            const daynum = Math.floor((this.getTime() - newYear.getTime() - (this.getTimezoneOffset() - newYear.getTimezoneOffset()) * 60000) / 86400000) + 1;
+
             let weeknum;
             if (day < 4) {
                 weeknum = Math.floor((daynum + day - 1) / 7) + 1;
@@ -75,11 +74,11 @@ export default {
 
             return acc;
         }, []);
-        
+
         return weeks;
     },
 
     delta(date1, date2) {
-        return Math.ceil((new Date(date2) - new Date(date1)) / (1000 * 60 * 60 * 24)); 
+        return Math.ceil((new Date(date2) - new Date(date1)) / (1000 * 60 * 60 * 24));
     }
 }

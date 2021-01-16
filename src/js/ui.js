@@ -68,7 +68,7 @@ export default {
             // Keep scroll in sync
             const scrollTop = e.currentTarget.scrollTop;
             $('.calendar-wrap .calendars, .calendars-wrap .scroll-wrap').scrollTop(scrollTop);
-            
+
             this.moveStickyLabels();
         });
 
@@ -90,7 +90,7 @@ export default {
                 let day = $day.attr('data-day');
 
                 const $first = $('.head.full [data-day].selected-first');
-                
+
                 if (e.metaKey) {
                     // Meta key: toggle (add to or remove from selection)
                     if ($day.hasClass('selected')) selection.selectByWeekdays([day], true, true);
@@ -115,7 +115,7 @@ export default {
 
                     $first.removeClass('selected-first');
                     $day.addClass('selected-first');
-                }                    
+                }
             } else {
                 $el.addClass('open');
                 $el.find('.dropdown').addClass('visible');
@@ -313,10 +313,10 @@ export default {
 
             // Total event width (add up single .events widths)
             const width = $events.toArray().reduce((acc, curr) => acc + curr.offsetWidth, 0);
-            
+
             const eventOffsetLeft = $event.offset().left;
             const eventOffsetRight = eventOffsetLeft + width;
-            
+
             if (eventOffsetLeft < colWidth && eventOffsetRight > colWidth) {
                 const top = $event.offset().top + 2;
 
@@ -343,7 +343,7 @@ export default {
             const $month = $wrap.find('.month');
             const wrapOffsetLeft = $wrap.offset().left;
             const wrapOffsetRight = wrapOffsetLeft + $wrap.outerWidth();
-            
+
             // if (wrapOffsetLeft - 16 < colWidth && wrapOffsetRight - $month.outerWidth() > colWidth) {
             if (wrapOffsetLeft - 16 <= colWidth && wrapOffsetRight > colWidth) {
                 const top = $month.offset().top;

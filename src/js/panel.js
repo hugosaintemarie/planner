@@ -58,7 +58,7 @@ export default {
         $(document).on('keydown', e => {
             if ([38, 40].includes(e.which)) { // Arrow keys
                 if (!this.isOpen) return;
-                
+
                 if (e.which === 38) this.previous();
                 else if (e.which === 40) this.next();
             }

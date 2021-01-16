@@ -1,4 +1,4 @@
-export default{
+export default {
     $tooltip: null,
     showTimeout: null,
 
@@ -28,13 +28,13 @@ export default{
         let top = 0;
         let left = 0;
         const margin = 8;
-        
+
         if (side === 'top') {
             top = $el.offset().top - this.$tooltip.outerHeight() - margin;
             left = $el.offset().left + $el.outerWidth() / 2 - this.$tooltip.outerWidth() / 2;
         } else if (side === 'right') {
             top = $el.offset().top + $el.outerHeight() / 2 - this.$tooltip.outerHeight() / 2;
-            left =  $el.offset().left + $el.outerWidth() + margin;
+            left = $el.offset().left + $el.outerWidth() + margin;
         } else if (side === 'bottom') {
             top = $el.offset().top + $el.outerHeight() + margin;
             left = $el.offset().left + $el.outerWidth() / 2 - this.$tooltip.outerWidth() / 2;
@@ -50,7 +50,7 @@ export default{
             })
             .removeClass('top right bottom left')
             .addClass(side);
-        
+
         clearTimeout(this.showTimeout);
         this.showTimeout = setTimeout(() => {
             this.$tooltip.addClass('visible');

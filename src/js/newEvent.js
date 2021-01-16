@@ -11,22 +11,22 @@ export default {
             $('.new-event ul li.selected').removeClass('selected');
             $el.addClass('selected');
         });
-    
+
         // Click on new event type option
         $(document).on('click', '.new-event ul li', e => {
             const id = parseInt($(e.currentTarget).attr('data-category'));
             selection.changeCategory(id);
         });
-    
+
         $(document).on('mousedown', '.new-event ul li', () => {
             return false;
         });
-    
+
         // Up/down arrow keys + enter key in new event type options
         $(document).on('keydown', e => {
             if (!selection.event) return;
             const $li = $('.new-event ul li.selected');
-            
+
             if (e.which === 38) { // Up
                 if ($li.length) {
                     if ($li.prev('li').length) $li.prev('li').addClass('selected');
@@ -68,14 +68,15 @@ export default {
     show($event) {
         const $wrap = $('.calendar-wrap .calendars');
 
-        $('.new-event').css({
-            top: $event.offset().top - $wrap.offset().top + $event.outerHeight() + 8,
-            left: $event.offset().left - $wrap.offset().left,
-            marginTop: $wrap.scrollTop(),
-            marginLeft: $wrap.scrollLeft()
-        })
-        .html(this.buildCategoriesList(categories.list))
-        .addClass('visible');
+        $('.new-event')
+            .css({
+                top: $event.offset().top - $wrap.offset().top + $event.outerHeight() + 8,
+                left: $event.offset().left - $wrap.offset().left,
+                marginTop: $wrap.scrollTop(),
+                marginLeft: $wrap.scrollLeft()
+            })
+            .html(this.buildCategoriesList(categories.list))
+            .addClass('visible');
     },
 
     update(categoriesList) {

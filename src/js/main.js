@@ -15,7 +15,7 @@ import ui from './ui';
 
 $(() => {
     dates.init();
-    
+
     calendars.init();
     data.init();
     categories.init();

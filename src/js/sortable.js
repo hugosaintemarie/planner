@@ -14,11 +14,11 @@ export default {
         $(document).on('mousedown', '.sortable i[data-tool="sort"]', e => {
             this.startSort(e);
         });
-        
+
         $(document).on('mouseup', e => {
             if (this.$sortedEl) this.stopSort(e);
         });
-        
+
         $(document).on('mousemove', e => {
             if (this.$sortedEl) this.sort(e);
         });
@@ -27,37 +27,37 @@ export default {
             if (this.$sortedEl) this.sort(e);
         });
     },
-    
+
     startSort(e) {
         tooltip.hide();
-        
+
         const $icon = $(e.target);
         this.$sortedEl = $icon.closest('.sortable');
 
         this.$sortedEl.addClass('sorting');
-        
+
         // Ignore sort if only child
         if (this.$sortedEl.is(':only-child')) return;
-    
+
         this.sortedPosition = this.$sortedEl.position();
-        
+
         this.sortedOrigin = {
             x: e.clientX,
             y: e.clientY
         };
-    
+
         $icon.css('cursor', 'grabbing');
-    
+
         this.$sortedEl.css('zIndex', '1');
-    
+
         const $parent = this.$sortedEl.parent();
         this.parentScroll = this.$sortedEl.parents('.scroll-wrap').scrollTop() || 0;
-    
+
         this.$sortedEl.parent().css({
             'width': $parent.outerWidth(),
             'height': $parent.outerHeight()
         });
-    
+
         $parent.children().each((_, el) => {
             const $el = $(el);
             $el.css({
@@ -67,12 +67,12 @@ export default {
                 // 'height': $el.outerHeight()
             });
         });
-    
+
         $parent.children().each((_, el) => {
             $(el).css('position', 'absolute');
         });
     },
-    
+
     sort(e) {
         // const deltaX = e.clientX - this.sortedOrigin.x;
 
@@ -83,12 +83,12 @@ export default {
         const maxTop = this.$sortedEl.parent().outerHeight() - this.$sortedEl.outerHeight(true);
 
         const top = Math.min(Math.max(deltaY, 0), maxTop);
-    
+
         this.$sortedEl.css({
             'top': top,
             // 'left': left
         });
-    
+
         this.$sortedEl.nextAll().each((_, el) => {
             const $el = $(el);
             if (this.$sortedEl.position().top + this.$sortedEl.outerHeight() > $el.position().top + $el.outerHeight() / 2) {
@@ -96,7 +96,7 @@ export default {
                 this.$sortedEl.before($el);
             }
         });
-    
+
         this.$sortedEl.prevAll().each((_, el) => {
             const $el = $(el);
             if (this.$sortedEl.position().top < $el.position().top + $el.outerHeight() / 2) {
@@ -105,7 +105,7 @@ export default {
             }
         });
     },
-    
+
     stopSort(e) {
         $(e.target).css('cursor', '');
 
@@ -113,14 +113,14 @@ export default {
             'cursor': '',
             'zIndex': ''
         });
-        
+
         const $parent = this.$sortedEl.parent();
-    
+
         this.$sortedEl.parent().css({
             'width': '',
             'height': ''
         });
-    
+
         $parent.children().each((id, el) => {
             const $el = $(el);
             $el.css({
@@ -140,7 +140,7 @@ export default {
         else if ($parent.parents('.categories-wrap').length) categories.reorder();
 
         this.$sortedEl.removeClass('sorting');
-    
+
         this.$sortedEl = null;
 
         stats.update();
