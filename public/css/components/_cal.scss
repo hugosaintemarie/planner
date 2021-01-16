@@ -188,8 +188,8 @@
             }
 
             &.alt {
-                > div {
-                    > i {
+                [data-day] {
+                    i.fa-chevron-down {
                         &::before {
                             content: "\f067";
                         }
