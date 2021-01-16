@@ -28,7 +28,7 @@ export default {
     },
 
     isInArray(arr, date) {
-        return arr.some(d => d.getTime() === date.getTime());
+        return arr.some(d => this.toString(d) === this.toString(date));
     },
 
     isInRange(start, end, date) {

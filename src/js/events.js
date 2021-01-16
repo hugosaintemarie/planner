@@ -92,7 +92,9 @@ export default {
     replace(event, undo = false) {
         const $el = $(`.event[data-id="${event.id}"]`);
 
+        const from = undo ? event.category : event.from;
         const to = undo ? event.from : event.category;
+
         const $target = $(`.categories-wrap ul li[data-category="${to}"]`);
 
         $el.find('.title').text($target.find('.title').text());
@@ -100,7 +102,8 @@ export default {
         $el.attr('data-color', $target.attr('data-color'));
 
         // Update data
-        this.list[id].category = to;
+        this.list[event.id].from = from;
+        this.list[event.id].category = to;
 
         stats.update();
     },
@@ -217,10 +220,12 @@ export default {
     filter(options) {
         let events = this.list;
 
+        const filter = func => { events = Object.fromEntries(Object.entries(events).filter(func)) };
+
         // Filter events
-        if (options.calendars) events = events.filter(e => options.calendars.includes(e.calendar));
-        if (options.days) events = events.filter(e => options.days.some(d => dates.isInRange(e.start, e.end, d)));
-        if (!isNaN(options.category)) events = events.filter(e => e.category === options.category);
+        if (options.calendars) filter(([key, val]) => options.calendars.includes(val.calendar));
+        if (!isNaN(options.category)) filter(([key, val]) => val.category === options.category);
+        if (options.days) filter(([key, val]) => options.days.some(d => dates.isInRange(val.start, val.end, d)));
 
         return events;
     }

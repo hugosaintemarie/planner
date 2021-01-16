@@ -1,5 +1,6 @@
 import data from './data';
 import categories from './categories';
+import events from './events';
 
 export default {
     actions: [],
@@ -47,7 +48,7 @@ export default {
             for (const event of action.events) {
                 if (action.type === 'addEvents') events.build(event);
                 else if (action.type === 'removeEvents') categories.removeCategory(event)
-                else if (action.type === 'replaceEvents') events.replace(event);
+                else if (action.type === 'replaceEvents') events.replace(event, true);
             }
         }
         

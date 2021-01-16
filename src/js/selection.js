@@ -908,7 +908,9 @@ export default {
             category: from
         });
 
-        for (const event of eventsToReplace) {
+        console.log(eventsToReplace);
+
+        for (const event of Object.values(eventsToReplace)) {
             event.from = event.category;
             event.category = to;
 
