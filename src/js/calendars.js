@@ -14,19 +14,6 @@ export default {
     end: null,
     editAll: false,
 
-    reset() {
-        this.list = {};
-        this.id = -1;
-        this.selected = 0;
-        this.start = null;
-        this.end = null;
-        this.shownStart = null;
-        this.shownEnd = null;
-
-        $('.calendars-wrap .calendars').empty();
-        $('.calendar-wrap .calendars .content').empty();
-    },
-
     init() {
         // Update calendars start and end
         $(document).on('change', '#start, #end', () => {
@@ -492,5 +479,18 @@ export default {
         if (ui.viewIs('linear')) ui.linearView();
 
         Object.values(this.list).forEach(c => c.order = parseInt($(`.calendars-wrap .calendar[data-id="${c.id}"]`).attr('data-order')));
+    },
+
+    reset() {
+        this.list = {};
+        this.id = -1;
+        this.selected = 0;
+        this.start = null;
+        this.end = null;
+        this.shownStart = null;
+        this.shownEnd = null;
+
+        $('.calendars-wrap .calendars').empty();
+        $('.calendar-wrap .calendars .content').empty();
     }
 }
