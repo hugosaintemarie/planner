@@ -81,23 +81,27 @@ export default {
         // Enter key in contenteditable: blur
         $(document).on('keypress', '[contenteditable]', e => {
             if (e.which === 13) {
-                const $el = $(e.target);
-                $el.blur();
-
-                if ($el.is('.calendar-wrap > .title > span')) {
-                    calendars.list[calendars.getSelected()].description = $el.text();
-                    data.save();
-                }
-
-                // If leaving an event title, remove contenteditable
-                if ($el.is('.title')) $el.removeAttr('contenteditable');
-
-                // Remove selection if any
-                window.getSelection().removeAllRanges();
+                $(e.target).blur();
 
                 // Prevent panel opening
                 return false;
             }
+        });
+
+        // Click outside contenteditable: blur
+        $(document).on('blur', '[contenteditable]', e => {
+            const $el = $(e.target);
+
+            if ($el.is('.calendar-wrap > .title > span')) {
+                calendars.list[calendars.getSelected()].description = $el.text();
+                data.save();
+            }
+
+            // If leaving an event title, remove contenteditable
+            if ($el.is('.title')) $el.removeAttr('contenteditable');
+
+            // Remove selection if any
+            window.getSelection().removeAllRanges();
         });
 
         $(document).on('keyup', e => {

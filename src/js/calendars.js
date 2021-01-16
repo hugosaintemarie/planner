@@ -238,7 +238,7 @@ export default {
         const id = calendar ? calendar.id : ++this.id;
         const title = calendar ? calendar.title : `Calendar ${$('.calendars-wrap .calendar').length + 1}`;
         const order = calendar ? calendar.order : $('.calendars-wrap .calendar').length;
-        const description = calendar ? calendar.description : 'Add a description';
+        const description = calendar ? calendar.description : '';
         
         // Find first week day
         const first = dates.relativeFirstWeekDay(this.start);

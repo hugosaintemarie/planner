@@ -67,6 +67,13 @@
             padding: 4px 6px;
             border-radius: 4px;
             line-height: .75rem;
+
+            &:empty {
+                &::after {
+                    content: "Add a description";
+                    user-select: none;
+                }
+            }
     
             &:focus {
                 outline: none;
