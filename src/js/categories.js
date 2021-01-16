@@ -180,7 +180,7 @@ export default {
             const color = category && !isNaN(category.color) ? category.color : this.id;
 
             const li = `<li data-category="${id}" class="sortable" data-color="${color}">
-                <span class="title" ${!category ? 'contenteditable' : ''} spellcheck="false">${category && category.title ? category.title : ''}</span>
+                <span class="title" ${!category ? 'contenteditable' : ''} spellcheck="false">${category?.title ? category.title : ''}</span>
                 <span class="tools">
                     <i class="fas fa-angle-down" data-tool="dropdown"></i>
                     <i data-tool="sort">⋮⋮</i>
@@ -193,8 +193,8 @@ export default {
             </li>`;
 
             const $ul = $('.categories-wrap ul');
-            if (category && category.index) $ul.find('li').eq(category.index - 1).after(li);
-            else if (category && category.index === 0) $ul.prepend(li);
+            if (category?.index) $ul.find('li').eq(category.index - 1).after(li);
+            else if (category?.index === 0) $ul.prepend(li);
             else $ul.append(li);
 
             // Select new event

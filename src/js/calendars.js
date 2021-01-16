@@ -273,7 +273,7 @@ export default {
         };
 
         // Build events (for calendar duplication)
-        if (calendar && calendar.events) {
+        if (calendar?.events) {
             for (const event of calendar.events) {
                 events.build({
                     ...event,
