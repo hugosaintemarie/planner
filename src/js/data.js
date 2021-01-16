@@ -12,8 +12,11 @@ export default {
         let data = localStorage.getItem('data');
         if (!data) return;
 
-        data = JSON.parse(data);
-        this.load(data);
+        try {
+            this.load(JSON.parse(data));
+        } catch (err) {
+            console.error(err);
+        }
     },
     
     load(data) {
