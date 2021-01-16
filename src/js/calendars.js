@@ -1,5 +1,3 @@
-import calendars from './calendars';
-import categories from './categories';
 import data from './data';
 import dates from './dates';
 import events from './events';
