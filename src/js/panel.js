@@ -1,6 +1,6 @@
 import calendars from './calendars';
 import dates from './dates';
-import categories from './categories';
+import events from './events';
 import selection from './selection';
 
 export default {

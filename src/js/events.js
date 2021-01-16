@@ -1,6 +1,9 @@
 import calendars from './calendars';
 import categories from './categories';
+import data from './data';
 import dates from './dates';
+import history from './history';
+import selection from './selection';
 import stats from './stats';
 
 export default {
