@@ -208,8 +208,7 @@ export default {
         $(document).on('click', '[data-view]', e => {
             const $el = $(e.currentTarget);
             const view = $el.attr('data-view');
-            if (view === 'full') this.fullView();
-            else if (view === 'linear') this.linearView();
+            this.switchView(view);
         });
     },
 
@@ -229,68 +228,54 @@ export default {
 
         if (radio === 'view') {
             const view = $target.attr('data-value');
-            if (view === 'full') this.fullView();
-            else if (view === 'linear') this.linearView();
-            data.save();
+            this.switchView(view);
         }
     },
 
-    fullView() {
-        this.view = 'full';
+    switchView(view) {
+        this.view = view;
 
         // Update UI
-        $('main').removeClass('linear');
+        $('main').removeClass('week full linear');
+        $('main').addClass(view);
         $('[data-view]').removeClass('selected');
-        $('[data-view="full"]').addClass('selected');
+        $(`[data-view="${view}"]`).addClass('selected');
 
-        // Keep only one calendar
-        $('.calendar-wrap .calendar').eq(1).empty();
-        $('.calendar-wrap .calendar').slice(1).remove();
-
-        // Select current calendar
-        const $selectedCalendar = $('.calendars-wrap .calendar.selected');
-        calendars.select($selectedCalendar);
+        // Check option in menu (when switched from shorcut)
+        $(`nav [data-radio="view"]`).removeClass('checked');
+        $(`nav [data-radio="view"][data-value="${view}"]`).addClass('checked');
 
         // Update height
         calendars.updateHeight();
 
-        // Check option in menu (when switched from shorcut)
-        $(`nav [data-radio="view"]`).removeClass('checked');
-        $(`nav [data-radio="view"][data-value="full"]`).addClass('checked');
-    },
+        if (view === 'full' || view === 'week') {
+            // Keep only one calendar
+            $('.calendar-wrap .calendar').eq(1).empty();
+            $('.calendar-wrap .calendar').slice(1).remove();
 
-    linearView() {
-        this.view = 'linear';
+            // Select current calendar
+            const $selectedCalendar = $('.calendars-wrap .calendar.selected');
+            calendars.select($selectedCalendar);
+        } else if (view === 'linear') {
+            // Store .selected-first and .selected-last dates
+            const selectedFirst = $('.selected-first').attr('data-date');
+            const selectedLast = $('.selected-last').attr('data-date');
 
-        // Store .selected-first and .selected-last dates
-        const selectedFirst = $('.selected-first').attr('data-date');
-        const selectedLast = $('.selected-last').attr('data-date');
+            // Duplicate every minical
+            $('.calendar-wrap .calendar').remove();
+            $('.calendars-wrap .calendar').each((_, el) => {
+                const $el = $(el);
+                const content = $el.find('.content').html();
+                $('.calendar-wrap .calendars').append(`<div class="content calendar ${$el.hasClass('hidden') ? 'hidden' : ''}" data-id="${$el.attr('data-id')}">${content}</div>`);
+            });
 
-        // Update UI
-        $('main').addClass('linear');
-        $('[data-view]').removeClass('selected');
-        $('[data-view="linear"]').addClass('selected');
-
-        // Duplicate every minical
-        $('.calendar-wrap .calendar').remove();
-        $('.calendars-wrap .calendar').each((_, el) => {
-            const $el = $(el);
-            const content = $el.find('.content').html();
-            $('.calendar-wrap .calendars').append(`<div class="content calendar ${$el.hasClass('hidden') ? 'hidden' : ''}" data-id="${$el.attr('data-id')}">${content}</div>`);
-        });
-
-        // Select current calendar and restore .selected-first and .selected-last classes
-        const $selectedCalendar = $('.calendars-wrap .calendar.selected');
-        calendars.select($selectedCalendar, selectedFirst, selectedLast);
-
-        // Update height
-        calendars.updateHeight();
-
-        // Check option in menu (when switched from shorcut)
-        $(`nav [data-radio="view"]`).removeClass('checked');
-        $(`nav [data-radio="view"][data-value="linear"]`).addClass('checked');
-
+            // Select current calendar and restore .selected-first and .selected-last classes
+            const $selectedCalendar = $('.calendars-wrap .calendar.selected');
+            calendars.select($selectedCalendar, selectedFirst, selectedLast);
+        }
+        
         this.moveStickyLabels();
+        data.save();
     },
 
     viewIs(view) {

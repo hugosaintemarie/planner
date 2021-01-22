@@ -72,9 +72,10 @@ export default {
             }
             // else if (e.which === 67) ui.changeTool('comment');                    // C
             else if (e.which === 68) ui.changeTool('draw');                       // D
-            else if (e.which === 70) ui.fullView();                               // F
-            else if (e.which === 76) ui.linearView();                             // L
+            else if (e.which === 70) ui.switchView('full');                       // F
+            else if (e.which === 76) ui.switchView('linear');                     // L
             else if (e.which === 83) ui.changeTool('select');                     // S
+            else if (e.which === 87) ui.switchView('week');                       // W
         });
 
         // Enter key in contenteditable: blur

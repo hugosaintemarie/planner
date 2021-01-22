@@ -23,7 +23,7 @@ export default {
         this.loading = true;
 
         ui.changeTool(data.ui.selectedTool);
-        if (data.ui.view === 'linear') ui.linearView();
+        ui.switchView(data.ui.view);
 
         if (data.settings.start) $('#start').val(data.settings.start);
         if (data.settings.end) $('#end').val(data.settings.end);
