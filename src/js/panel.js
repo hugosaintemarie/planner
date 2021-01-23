@@ -48,7 +48,7 @@ export default {
     init() {
         $(document).on('keypress', e => {
             if (e.which === 13) { // Enter
-                if (!selection.selectedDays.length) return;
+                if (!selection.selected.length) return;
 
                 if (!this.isOpen) this.openPanel();
                 else this.confirm();
@@ -88,7 +88,7 @@ export default {
         this.isOpen = true;
         $('.panel').html(this.layouts['default']);
 
-        $('.panel [data-tool="add"] span').text(`Add ${selection.selectedDays.length} event${selection.selectedDays.length > 1 ? 's' : ''}…`);
+        $('.panel [data-tool="add"] span').text(`Add ${selection.selected.length} event${selection.selected.length > 1 ? 's' : ''}…`);
 
         // Disable replace and remove if selection is empty
         if (selection.allDaysEmpty()) $('.panel li[data-tool="replace"], .panel li[data-tool="remove"]').attr('disabled', true);
@@ -135,7 +135,7 @@ export default {
         let list = $('.categories-wrap ul li').map((_, el) => {
             const $el = $(el);
             const type = $el.attr('data-category');
-            const count = selection.selectedDays.reduce((acc, curr) => {
+            const count = selection.selected.reduce((acc, curr) => {
                 const date = dates.toString(curr);
                 const $events = $calendars.find(`.day[data-date="${date}"] .event[data-category="${type}"]`);
 
@@ -149,7 +149,7 @@ export default {
         }).toArray();
 
         if (filter) {
-            const eventsInSelection = selection.selectedDays.map(day => $(`.day[data-date="${dates.toString(day)}"] .event`).map((_, el) => $(el).attr('data-category')).toArray()).flat();
+            const eventsInSelection = selection.selected.map(day => $(`.day[data-date="${dates.toString(day)}"] .event`).map((_, el) => $(el).attr('data-category')).toArray()).flat();
             list = list.filter(li => eventsInSelection.includes($(li).find('.event').attr('data-category')));
         }
 
@@ -162,7 +162,7 @@ export default {
             $html.find('ul').html(this.buildEventsList('add'));
             $html.find('li:first-child').addClass('selected');
             $('.panel').html($html);
-            $('.panel .head span').text(`Add ${selection.selectedDays.length} event${selection.selectedDays.length > 1 ? 's' : ''}…`);
+            $('.panel .head span').text(`Add ${selection.selected.length} event${selection.selected.length > 1 ? 's' : ''}…`);
         } else {
             const $event = $('.panel li.selected .event');
             const type = parseInt($event.attr('data-category'));

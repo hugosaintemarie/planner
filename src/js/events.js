@@ -25,7 +25,7 @@ export default {
             events: []
         };
 
-        for (const day of selection.selectedDays) {
+        for (const day of selection.selected) {
             const date = dates.toString(day);
 
             // Edit selected calendar(s)

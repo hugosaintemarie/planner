@@ -299,7 +299,7 @@ export default {
 
         // Remove selection when entering draw mode
         if (tool === 'draw') {
-            selection.selectedDays = [];
+            selection.selected = [];
             selection.highlightSelection();
         }
 

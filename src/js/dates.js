@@ -22,8 +22,9 @@ export default {
         };
     },
 
-    toString(date) {
-        return `${date.getFullYear()}-${`${date.getMonth() + 1}`.padStart(2, '0')}-${`${date.getDate()}`.padStart(2, '0')}`;
+    toString(date, getHours = false) {
+        date = new Date(date);
+        return `${date.getFullYear()}-${`${date.getMonth() + 1}`.padStart(2, '0')}-${`${date.getDate()}`.padStart(2, '0')}${getHours ? ` ${date.getHours().toString().padStart(2, '0')}:00` : ''}`;
     },
 
     isInArray(arr, date) {
@@ -36,6 +37,10 @@ export default {
 
     relativeDate(date, n) {
         return new Date(new Date(date).setDate(new Date(date).getDate() + n));
+    },
+
+    relativeHour(date, n) {
+        return new Date(new Date(date).setHours(new Date(date).getHours() + n));
     },
 
     relativeFirstWeekDay(date) {
