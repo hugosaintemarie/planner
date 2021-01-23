@@ -1,67 +1,38 @@
 main.week {
     .calendar-wrap {
-        .head.linear {
+        position: relative;
+
+        > .title {
             display: none;
         }
 
+        .head.linear {
+            // display: none;
+            height: 62px;
+        }
+
         .head.full {
-            display: flex;
+            display: none;
+        }
 
-            > div {
-                > div {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    flex: 1;
-                    padding-left: 12px;
-                    cursor: pointer;
-                    transition: opacity .2s ease;
-    
-                    &.open,
-                    &:hover {
-                        opacity: 1;
-    
-                        i {
-                            opacity: 1;
-                        }
-                    }
-    
-                    .dropdown {
-                        top: 40px;
-                        text-align: initial;
-    
-                        i {
-                            font-size: .875rem;
-                            width: 18px;
-                            text-align: center;
-                        }
-                    }
-                }
-            }
-
-            &.alt {
-                [data-day] {
-                    i.fa-chevron-down {
-                        &::before {
-                            content: "\f067";
-                        }
-                    }
-                }
-            }
+        .hours-track {
+            display: block;
         }
 
         .calendars {
-            margin-left: -16px;
+            margin-left: 40px;
             margin-right: -16px;
+            margin-top: 1px;
+            // overflow: initial;
 
             &::before {
                 content: "";
                 position: absolute;
                 top: 0;
-                left: 0;
-                width: 100%;
+                left: -56px;
+                width: calc(100% + 56px);
                 height: 1px;
-                background-color: #444444;
+                background-color: #333;
                 z-index: 1;
             }
 
@@ -69,10 +40,11 @@ main.week {
                 display: flex;
                 flex-wrap: nowrap;
                 height: 100vh;
-                padding-left: 16px;
+                padding-top: 16px;
+                padding-left: 8px;
 
                 > div {
-                    flex: 0 0 100%;
+                    // flex: 0 0 100%;
                     height: 100%;
 
                     &:last-child {
@@ -81,23 +53,48 @@ main.week {
 
                     .day {
                         // flex: 0 0 ;
-                        height: 200%;
+                        // height: calc(24 * 56px);
+                        height: fit-content;
+                        width: 132px;
                         max-height: none;
-                        background: repeating-linear-gradient(
-                            #333, #333 1px, transparent 1px, transparent 4.17%
-                        );
-                        margin-top: -2px;
+                        padding: 0;
+                        // background: repeating-linear-gradient(
+                        //     #333, #333 1px, transparent 1px, transparent 4.17%
+                        // );
+                        // background-position: 0 -1px;
 
                         &.out {
-                            // display: none;
+                            display: none;
+
+                            // & + .day:not(.out) {
+                            //     border-left: none;
+                            // }
                         }
+
+                        // .day:not(.out):first-child {
+                        //     border-left: none;
+                        // }
 
                         > span {
                             display: none;
                         }
 
                         .events {
-                            margin-top: 0;
+                            // display: none;
+                            height: 64px;
+                            margin: 8px 0 0 0;
+                            border-bottom: 2px solid #444;
+                            // margin-top: 0;
+                        }
+
+                        .hours {
+                            div {
+                                height: 56px;
+                                
+                                &:not(:last-child) {
+                                    border-bottom: 1px solid #333;
+                                }
+                            }
                         }
                     }
                 }

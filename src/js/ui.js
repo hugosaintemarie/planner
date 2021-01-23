@@ -99,12 +99,17 @@ export default {
         });
 
         // Scroll in linear mode
-        $(document).on('wheel', '.calendar-wrap .calendars, .calendars-wrap .scroll-wrap', e => {
+        $(document).on('wheel', '.calendar-wrap .calendars, .calendars-wrap .scroll-wrap, .hours-track', e => {
             if (this.viewIs('full')) return;
 
-            // Keep scroll in sync
-            const scrollTop = e.currentTarget.scrollTop;
-            $('.calendar-wrap .calendars, .calendars-wrap .scroll-wrap').scrollTop(scrollTop);
+            if (this.viewIs('linear')) {
+                // Keep scroll in sync
+                const scrollTop = e.currentTarget.scrollTop;
+                $('.calendar-wrap .calendars, .calendars-wrap .scroll-wrap').scrollTop(scrollTop);
+            } else if (this.viewIs('week')) {
+                const scrollTop = $(e.currentTarget).is('.hours-track') ? $('.hours-track').scrollTop() : $('.calendar.content.selected').scrollTop();
+                $('.calendar.content.selected, .hours-track').scrollTop(scrollTop);
+            }
 
             this.moveStickyLabels();
         });
@@ -336,14 +341,17 @@ export default {
             // Total event width (add up single .events widths)
             const width = $events.toArray().reduce((acc, curr) => acc + curr.offsetWidth, 0);
 
-            const eventOffsetLeft = $event.offset().left;
+            const padding = this.viewIs('week') ? 56 : 0;
+
+            const eventOffsetLeft = $event.offset().left - padding;
             const eventOffsetRight = eventOffsetLeft + width;
 
             if (eventOffsetLeft < colWidth && eventOffsetRight > colWidth) {
                 const top = $event.offset().top + 2;
 
                 // Make title stick to left border or right end of event
-                const left = Math.min(Math.ceil(eventOffsetRight - $title.outerWidth() - (colWidth + 14)), 0) + colWidth + 6;
+                let left = Math.min(Math.ceil(eventOffsetRight - $title.outerWidth() - (colWidth + 14)), 0) + colWidth + 6;
+                if (this.viewIs('week')) left += padding;
 
                 $title.css({
                     'position': 'fixed',

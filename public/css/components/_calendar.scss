@@ -112,6 +112,90 @@
                 }
             }
         }
+
+        &.full {
+            display: flex;
+
+            > div {
+                > div {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex: 1;
+                    padding-left: 12px;
+                    cursor: pointer;
+                    transition: opacity .2s ease;
+    
+                    &.open,
+                    &:hover {
+                        opacity: 1;
+    
+                        i {
+                            opacity: 1;
+                        }
+                    }
+    
+                    .dropdown {
+                        top: 40px;
+                        text-align: initial;
+    
+                        i {
+                            font-size: .875rem;
+                            width: 18px;
+                            text-align: center;
+                        }
+                    }
+                }
+            }
+    
+            &.alt {
+                [data-day] {
+                    i.fa-chevron-down {
+                        &::before {
+                            content: "\f067";
+                        }
+                    }
+                }
+            }
+        }
+
+        &.linear {
+            display: block;
+            width: max-content;
+            height: 64px;
+            background-color: #1e1e1e;
+            margin-top: -16px;
+            // padding-top: 16px;
+    
+            > div {
+                &.months {
+                    height: 38px;
+                    padding: 12px 0 8px 0;
+                    
+                    > div {
+                        text-align: left;
+                        opacity: 1;
+
+                        span {
+                            font-size: 1rem;
+                            font-weight: bold;
+
+                            &.year {
+                                opacity: .3;
+                                font-weight: normal;
+                                margin-left: 6px;
+                            }
+                        }
+                    }
+                }
+
+                > div {
+                    display: inline-block;
+                    width: 139px;
+                    padding: 0;
+                }
+            }
+        }
     }
 
     .calendars {
@@ -350,5 +434,31 @@
         &.resizing {
             cursor: col-resize;
         }
+    }
+}
+
+.hours-track {
+    display: none;
+    position: absolute;
+    left: -16px;
+    width: 56px;
+    height: calc(100vh - 160px);
+    padding-top: 80px;
+    padding-right: 8px;
+    margin-top: 1px;
+    border-top: 1px solid #333;
+    font-size: .75rem;
+    color: #666;
+    text-align: right;
+    overflow: auto;
+    background-color: #1e1e1e;
+    z-index: 100;
+
+    div {
+        height: 56px;
+    }
+
+    &::-webkit-scrollbar {
+        width: 0;
     }
 }

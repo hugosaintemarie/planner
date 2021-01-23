@@ -10,49 +10,16 @@ main.linear {
             display: none;
         }
 
-        .head.linear {
-            width: max-content;
-            height: 64px;
-            background-color: #1e1e1e;
-            margin-top: -16px;
-            // padding-top: 16px;
-            display: none;
-    
-            > div {
-                &.months {
-                    height: 38px;
-                    padding: 12px 0 8px 0;
-                    
-                    > div {
-                        text-align: left;
-                        opacity: 1;
-
-                        span {
-                            font-size: 1rem;
-                            font-weight: bold;
-
-                            &.year {
-                                opacity: .3;
-                                font-weight: normal;
-                                margin-left: 6px;
-                            }
-                        }
-                    }
-                }
-
-                > div {
-                    display: inline-block;
-                    width: 139px;
-                    padding: 0;
-                }
-            }
-        }
-
         .calendars {
             width: max-content;
             height: calc(100vh - 112px);
             padding-bottom: 82px;
             margin-left: -1px;
+        }
+        
+        .hours-track,
+        .hours {
+            display: none;
         }
     
         > .title {

@@ -136,7 +136,7 @@ export default {
         let classname = day < this.start || day > this.end ? ' out' : '';
         if (day.getDay() === 6 || day.getDay() === 0) classname += ' off';
 
-        const html = `<div class="day${classname}" data-day="${day.getDay()}" data-date="${date}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span><div class="events"></div></div>`;
+        const html = `<div class="day${classname}" data-day="${day.getDay()}" data-date="${date}"><span>${day.getDate()} ${day.toLocaleDateString('en-US', { month: 'short' })}</span><div class="events"></div><div class="hours">${new Array(24).fill(0).map((_, i) => `<div data-hour="${i}"></div>`).join('')}</div></div>`;
 
         return html;
     },
