@@ -5,7 +5,7 @@
     flex-flow: column wrap;
 
     &.edit-all {
-        > .row {
+        > .flex {
             .toggle-edit-all {
                 background-color: #292929;
                 color: white;
@@ -39,7 +39,7 @@
         }
     }
 
-    > .row {
+    > .flex {
         height: 64px;
         padding: 16px;
         border-bottom: 1px solid #333;
