@@ -19,7 +19,7 @@ export default {
             </div>
             <ul></ul>
         </div>`,
-        replace: `<div class="row">
+        replace: `<div class="flex">
             <div>
                 <div class="head">
                     <i class="fas fa-exchange-alt"></i>Replace…

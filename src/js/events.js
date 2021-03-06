@@ -145,7 +145,7 @@ export default {
         const top = this.getTopCoordinate(event);
 
         for (const day of range) {
-            const $events = this.getEventsWrap(event, day);
+            // const $events = this.getEventsWrap(event, day);
 
             // Build classname
             let classname = '';
@@ -164,14 +164,26 @@ export default {
             // Find title and color from category
             const { title, color } = category;
 
-            const html = `<div data-id="${event.id}" data-category="${event.category}" data-color="${color}" class="event${classname}" style="top: ${top * 32}px">
+            const $event = $(`<div data-id="${event.id}" data-category="${event.category}" data-color="${color}" class="event${classname}">
                 ${classname.includes('start') || day.getDay() === 1 ? `<span class="title${!classname.includes('start') ? ' not-linear' : ''}">${title}</span>` : ''}
                 ${classname.includes('start') ? '<div class="anchor anchor-start"></div>' : ''}
                 ${classname.includes('end') ? '<div class="anchor anchor-end"></div>' : ''}
-            </div>`;
+            </div>`);
+
+            const date = dates.toString(new Date(day));
+            const hour = dates.toString(new Date(day), true).split(' ')[1];
 
             // Add event
-            $events.append(html);
+            const eventMain = $event.clone();
+            eventMain.css('top', `${top * 26}px`);
+            $(`.calendar .day[data-date="${date}"] .events`).append(eventMain);
+
+            const eventWeek = $event.clone();
+            const duration = dates.deltaHour(event.end, event.start);
+            console.log(duration);
+
+            eventWeek.css('height', `calc(${duration}00% + ${duration * 2}px)`);
+            $(`.calendar .day[data-date="${date}"] .hours .hour[data-hour="${hour}"]`).append(eventWeek);
         }
 
         // Save data

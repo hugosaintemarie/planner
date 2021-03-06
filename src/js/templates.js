@@ -39,18 +39,20 @@ export default {
 
             for (let i = 0; i < 30; i += 1) {
                 const range = dates.range(calendars.start, calendars.end);
-                const date = range[Math.floor(Math.random() * range.length)];
+                
+                const start = range[Math.floor(Math.random() * range.length)];
+                start.setHours(Math.random() * 2 + 10);
 
-                // Get a random category
-                // const $categories = $('.categories-wrap ul li');
-                // const $category = $categories.eq(Math.floor(Math.random() * $categories.length));
+                // const end = new Date(new Date(start).setDate(start.getDate() + Math.floor(Math.random() * 3)));
+                const end = new Date(start);
+                end.setHours(start.getHours() + Math.floor(Math.random() * 4) + 1);
 
                 events.build({
                     id: ++events.id,
                     calendar: Math.floor(Math.random() * 3),
                     category: Math.floor(Math.random() * 3),
-                    start: date,
-                    end: new Date(new Date(date).setDate(date.getDate() + Math.floor(Math.random() * 3)))
+                    start,
+                    end
                 });
             }
 

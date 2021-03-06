@@ -54,7 +54,7 @@ export default {
     // Build array of all days from start to end
     range(start, end) {
         const days = [new Date(start)];
-        while (days[days.length - 1] < new Date(end)) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
+        while (new Date(end) - days[days.length - 1] > 24 * 60 * 60 * 1000) days.push(new Date(new Date(days[days.length - 1].valueOf()).setDate(days[days.length - 1].getDate() + 1)));
         return days;
     },
 
@@ -85,5 +85,9 @@ export default {
 
     delta(date1, date2) {
         return Math.ceil((new Date(date2) - new Date(date1)) / (1000 * 60 * 60 * 24));
+    },
+
+    deltaHour(date1, date2) {
+        return Math.abs((new Date(date2) - new Date(date1)) / (1000 * 60 * 60));
     }
 }

@@ -326,6 +326,7 @@ export default {
     },
 
     moveStickyLabels() {
+        return false;
         const colWidth = $(window).width() <= 1120 ? 24 : 240;
 
         // Keep (visible) event titles in view
