@@ -119,7 +119,7 @@ export default {
             return acc;
         }, {});
 
-        let headLinear = `<div class="months">${Object.keys(months).map(d => `<div style="width: ${139 * months[d]}px"><div class="month"><span>${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][parseInt(d.split('-')[0])]}</span><span class="year">${d.split('-')[1]}</span></div></div>`).join('')}</div>`;
+        let headLinear = `<div class="months">${Object.keys(months).map(d => `<div style="width: ${139 * months[d]}px"><div class="month"><div class="label"><span>${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][parseInt(d.split('-')[0])]}</span><span class="year">${d.split('-')[1]}</span></div></div></div>`).join('')}</div>`;
 
         headLinear += `<div>${range.map(day =>
             `<div data-day="${day.getDay()}">${day.toLocaleDateString('en-US', { weekday: 'short' })} ${day.getDate()}</div>`

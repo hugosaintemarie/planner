@@ -366,33 +366,5 @@ export default {
                 });
             }
         });
-
-        // Keep month label in view
-        $('.head.linear .months > div').each((_, el) => {
-            const $wrap = $(el);
-            const $month = $wrap.find('.month');
-            const wrapOffsetLeft = $wrap.offset().left;
-            const wrapOffsetRight = wrapOffsetLeft + $wrap.outerWidth();
-
-            // if (wrapOffsetLeft - 16 < colWidth && wrapOffsetRight - $month.outerWidth() > colWidth) {
-            if (wrapOffsetLeft - 16 <= colWidth && wrapOffsetRight > colWidth) {
-                const top = $month.offset().top;
-
-                // Make label stick to right end of month
-                const left = colWidth + 16 + Math.min(wrapOffsetRight - $month.outerWidth() - colWidth - 32, 0);
-
-                $month.css({
-                    'position': 'fixed',
-                    'top': top,
-                    'left': left
-                });
-            } else {
-                $month.css({
-                    'position': '',
-                    'top': '',
-                    'left': ''
-                });
-            }
-        });
     }
 }
