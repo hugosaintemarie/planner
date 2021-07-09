@@ -14,19 +14,19 @@ import tooltip from './tooltip';
 import ui from './ui';
 
 $(() => {
-    dates.init();
+    // dates.init();
 
-    calendars.init();
-    data.init();
-    categories.init();
+    // calendars.init();
+    // data.init();
+    // categories.init();
     inputs.init();
-    switcher.init();
-    panel.init();
-    selection.init();
-    sortable.init();
-    stats.init();
-    templates.init();
-    toast.init();
-    tooltip.init();
+    // switcher.init();
+    // panel.init();
+    // selection.init();
+    // sortable.init();
+    // stats.init();
+    // templates.init();
+    // toast.init();
+    // tooltip.init();
     ui.init();
 });

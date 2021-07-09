@@ -251,35 +251,35 @@ export default {
         $(`nav [data-radio="view"][data-value="${view}"]`).addClass('checked');
 
         // Update height
-        calendars.updateHeight();
+        // calendars.updateHeight();
 
         if (view === 'full' || view === 'week') {
             // Keep only one calendar
-            $('.calendar-wrap .calendar').eq(1).empty();
-            $('.calendar-wrap .calendar').slice(1).remove();
+            // $('.calendar-wrap .calendar').eq(1).empty();
+            // $('.calendar-wrap .calendar').slice(1).remove();
 
             // Select current calendar
-            const $selectedCalendar = $('.calendars-wrap .calendar.selected');
-            calendars.select($selectedCalendar);
+            // const $selectedCalendar = $('.calendars-wrap .calendar.selected');
+            // calendars.select($selectedCalendar);
         } else if (view === 'linear') {
             // Store .selected-first and .selected-last dates
-            const selectedFirst = $('.selected-first').attr('data-date');
-            const selectedLast = $('.selected-last').attr('data-date');
+            // const selectedFirst = $('.selected-first').attr('data-date');
+            // const selectedLast = $('.selected-last').attr('data-date');
 
             // Duplicate every minical
-            $('.calendar-wrap .calendar').remove();
-            $('.calendars-wrap .calendar').each((_, el) => {
-                const $el = $(el);
-                const content = $el.find('.content').html();
-                $('.calendar-wrap .calendars').append(`<div class="content calendar ${$el.hasClass('hidden') ? 'hidden' : ''}" data-id="${$el.attr('data-id')}">${content}</div>`);
-            });
+            // $('.calendar-wrap .calendar').remove();
+            // $('.calendars-wrap .calendar').each((_, el) => {
+            //     const $el = $(el);
+            //     const content = $el.find('.content').html();
+            //     $('.calendar-wrap .calendars').append(`<div class="content calendar ${$el.hasClass('hidden') ? 'hidden' : ''}" data-id="${$el.attr('data-id')}">${content}</div>`);
+            // });
 
             // Select current calendar and restore .selected-first and .selected-last classes
-            const $selectedCalendar = $('.calendars-wrap .calendar.selected');
-            calendars.select($selectedCalendar, selectedFirst, selectedLast);
+            // const $selectedCalendar = $('.calendars-wrap .calendar.selected');
+            // calendars.select($selectedCalendar, selectedFirst, selectedLast);
         }
         
-        this.moveStickyLabels();
+        // this.moveStickyLabels();
         data.save();
     },
 
@@ -326,46 +326,45 @@ export default {
     },
 
     moveStickyLabels() {
-        return false;
-        const colWidth = $(window).width() <= 1120 ? 24 : 240;
+        // const colWidth = $(window).width() <= 1120 ? 24 : 240;
 
-        // Keep (visible) event titles in view
-        $('.calendar-wrap .event .title:visible').each((_, el) => {
-            const $title = $(el);
-            const $event = $title.closest('.event');
-            const id = $event.attr('data-id');
-            const $events = $(`.calendar-wrap .event[data-id="${id}"]`);
+        // // Keep (visible) event titles in view
+        // $('.calendar-wrap .event .title:visible').each((_, el) => {
+        //     const $title = $(el);
+        //     const $event = $title.closest('.event');
+        //     const id = $event.attr('data-id');
+        //     const $events = $(`.calendar-wrap .event[data-id="${id}"]`);
 
-            // Ignore one-day events
-            if ($events.length === 1) return;
+        //     // Ignore one-day events
+        //     if ($events.length === 1) return;
 
-            // Total event width (add up single .events widths)
-            const width = $events.toArray().reduce((acc, curr) => acc + curr.offsetWidth, 0);
+        //     // Total event width (add up single .events widths)
+        //     const width = $events.toArray().reduce((acc, curr) => acc + curr.offsetWidth, 0);
 
-            const padding = this.viewIs('week') ? 56 : 0;
+        //     const padding = this.viewIs('week') ? 56 : 0;
 
-            const eventOffsetLeft = $event.offset().left - padding;
-            const eventOffsetRight = eventOffsetLeft + width;
+        //     const eventOffsetLeft = $event.offset().left - padding;
+        //     const eventOffsetRight = eventOffsetLeft + width;
 
-            if (eventOffsetLeft < colWidth && eventOffsetRight > colWidth) {
-                const top = $event.offset().top + 2;
+        //     if (eventOffsetLeft < colWidth && eventOffsetRight > colWidth) {
+        //         const top = $event.offset().top + 2;
 
-                // Make title stick to left border or right end of event
-                let left = Math.min(Math.ceil(eventOffsetRight - $title.outerWidth() - (colWidth + 14)), 0) + colWidth + 6;
-                if (this.viewIs('week')) left += padding;
+        //         // Make title stick to left border or right end of event
+        //         let left = Math.min(Math.ceil(eventOffsetRight - $title.outerWidth() - (colWidth + 14)), 0) + colWidth + 6;
+        //         if (this.viewIs('week')) left += padding;
 
-                $title.css({
-                    'position': 'fixed',
-                    'top': top,
-                    'left': left
-                });
-            } else {
-                $title.css({
-                    'position': '',
-                    'top': '',
-                    'left': ''
-                });
-            }
-        });
+        //         $title.css({
+        //             'position': 'fixed',
+        //             'top': top,
+        //             'left': left
+        //         });
+        //     } else {
+        //         $title.css({
+        //             'position': '',
+        //             'top': '',
+        //             'left': ''
+        //         });
+        //     }
+        // });
     }
 }

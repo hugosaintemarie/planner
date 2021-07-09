@@ -14,10 +14,11 @@ body {
     background-color: #1e1e1e;
     color: #f1f1f1;
     user-select: none;
+    font-size: .875em;
 }
 
 h2 {
-    font-size: 1.125rem;
+    font-size: 1em;
 }
 
 .flex {
@@ -55,6 +56,7 @@ header {
             align-items: center;
             height: 100%;
             width: 56px;
+            font-size: 1rem;
             color: #666666;
             cursor: pointer;
             
@@ -94,6 +96,7 @@ header {
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                font-size: 1rem;
                 color: #666666;
                 cursor: pointer;
 
@@ -125,7 +128,7 @@ header {
             align-items: center;
             background-color: #1e1e1e;
             padding: 0 16px;
-            font-size: .875rem;
+            // font-size: .875rem;
             cursor: pointer;
 
             svg {
