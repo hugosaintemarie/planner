@@ -1,6 +1,6 @@
 <template>
     <header class="flex bg-gray-800">
-        <Nav />
+        <HeaderNav />
         <HeaderTools />
         <HeaderViews />
         <HeaderDates />
