@@ -58,9 +58,6 @@
                                 entry.disabled
                                     ? 'text-gray-500'
                                     : 'text-white hover:bg-gray-700',
-                                e !== item.entries.length - 1
-                                    ? ''
-                                    : 'rounded-b',
                             ]"
                             @mouseenter="
                                 entry.entries ? (entry.open = true) : null
@@ -69,7 +66,11 @@
                                 entry.entries ? (entry.open = false) : null
                             "
                         >
-                            <span class="mr-12">
+                            <i
+                                v-if="entry.checked"
+                                class="fas fa-check absolute left-2"
+                            ></i>
+                            <span class="ml-4 mr-12">
                                 {{ entry.title }}
                             </span>
                             <i
@@ -109,9 +110,10 @@
                                         subentry.disabled
                                             ? 'text-gray-500'
                                             : 'text-white hover:bg-gray-700',
-                                        j !== entry.entries.length - 1
-                                            ? ''
-                                            : 'rounded-r',
+                                        j === entry.entries.length - 1
+                                            ? 'rounded-b'
+                                            : '',
+                                        j === 0 ? 'rounded-tr' : '',
                                     ]"
                                 >
                                     <span class="mr-12">
@@ -181,9 +183,22 @@ export default {
                     open: false,
                     entries: [
                         [
-                            { title: 'Week view' },
-                            { title: 'Full view' },
-                            { title: 'Linear view' },
+                            {
+                                title: 'Week view',
+                                checked:
+                                    this.$store.state.views.selected === 'week',
+                            },
+                            {
+                                title: 'Full view',
+                                checked:
+                                    this.$store.state.views.selected === 'full',
+                            },
+                            {
+                                title: 'Linear view',
+                                checked:
+                                    this.$store.state.views.selected ===
+                                    'linear',
+                            },
                         ],
                         [
                             {
@@ -231,3 +246,19 @@ export default {
     },
 };
 </script>
+
+<style lang="scss" scoped>
+nav {
+    > ul {
+        > li {
+            > div {
+                > ul:last-child {
+                    > li:last-child {
+                        @apply rounded-b;
+                    }
+                }
+            }
+        }
+    }
+}
+</style>
