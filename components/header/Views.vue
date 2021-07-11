@@ -27,9 +27,11 @@ export default {
                 },
                 full: {
                     icon: 'fas fa-th',
+                    selected: false,
                 },
                 linear: {
                     icon: 'fas fa-th-list',
+                    selected: false,
                 },
             },
             select: (view) => {

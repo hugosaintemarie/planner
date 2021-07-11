@@ -27,6 +27,7 @@ export default {
                 },
                 draw: {
                     icon: 'fas fa-mouse-pointer',
+                    selected: false,
                 },
             },
             select: (tool) => {

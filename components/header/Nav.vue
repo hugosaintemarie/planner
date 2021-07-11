@@ -4,12 +4,19 @@
             <li
                 v-for="(item, title, index) in nav"
                 :key="title"
-                class="relative p-4 hover:bg-gray-700 cursor-pointer"
+                class="
+                    relative
+                    p-4
+                    hover:bg-gray-700
+                    cursor-pointer
+                    select-none
+                "
                 :class="[
                     item.open ? 'bg-gray-700' : '',
                     index === 0 ? 'font-bold' : '',
                 ]"
                 @click="open(item)"
+                @mouseenter="enter(item)"
             >
                 {{ title }}
 
@@ -24,6 +31,7 @@
                         rounded-b-md
                         shadow-lg
                     "
+                    :class="item.open ? 'block' : 'hidden'"
                 >
                     <ul
                         v-for="(list, l) in item.entries"
@@ -54,6 +62,12 @@
                                     ? ''
                                     : 'rounded-b',
                             ]"
+                            @mouseenter="
+                                entry.entries ? (entry.open = true) : null
+                            "
+                            @mouseleave="
+                                entry.entries ? (entry.open = false) : null
+                            "
                         >
                             <span class="mr-12">
                                 {{ entry.title }}
@@ -78,6 +92,7 @@
                                     border border-gray-700
                                     rounded-md rounded-tl-none
                                 "
+                                :class="entry.open ? 'block' : 'hidden'"
                             >
                                 <li
                                     v-for="(subentry, j) in entry.entries"
@@ -118,17 +133,20 @@ export default {
         return {
             nav: {
                 Planner: {
+                    open: false,
                     entries: [
                         [{ title: 'About Planner', disabled: true }],
                         [{ title: 'Preferences', disabled: true }],
                     ],
                 },
                 File: {
+                    open: false,
                     entries: [
                         [
                             { title: 'New project', disabled: true },
                             {
                                 title: 'Change project',
+                                open: false,
                                 entries: [
                                     {
                                         title: 'No other project',
@@ -144,6 +162,7 @@ export default {
                     ],
                 },
                 Edit: {
+                    open: false,
                     entries: [
                         [
                             { title: 'Undo', disabled: true },
@@ -159,6 +178,7 @@ export default {
                     ],
                 },
                 View: {
+                    open: false,
                     entries: [
                         [
                             { title: 'Week view' },
@@ -168,6 +188,7 @@ export default {
                         [
                             {
                                 title: 'Show/hide days',
+                                open: false,
                                 entries: [
                                     { title: 'Monday' },
                                     { title: 'Tuesday' },
@@ -180,6 +201,7 @@ export default {
                             },
                             {
                                 title: 'Week starts on',
+                                open: false,
                                 entries: [
                                     { title: 'Monday' },
                                     { title: 'Tuesday' },
@@ -197,9 +219,14 @@ export default {
         };
     },
     methods: {
-        open: (item) => {
+        open(item) {
             item.open = !item.open;
-            // console.log(item);
+        },
+        enter(item) {
+            if (!Object.values(this.nav).some((d) => d.open)) return;
+
+            Object.values(this.nav).forEach((d) => (d.open = false));
+            item.open = true;
         },
     },
 };
