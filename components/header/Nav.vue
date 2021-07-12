@@ -1,5 +1,5 @@
 <template>
-    <nav>
+    <nav v-click-outside="close">
         <ul class="flex">
             <li
                 v-for="(item, title, index) in nav"
@@ -12,11 +12,11 @@
                     select-none
                 "
                 :class="[
-                    item.open ? 'bg-gray-700' : '',
+                    title === openNav ? 'bg-gray-700' : '',
                     index === 0 ? 'font-bold' : '',
                 ]"
-                @click="open(item)"
-                @mouseenter="enter(item)"
+                @click="open(title)"
+                @mouseenter="enter(title)"
             >
                 {{ title }}
 
@@ -30,8 +30,9 @@
                         border border-gray-700
                         rounded-b-md
                         shadow-lg
+                        cursor-default
                     "
-                    :class="item.open ? 'block' : 'hidden'"
+                    :class="title === openNav ? 'block' : 'hidden'"
                 >
                     <ul
                         v-for="(list, l) in item.entries"
@@ -46,6 +47,7 @@
                             v-for="(entry, e) in list"
                             :key="e"
                             class="
+                                group
                                 relative
                                 flex
                                 items-center
@@ -57,14 +59,9 @@
                             :class="[
                                 entry.disabled
                                     ? 'text-gray-500'
-                                    : 'text-white hover:bg-gray-700',
+                                    : 'text-white hover:bg-gray-700 cursor-pointer',
                             ]"
-                            @mouseenter="
-                                entry.entries ? (entry.open = true) : null
-                            "
-                            @mouseleave="
-                                entry.entries ? (entry.open = false) : null
-                            "
+                            @click="entry.onclick ? entry.onclick() : null"
                         >
                             <i
                                 v-if="entry.checked"
@@ -89,11 +86,12 @@
                                     absolute
                                     left-full
                                     top-0
+                                    group-hover:block
+                                    hidden
                                     bg-gray-800
                                     border border-gray-700
                                     rounded-md rounded-tl-none
                                 "
-                                :class="entry.open ? 'block' : 'hidden'"
                             >
                                 <li
                                     v-for="(subentry, j) in entry.entries"
@@ -130,19 +128,27 @@
 </template>
 
 <script>
+import vClickOutside from 'v-click-outside';
+
 export default {
+    directives: {
+        clickOutside: vClickOutside.directive,
+    },
     data() {
         return {
-            nav: {
+            openNav: null,
+        };
+    },
+    computed: {
+        nav() {
+            return {
                 Planner: {
-                    open: false,
                     entries: [
                         [{ title: 'About Planner', disabled: true }],
                         [{ title: 'Preferences', disabled: true }],
                     ],
                 },
                 File: {
-                    open: false,
                     entries: [
                         [
                             { title: 'New project', disabled: true },
@@ -164,7 +170,6 @@ export default {
                     ],
                 },
                 Edit: {
-                    open: false,
                     entries: [
                         [
                             { title: 'Undo', disabled: true },
@@ -180,24 +185,41 @@ export default {
                     ],
                 },
                 View: {
-                    open: false,
                     entries: [
                         [
                             {
                                 title: 'Week view',
                                 checked:
                                     this.$store.state.views.selected === 'week',
+                                onclick: () => {
+                                    this.$store.dispatch(
+                                        'views/select',
+                                        'week'
+                                    );
+                                },
                             },
                             {
                                 title: 'Full view',
                                 checked:
                                     this.$store.state.views.selected === 'full',
+                                onclick: () => {
+                                    this.$store.dispatch(
+                                        'views/select',
+                                        'full'
+                                    );
+                                },
                             },
                             {
                                 title: 'Linear view',
                                 checked:
                                     this.$store.state.views.selected ===
                                     'linear',
+                                onclick: () => {
+                                    this.$store.dispatch(
+                                        'views/select',
+                                        'linear'
+                                    );
+                                },
                             },
                         ],
                         [
@@ -230,18 +252,18 @@ export default {
                         ],
                     ],
                 },
-            },
-        };
+            };
+        },
     },
     methods: {
-        open(item) {
-            item.open = !item.open;
+        open(title) {
+            this.openNav = title;
         },
-        enter(item) {
-            if (!Object.values(this.nav).some((d) => d.open)) return;
-
-            Object.values(this.nav).forEach((d) => (d.open = false));
-            item.open = true;
+        enter(title) {
+            if (this.openNav) this.openNav = title;
+        },
+        close() {
+            this.openNav = null;
         },
     },
 };
