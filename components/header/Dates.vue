@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center px-4 border-l border-gray-700">
+    <div class="flex items-center px-4">
         <input
             id="start"
             type="date"
