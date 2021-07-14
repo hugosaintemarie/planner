@@ -2,6 +2,7 @@
     <div class="h-screen text-white text-sm bg-gray-900">
         <Header />
         <Nuxt />
+        <Shortcuts />
     </div>
 </template>
 

@@ -13,5 +13,6 @@ module.exports = {
     // add your custom rules here
     rules: {
         semi: [0, 'always'],
+        'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     },
 };

@@ -80,6 +80,12 @@
                                     text-xs
                                 "
                             ></i>
+                            <span
+                                v-if="entry.shortcut"
+                                class="-mr-1 ml-auto text-gray-400 text-xs"
+                            >
+                                {{ entry.shortcut }}
+                            </span>
                             <ul
                                 v-if="entry.entries"
                                 class="
@@ -191,6 +197,7 @@ export default {
                                 title: 'Week view',
                                 checked:
                                     this.$store.state.views.selected === 'week',
+                                shortcut: 'W',
                                 onclick: () => {
                                     this.$store.dispatch(
                                         'views/select',
@@ -202,6 +209,7 @@ export default {
                                 title: 'Full view',
                                 checked:
                                     this.$store.state.views.selected === 'full',
+                                shortcut: 'F',
                                 onclick: () => {
                                     this.$store.dispatch(
                                         'views/select',
@@ -214,6 +222,7 @@ export default {
                                 checked:
                                     this.$store.state.views.selected ===
                                     'linear',
+                                shortcut: 'L',
                                 onclick: () => {
                                     this.$store.dispatch(
                                         'views/select',
