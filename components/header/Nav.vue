@@ -60,7 +60,9 @@
                                 entry.disabled
                                     ? 'text-gray-500'
                                     : 'text-white hover:bg-gray-700 cursor-pointer',
-                                entry.entries ? 'submenu' : '',
+                                entry.entries && !entry.disabled
+                                    ? 'submenu'
+                                    : '',
                             ]"
                             @click="entry.onclick ? entry.onclick() : null"
                             @mouseenter="addTrap"
@@ -102,7 +104,7 @@
                                 "
                             ></svg>
                             <ul
-                                v-if="entry.entries"
+                                v-if="entry.entries && !entry.disabled"
                                 class="
                                     absolute
                                     left-full
@@ -262,6 +264,7 @@ export default {
                             },
                             {
                                 title: 'Week starts on',
+                                disabled: true,
                                 open: false,
                                 entries: [
                                     { title: 'Monday' },
@@ -285,7 +288,6 @@ export default {
         },
         enter(title) {
             if (this.openNav) this.openNav = title;
-            console.log(this.nav[title]);
         },
         addTrap(event) {
             // Create triangle safezone
