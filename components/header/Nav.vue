@@ -60,8 +60,12 @@
                                 entry.disabled
                                     ? 'text-gray-500'
                                     : 'text-white hover:bg-gray-700 cursor-pointer',
+                                entry.entries ? 'submenu' : '',
                             ]"
                             @click="entry.onclick ? entry.onclick() : null"
+                            @mouseenter="addTrap"
+                            @mousemove="moveTrap"
+                            @mouseleave="removeTrap"
                         >
                             <i
                                 v-if="entry.checked"
@@ -86,6 +90,17 @@
                             >
                                 {{ entry.shortcut }}
                             </span>
+                            <svg
+                                v-if="entry.entries"
+                                class="
+                                    absolute
+                                    z-10
+                                    left-0
+                                    top-0
+                                    w-full
+                                    pointer-events-none
+                                "
+                            ></svg>
                             <ul
                                 v-if="entry.entries"
                                 class="
@@ -270,6 +285,62 @@ export default {
         },
         enter(title) {
             if (this.openNav) this.openNav = title;
+            console.log(this.nav[title]);
+        },
+        addTrap(event) {
+            // Create triangle safezone
+            const li = event.target.closest('li');
+
+            if (!li.classList.contains('submenu')) return;
+
+            const svg = li.querySelector('svg');
+            const width = li.offsetWidth;
+            const height = li.querySelector('ul').offsetHeight;
+            svg.style.height = height;
+
+            const polygon = document.createElementNS(
+                'http://www.w3.org/2000/svg',
+                'polygon'
+            );
+
+            polygon.classList.add('pointer-events-auto', 'opacity-0');
+            svg.append(polygon);
+
+            polygon.setAttribute(
+                'points',
+                `${event.clientX - li.getBoundingClientRect().left},${
+                    event.clientY - li.getBoundingClientRect().top
+                } ${width},0 ${width},${height}`
+            );
+        },
+        moveTrap(event) {
+            // Update triangle safezone
+            const li = event.target.closest('li');
+
+            if (!li.classList.contains('submenu')) return;
+
+            const width = li.offsetWidth;
+            const height = li.querySelector('ul').offsetHeight;
+            const svg = li.querySelector('svg');
+
+            const polygon = svg.querySelector('polygon');
+
+            setTimeout(() => {
+                polygon.setAttribute(
+                    'points',
+                    `${event.clientX - li.getBoundingClientRect().left},${
+                        event.clientY - li.getBoundingClientRect().top
+                    } ${width},0 ${width},${height}`
+                );
+            }, 40);
+        },
+        removeTrap(event) {
+            // Remove triangle safezone
+            const li = event.target.closest('li');
+            if (!li.classList.contains('submenu')) return;
+
+            const polygon = li.querySelector('polygon');
+            polygon.remove();
         },
         close() {
             this.openNav = null;
