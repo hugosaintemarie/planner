@@ -12,8 +12,14 @@ export default {
     },
     methods: {
         onKeydown(e) {
-            const ctrlOrMeta = e.metaKey || e.ctrlKey;
             const which = e.which;
+
+            if (e.target.readOnly === false) {
+                if (which === 13) e.target.blur();
+                return;
+            }
+
+            const ctrlOrMeta = e.metaKey || e.ctrlKey;
 
             console.log(which);
 

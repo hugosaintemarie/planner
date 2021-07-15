@@ -1,5 +1,5 @@
 <template>
-    <header class="flex bg-gray-800">
+    <header class="z-10 flex bg-gray-800 border-b border-gray-700">
         <HeaderNav />
         <HeaderTools />
         <HeaderViews />
