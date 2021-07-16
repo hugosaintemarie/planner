@@ -21,7 +21,7 @@ export default {
 
             const ctrlOrMeta = e.metaKey || e.ctrlKey;
 
-            console.log(which);
+            // console.log(which);
 
             if (which === 70) this.$store.dispatch('views/select', 'full');
             if (which === 76) this.$store.dispatch('views/select', 'linear');
