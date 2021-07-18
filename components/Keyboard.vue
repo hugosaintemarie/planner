@@ -6,9 +6,11 @@
 export default {
     mounted() {
         document.addEventListener('keydown', this.onKeydown);
+        document.addEventListener('keyup', this.onKeyup);
     },
     beforeDestroy() {
         document.removeEventListener('keydown', this.onKeydown);
+        document.removeEventListener('keyup', this.onKeyup);
     },
     methods: {
         onKeydown(e) {
@@ -19,6 +21,8 @@ export default {
                 return;
             }
 
+            this.$store.dispatch('keyboard/keydown', which);
+
             const ctrlOrMeta = e.metaKey || e.ctrlKey;
 
             // console.log(which);
@@ -28,6 +32,16 @@ export default {
             if (which === 87) this.$store.dispatch('views/select', 'week');
 
             if (ctrlOrMeta && which === 83) this.save(e); // Cmd + S
+        },
+        onKeyup(e) {
+            const which = e.which;
+
+            if (e.target.readOnly === false) {
+                if (which === 13) e.target.blur();
+                return;
+            }
+
+            this.$store.dispatch('keyboard/keyup', which);
         },
         save(event) {
             event.preventDefault();
