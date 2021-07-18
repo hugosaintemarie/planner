@@ -13,11 +13,11 @@ export const mutations = {
 
 export const actions = {
     keydown({ commit }, key) {
-        console.log(key);
+        // console.log(key);
         commit('keydown', key);
     },
     keyup({ commit }, key) {
-        console.log(key);
+        // console.log(key);
         commit('keyup', key);
     },
 };
