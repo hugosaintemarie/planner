@@ -95,29 +95,7 @@
                             >
                                 <div
                                     v-if="isSelected(day)"
-                                    class="
-                                        bg-blue-400/10
-                                        absolute
-                                        z-10
-                                        -left-px
-                                        -top-px
-                                        border border-blue-400
-                                        pointer-events-none
-                                    "
-                                    :class="[
-                                        neighborSelected(day, 'top')
-                                            ? 'border-t-0'
-                                            : '',
-                                        neighborSelected(day, 'right')
-                                            ? 'border-r-0'
-                                            : '',
-                                        neighborSelected(day, 'bottom')
-                                            ? 'border-b-0'
-                                            : '',
-                                        neighborSelected(day, 'left')
-                                            ? 'border-l-0'
-                                            : '',
-                                    ]"
+                                    :class="selectionClasses(day)"
                                     style="
                                         height: calc(100% + 2px);
                                         width: calc(100% + 2px);
@@ -210,17 +188,18 @@ export default {
         isSelected(day) {
             return this.selected.includes(day.toString());
         },
-        neighborSelected(day, side) {
-            if (side === 'top') return this.isSelected(subDays(day, 7));
-            else if (side === 'right')
-                return day.getDay() === 0
-                    ? false
-                    : this.isSelected(addDays(day, 1));
-            else if (side === 'bottom') return this.isSelected(addDays(day, 7));
-            else if (side === 'left')
-                return day.getDay() === 1
-                    ? false
-                    : this.isSelected(subDays(day, 1));
+        selectionClasses(day) {
+            let classes =
+                'bg-blue-400/10 absolute z-10 -left-px -top-px border-blue-400 pointer-events-none';
+
+            if (!this.isSelected(subDays(day, 7))) classes += ' border-t';
+            if (!this.isSelected(subDays(day, 1)) || day.getDay() === 1)
+                classes += ' border-l';
+            if (!this.isSelected(addDays(day, 1)) || day.getDay() === 0)
+                classes += ' border-r';
+            if (!this.isSelected(addDays(day, 7))) classes += ' border-b';
+
+            return classes;
         },
         mousedownDay(day) {
             if (this.isSelected(day))
