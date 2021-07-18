@@ -136,6 +136,7 @@ export default {
     data() {
         return {
             mousedown: false,
+            selectedFirst: null,
         };
     },
     computed: {
@@ -202,13 +203,27 @@ export default {
             return classes;
         },
         mousedownDay(day) {
-            if (this.isSelected(day))
-                return this.$store.dispatch('selection/unselect', day);
-            return this.$store.dispatch('selection/select', day);
+            if (this.isSelected(day)) {
+                this.$store.dispatch('selection/unselect', day);
+            } else {
+                this.$store.dispatch('selection/unselectAll', day);
+                this.$store.dispatch('selection/select', day);
+                this.selectedFirst = day;
+            }
         },
         mouseenterDay(day) {
-            if (this.mousedown)
-                return this.$store.dispatch('selection/select', day);
+            if (this.mousedown) {
+                if (this.$store.getters['keyboard/isKeydown']('meta')) {
+                    this.$store.dispatch('selection/select', day);
+                } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
+                    //
+                } else {
+                    this.$store.dispatch('selection/selectRect', {
+                        day,
+                        selectedFirst: this.selectedFirst,
+                    });
+                }
+            }
         },
     },
 };
