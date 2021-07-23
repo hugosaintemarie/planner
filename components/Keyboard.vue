@@ -27,6 +27,9 @@ export default {
 
             // console.log(which);
 
+            if (which === 83) this.$store.dispatch('tools/select', 'select');
+            if (which === 68) this.$store.dispatch('tools/select', 'draw');
+
             if (which === 70) this.$store.dispatch('views/select', 'full');
             if (which === 76) this.$store.dispatch('views/select', 'linear');
             if (which === 87) this.$store.dispatch('views/select', 'week');

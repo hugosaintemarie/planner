@@ -46,8 +46,6 @@ export const actions = {
             [lowestDay, highestDay] = [lowestDay, highestDay].sort();
         }
 
-        commit('unselectAll');
-
         for (let w = lowestWeek; w <= highestWeek; w += 1) {
             for (let d = lowestDay; d <= highestDay; d += 1) {
                 let day = setWeek(new Date(), w);

@@ -24,9 +24,9 @@ export const actions = {
 
 export const getters = {
     isKeydown: (state) => (key) => {
+        if (key === 'shift') return state.keysdown.includes(16);
         if (key === 'meta')
             return state.keysdown.includes(17) || state.keysdown.includes(91);
-
         if (key === 'alt') key = 18;
 
         return state.keysdown.includes(key);

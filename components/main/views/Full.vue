@@ -61,6 +61,7 @@
                 <div class="h-full overflow-auto">
                     <div
                         class="border-b border-r border-gray-700"
+                        :style="tool === 'select' ? 'cursor: cell' : ''"
                         @mousedown="mousedown = true"
                         @mouseup="mousedown = false"
                     >
@@ -166,6 +167,9 @@ export default {
                 this.$store.dispatch('calendars/rename', value);
             },
         },
+        tool() {
+            return this.$store.getters['tools/selected'];
+        },
     },
     methods: {
         days(week) {
@@ -214,9 +218,17 @@ export default {
                 }
             } else {
                 this.unselect = false;
-                if (this.$store.getters['keyboard/isKeydown']('meta')) {
-                    //
-                } else {
+                if (this.$store.getters['keyboard/isKeydown']('shift')) {
+                    this.$store.dispatch('selection/selectRect', {
+                        day,
+                        selectedFirst: this.selectedFirst,
+                    });
+                } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
+                    this.$store.dispatch('selection/selectRange', {
+                        day,
+                        selectedFirst: this.selectedFirst,
+                    });
+                } else if (!this.$store.getters['keyboard/isKeydown']('meta')) {
                     this.$store.dispatch('selection/unselectAll');
                 }
 
@@ -232,11 +244,15 @@ export default {
                         this.$store.dispatch('selection/unselect', day);
                     else this.$store.dispatch('selection/select', day);
                 } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
+                    this.$store.dispatch('selection/unselectAll');
+
                     this.$store.dispatch('selection/selectRange', {
                         day,
                         selectedFirst: this.selectedFirst,
                     });
                 } else {
+                    this.$store.dispatch('selection/unselectAll');
+
                     this.$store.dispatch('selection/selectRect', {
                         day,
                         selectedFirst: this.selectedFirst,

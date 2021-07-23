@@ -21,3 +21,9 @@ export const actions = {
         commit('select', name);
     },
 };
+
+export const getters = {
+    selected(state) {
+        return state.selected;
+    },
+};
