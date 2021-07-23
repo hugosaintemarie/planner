@@ -204,19 +204,38 @@ export default {
         },
         mousedownDay(day) {
             if (this.isSelected(day)) {
-                this.$store.dispatch('selection/unselect', day);
+                this.unselect = true;
+                if (this.$store.getters['keyboard/isKeydown']('meta')) {
+                    this.$store.dispatch('selection/unselect', day);
+                } else {
+                    this.$store.dispatch('selection/unselectAll');
+                    this.$store.dispatch('selection/select', day);
+                    this.selectedFirst = day;
+                }
             } else {
-                this.$store.dispatch('selection/unselectAll', day);
+                this.unselect = false;
+                if (this.$store.getters['keyboard/isKeydown']('meta')) {
+                    //
+                } else {
+                    this.$store.dispatch('selection/unselectAll');
+                }
+
                 this.$store.dispatch('selection/select', day);
                 this.selectedFirst = day;
             }
+            this.mouseenterDay(day);
         },
         mouseenterDay(day) {
             if (this.mousedown) {
                 if (this.$store.getters['keyboard/isKeydown']('meta')) {
-                    this.$store.dispatch('selection/select', day);
+                    if (this.unselect)
+                        this.$store.dispatch('selection/unselect', day);
+                    else this.$store.dispatch('selection/select', day);
                 } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
-                    //
+                    this.$store.dispatch('selection/selectRange', {
+                        day,
+                        selectedFirst: this.selectedFirst,
+                    });
                 } else {
                     this.$store.dispatch('selection/selectRect', {
                         day,
