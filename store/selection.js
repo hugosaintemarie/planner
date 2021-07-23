@@ -22,21 +22,28 @@ export const actions = {
         commit('select', day);
     },
     selectRect({ commit }, params) {
+        const weekStartsOn = 1;
         const { day, selectedFirst } = params;
+
         const first = Math.min(selectedFirst, day);
         const last = Math.max(selectedFirst, day);
 
         const interval = eachDayOfInterval({ start: first, end: last });
 
         const lowestWeek = Math.min(
-            ...interval.map((d) => getWeek(d, { weekStartsOn: 1 }))
+            ...interval.map((d) => getWeek(d, { weekStartsOn }))
         );
         const highestWeek = Math.max(
-            ...interval.map((d) => getWeek(d, { weekStartsOn: 1 }))
+            ...interval.map((d) => getWeek(d, { weekStartsOn }))
         );
 
-        const lowestDay = Math.min(getDay(selectedFirst), getDay(day));
-        const highestDay = Math.max(getDay(selectedFirst), getDay(day));
+        let lowestDay = Math.min(getDay(selectedFirst), getDay(day));
+        let highestDay = Math.max(getDay(selectedFirst), getDay(day));
+
+        if (lowestDay === 0) {
+            lowestDay = 8 - weekStartsOn;
+            [lowestDay, highestDay] = [lowestDay, highestDay].sort();
+        }
 
         commit('unselectAll');
 
