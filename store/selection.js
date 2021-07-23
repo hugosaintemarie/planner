@@ -57,6 +57,18 @@ export const actions = {
             }
         }
     },
+    selectRange({ commit }, params) {
+        const { day, selectedFirst } = params;
+
+        const first = Math.min(selectedFirst, day);
+        const last = Math.max(selectedFirst, day);
+
+        const interval = eachDayOfInterval({ start: first, end: last });
+
+        commit('unselectAll');
+
+        for (const day of interval) commit('select', day);
+    },
     unselect({ commit }, day) {
         commit('unselect', day);
     },
