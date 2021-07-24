@@ -2,12 +2,18 @@ export const state = () => ({
     list: {
         week: {
             icon: 'fas fa-th-large',
+            tooltip: 'Week view',
+            shortcut: 'W',
         },
         full: {
             icon: 'fas fa-th',
+            tooltip: 'Full view',
+            shortcut: 'F',
         },
         linear: {
             icon: 'fas fa-th-list',
+            tooltip: 'Linear view',
+            shortcut: 'L',
         },
     },
     selected: 'full',

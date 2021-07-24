@@ -2,9 +2,13 @@ export const state = () => ({
     list: {
         select: {
             icon: 'fas fa-plus',
+            tooltip: 'Select',
+            shortcut: 'S',
         },
         draw: {
             icon: 'fas fa-mouse-pointer',
+            tooltip: 'Draw',
+            shortcut: 'D',
         },
     },
     selected: 'select',

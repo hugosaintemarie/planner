@@ -2,6 +2,7 @@
     <div class="flex flex-col h-screen text-white text-sm bg-gray-900">
         <Header />
         <Main />
+        <Tooltip />
         <Keyboard />
     </div>
 </template>
