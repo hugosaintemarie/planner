@@ -1,14 +1,16 @@
 <template>
     <div class="bg-gray-800 border-l border-gray-700">
-        <MainViewsColRightCategories />
-        <MainViewsColRightStatistics />
+        <div class="h-full overflow-auto">
+            <MainViewsColRightCategories />
+            <MainViewsColRightStatistics />
+        </div>
     </div>
 </template>
 
 <script>
 export default {
     mounted() {
-        for (let i = 0; i < 3; i += 1) {
+        for (let i = 0; i < 6; i += 1) {
             this.add();
         }
     },
