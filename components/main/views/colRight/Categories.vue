@@ -13,12 +13,12 @@
                 v-for="category in categories"
                 :key="category.id"
                 class="px-3 py-2 rounded"
-                :style="`background-color: ${category.color}`"
+                :style="`background-color: ${category.bgColor}`"
             >
                 <span
-                    class="whitespace-pre font-semibold opacity-80"
+                    class="whitespace-pre font-semibold"
                     :data-id="category.id"
-                    contenteditable
+                    :style="`color: ${category.textColor}`"
                     @keyup="rename"
                     >{{ category.title || '&nbsp;' }}</span
                 >

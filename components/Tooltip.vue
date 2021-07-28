@@ -67,7 +67,7 @@ export default {
             }, 1000);
         });
         this.$nuxt.$on('hide-tooltip', (e) => {
-            if (e.toElement.dataset.tooltip) return;
+            if (e.toElement?.dataset.tooltip) return;
 
             clearTimeout(this.timeout);
             this.visible = false;

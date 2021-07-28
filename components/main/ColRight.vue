@@ -1,6 +1,7 @@
 <template>
     <div class="bg-gray-800 border-l border-gray-700">
         <MainViewsColRightCategories />
+        <MainViewsColRightStatistics />
     </div>
 </template>
 
