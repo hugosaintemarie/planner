@@ -7,10 +7,13 @@ export const state = () => ({
 export const mutations = {
     select: (state, day) => {
         const string = day.toString();
-        if (!state.list.includes(string)) state.list.push(string);
+        if (!state.list.some((d) => d.toString() === string))
+            state.list.push(day);
     },
     unselect: (state, day) => {
-        const index = state.list.indexOf(day.toString());
+        const index = state.list.findIndex(
+            (d) => d.toString() === day.toString()
+        );
         if (index > -1) state.list.splice(index, 1);
     },
     unselectAll: (state) => {

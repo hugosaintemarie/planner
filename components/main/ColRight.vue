@@ -2,7 +2,7 @@
     <div class="bg-gray-800 border-l border-gray-700">
         <div class="h-full overflow-auto">
             <MainViewsColRightCategories />
-            <MainViewsColRightStatistics />
+            <MainViewsColRightStatistics class="border-t border-gray-700" />
         </div>
     </div>
 </template>

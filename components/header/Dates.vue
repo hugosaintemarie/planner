@@ -13,7 +13,7 @@
             type="date"
             name="end"
             class="px-2 py-1 text-gray-500 bg-gray-900 rounded-sm"
-            value="2021-07-31"
+            value="2021-12-31"
         />
     </div>
 </template>

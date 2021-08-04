@@ -14,6 +14,7 @@
                 :key="category.id"
                 class="px-3 py-2 rounded"
                 :style="`background-color: ${category.bgColor}`"
+                @click="onClick(category)"
             >
                 <span
                     class="whitespace-pre font-semibold"
@@ -45,6 +46,9 @@ export default {
         },
     },
     methods: {
+        onClick(category) {
+            this.$store.dispatch('events/add', category);
+        },
         rename(event) {
             // const title = event.target.innerHTML;
             // const id = parseInt(event.target.dataset.id);

@@ -23,8 +23,18 @@
             </div>
             <p class="ml-3 text-gray-400 text-xs">Add a description</p>
         </div>
-        <div class="flex flex-1 flex-col mt-3 w-full">
-            <div class="flex mb-4 w-full">
+        <div class="flex flex-1 flex-col -mb-px mt-3 w-full overflow-hidden">
+            <div
+                class="
+                    after:absolute
+                    relative
+                    after:z-10 after:left-0 after:top-full
+                    flex
+                    pb-4
+                    w-full
+                    after:w-full after:h-px after:bg-gray-700
+                "
+            >
                 <div
                     v-for="weekday in weekdays"
                     :key="weekday"
@@ -58,7 +68,7 @@
                 </div>
             </div>
             <div class="flex-1 overflow-hidden">
-                <div class="h-full overflow-auto">
+                <div class="no-scrollbar pb-4 h-full overflow-auto">
                     <div
                         class="border-b border-r border-gray-700"
                         :style="tool === 'select' ? 'cursor: cell' : ''"
@@ -112,6 +122,21 @@
                                 >
                                     {{ format(day, 'd MMM') }}
                                 </p>
+                                <div v-if="eventsThatDay(day)" class="mt-1">
+                                    <div
+                                        v-for="event in eventsThatDay(day)"
+                                        :key="event.id"
+                                        class="px-2 py-1 rounded"
+                                        :style="`background-color: ${event.category.bgColor}`"
+                                    >
+                                        <p
+                                            class="font-semibold"
+                                            :style="`color: ${event.category.textColor}`"
+                                        >
+                                            {{ event.category.title }}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -191,7 +216,7 @@ export default {
             });
         },
         isSelected(day) {
-            return this.selected.includes(day.toString());
+            return this.selected.some((d) => d.toString() === day.toString());
         },
         selectionClasses(day) {
             let classes =
@@ -259,6 +284,11 @@ export default {
                     });
                 }
             }
+        },
+        eventsThatDay(day) {
+            const events = this.$store.getters['events/onDay'](day);
+            if (events.length) return events;
+            else return false;
         },
     },
 };
