@@ -19,7 +19,7 @@ export const mutations = {
         state.selected = id;
     },
     rename(state, props) {
-        console.log(props);
+        // console.log(props);
         const category = state.list.find((item) => item.id === props.id);
         category.title = props.title;
     },

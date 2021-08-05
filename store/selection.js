@@ -30,11 +30,9 @@ export const mutations = {
     },
     anchor(state, day) {
         state.anchor = day;
-        console.log({ anchor: state.anchor });
     },
     target(state, day) {
         state.target = day;
-        console.log({ target: state.target });
     },
 };
 
@@ -43,6 +41,7 @@ export const actions = {
         commit('select', day);
     },
     selectRect({ state, commit }, day) {
+        // if (!day) day = state.anchor;
         commit('target', day);
 
         const weekStartsOn = 1;
@@ -99,7 +98,7 @@ export const actions = {
     unselectAll({ commit }) {
         commit('unselectAll');
     },
-    update({ state, commit, dispatch }, event) {
+    update({ state, dispatch }, event) {
         const delta = {
             37: -1,
             38: -7,
@@ -108,7 +107,9 @@ export const actions = {
         }[event.which];
 
         if (event.shiftKey) {
-            commit('target', addDays(state.target, delta));
+            dispatch('selectRect', addDays(state.target, delta));
+        } else if (event.altKey) {
+            dispatch('selectRange', addDays(state.target, delta));
         } else {
             dispatch('move', delta);
         }
