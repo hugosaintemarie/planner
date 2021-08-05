@@ -29,6 +29,11 @@ export const actions = {
     delete({ commit }, id) {
         commit('delete', id);
     },
+    emptyOnCalendarOnDay({ commit, getters }, day) {
+        for (const event of getters.onCalendarOnDay(day)) {
+            commit('delete', event.id);
+        }
+    },
 };
 
 export const getters = {

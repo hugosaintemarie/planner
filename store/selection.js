@@ -130,6 +130,11 @@ export const actions = {
     target({ commit }, day) {
         commit('target', day);
     },
+    empty({ state }) {
+        for (const day of state.list) {
+            this.dispatch('events/emptyOnCalendarOnDay', day);
+        }
+    },
 };
 
 export const getters = {

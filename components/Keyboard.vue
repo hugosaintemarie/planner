@@ -43,6 +43,8 @@ export default {
                 }
             }
 
+            if (which === 8) this.$store.dispatch('selection/empty');
+
             if (which === 83) this.$store.dispatch('tools/select', 'select');
             if (which === 68) this.$store.dispatch('tools/select', 'draw');
 
