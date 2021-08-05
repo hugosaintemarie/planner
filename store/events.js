@@ -20,6 +20,7 @@ export const actions = {
         for (const date of selection) {
             commit('add', {
                 category,
+                calendar: this.getters['calendars/selected'],
                 start: date,
                 end: date,
             });
@@ -31,8 +32,13 @@ export const actions = {
 };
 
 export const getters = {
-    onDay: (state) => (day) => {
+    onCalendar(state, _getters, _rootState, rootGetters) {
         return state.list.filter(
+            (d) => d.calendar === rootGetters['calendars/selected']
+        );
+    },
+    onCalendarOnDay: (_, getters) => (day) => {
+        return getters.onCalendar.filter(
             (event) =>
                 event.start.toString() === day.toString() &&
                 event.end.toString() === day.toString()
@@ -43,6 +49,7 @@ export const getters = {
 class Event {
     constructor(id, props) {
         this.id = id;
+        this.calendar = props.calendar;
         this.category = props.category;
         this.start = props.start;
         this.end = props.end;

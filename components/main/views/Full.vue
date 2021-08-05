@@ -126,7 +126,7 @@
                                     <div
                                         v-for="event in eventsThatDay(day)"
                                         :key="event.id"
-                                        class="px-2 py-1 rounded"
+                                        class="px-2 py-1 rounded select-none"
                                         :style="`background-color: ${event.category.bgColor}`"
                                     >
                                         <p
@@ -268,7 +268,7 @@ export default {
             }
         },
         eventsThatDay(day) {
-            const events = this.$store.getters['events/onDay'](day);
+            const events = this.$store.getters['events/onCalendarOnDay'](day);
             if (events.length) return events;
             else return false;
         },
