@@ -27,6 +27,22 @@ export default {
 
             // console.log(which);
 
+            // Arrow keys
+            if ([37, 38, 39, 40].includes(which)) {
+                // Prevent scroll
+                e.preventDefault();
+
+                // if (panel.isOpen) return;
+
+                if (ctrlOrMeta && [38, 40].includes(which)) {
+                    // if (e.which === 38) calendars.selectPrevious(); // Cmd + up
+                    // if (e.which === 40) calendars.selectNext(); // Cmd + down
+                } else {
+                    // Cmd + right/left
+                    this.$store.dispatch('selection/update', e);
+                }
+            }
+
             if (which === 83) this.$store.dispatch('tools/select', 'select');
             if (which === 68) this.$store.dispatch('tools/select', 'draw');
 

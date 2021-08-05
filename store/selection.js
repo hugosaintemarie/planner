@@ -1,7 +1,16 @@
-import { eachDayOfInterval, getDay, getWeek, setDay, setWeek } from 'date-fns';
+import {
+    addDays,
+    eachDayOfInterval,
+    getDay,
+    getWeek,
+    setDay,
+    setWeek,
+} from 'date-fns';
 
 export const state = () => ({
     list: [],
+    anchor: null,
+    target: null,
 });
 
 export const mutations = {
@@ -19,18 +28,28 @@ export const mutations = {
     unselectAll: (state) => {
         state.list = [];
     },
+    anchor(state, day) {
+        state.anchor = day;
+        console.log({ anchor: state.anchor });
+    },
+    target(state, day) {
+        state.target = day;
+        console.log({ target: state.target });
+    },
 };
 
 export const actions = {
     select({ commit }, day) {
         commit('select', day);
     },
-    selectRect({ commit }, params) {
-        const weekStartsOn = 1;
-        const { day, selectedFirst } = params;
+    selectRect({ state, commit }, day) {
+        commit('target', day);
 
-        const first = Math.min(selectedFirst, day);
-        const last = Math.max(selectedFirst, day);
+        const weekStartsOn = 1;
+        const anchor = state.anchor;
+
+        const first = Math.min(anchor, day);
+        const last = Math.max(anchor, day);
 
         const interval = eachDayOfInterval({ start: first, end: last });
 
@@ -41,13 +60,15 @@ export const actions = {
             ...interval.map((d) => getWeek(d, { weekStartsOn }))
         );
 
-        let lowestDay = Math.min(getDay(selectedFirst), getDay(day));
-        let highestDay = Math.max(getDay(selectedFirst), getDay(day));
+        let lowestDay = Math.min(getDay(anchor), getDay(day));
+        let highestDay = Math.max(getDay(anchor), getDay(day));
 
         if (lowestDay === 0) {
             lowestDay = 8 - weekStartsOn;
             [lowestDay, highestDay] = [lowestDay, highestDay].sort();
         }
+
+        commit('unselectAll');
 
         for (let w = lowestWeek; w <= highestWeek; w += 1) {
             for (let d = lowestDay; d <= highestDay; d += 1) {
@@ -58,11 +79,13 @@ export const actions = {
             }
         }
     },
-    selectRange({ commit }, params) {
-        const { day, selectedFirst } = params;
+    selectRange({ state, commit }, day) {
+        commit('target', day);
 
-        const first = Math.min(selectedFirst, day);
-        const last = Math.max(selectedFirst, day);
+        const anchor = state.anchor;
+
+        const first = Math.min(anchor, day);
+        const last = Math.max(anchor, day);
 
         const interval = eachDayOfInterval({ start: first, end: last });
 
@@ -75,6 +98,36 @@ export const actions = {
     },
     unselectAll({ commit }) {
         commit('unselectAll');
+    },
+    update({ state, commit, dispatch }, event) {
+        const delta = {
+            37: -1,
+            38: -7,
+            39: 1,
+            40: 7,
+        }[event.which];
+
+        if (event.shiftKey) {
+            commit('target', addDays(state.target, delta));
+        } else {
+            dispatch('move', delta);
+        }
+    },
+    move({ state, commit, dispatch }, delta) {
+        const _list = state.list.slice();
+
+        dispatch('unselectAll');
+
+        for (const day of _list) commit('select', addDays(day, delta));
+
+        commit('anchor', addDays(state.anchor, delta));
+        commit('target', addDays(state.target, delta));
+    },
+    anchor({ commit }, day) {
+        commit('anchor', day);
+    },
+    target({ commit }, day) {
+        commit('target', day);
     },
 };
 

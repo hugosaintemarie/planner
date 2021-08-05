@@ -162,7 +162,6 @@ export default {
     data() {
         return {
             mousedown: false,
-            selectedFirst: null,
         };
     },
     computed: {
@@ -232,34 +231,25 @@ export default {
             return classes;
         },
         mousedownDay(day) {
-            if (this.isSelected(day)) {
-                this.unselect = true;
-                if (this.$store.getters['keyboard/isKeydown']('meta')) {
+            if (this.$store.getters['keyboard/isKeydown']('shift')) {
+                this.$store.dispatch('selection/selectRect', day);
+            } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
+                this.$store.dispatch('selection/selectRange', day);
+            } else if (this.$store.getters['keyboard/isKeydown']('meta')) {
+                if (this.isSelected(day)) {
+                    this.unselect = true;
                     this.$store.dispatch('selection/unselect', day);
                 } else {
-                    this.$store.dispatch('selection/unselectAll');
+                    this.unselect = false;
                     this.$store.dispatch('selection/select', day);
-                    this.selectedFirst = day;
                 }
             } else {
-                this.unselect = false;
-                if (this.$store.getters['keyboard/isKeydown']('shift')) {
-                    this.$store.dispatch('selection/selectRect', {
-                        day,
-                        selectedFirst: this.selectedFirst,
-                    });
-                } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
-                    this.$store.dispatch('selection/selectRange', {
-                        day,
-                        selectedFirst: this.selectedFirst,
-                    });
-                } else if (!this.$store.getters['keyboard/isKeydown']('meta')) {
-                    this.$store.dispatch('selection/unselectAll');
-                }
-
+                this.$store.dispatch('selection/unselectAll');
                 this.$store.dispatch('selection/select', day);
-                this.selectedFirst = day;
+                this.$store.dispatch('selection/anchor', day);
+                this.$store.dispatch('selection/target', day);
             }
+
             this.mouseenterDay(day);
         },
         mouseenterDay(day) {
@@ -270,18 +260,10 @@ export default {
                     else this.$store.dispatch('selection/select', day);
                 } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
                     this.$store.dispatch('selection/unselectAll');
-
-                    this.$store.dispatch('selection/selectRange', {
-                        day,
-                        selectedFirst: this.selectedFirst,
-                    });
+                    this.$store.dispatch('selection/selectRange', day);
                 } else {
                     this.$store.dispatch('selection/unselectAll');
-
-                    this.$store.dispatch('selection/selectRect', {
-                        day,
-                        selectedFirst: this.selectedFirst,
-                    });
+                    this.$store.dispatch('selection/selectRect', day);
                 }
             }
         },
