@@ -16,7 +16,7 @@ export const state = () => ({
             shortcut: 'L',
         },
     },
-    selected: 'full',
+    selected: 'week',
 });
 
 export const mutations = {
