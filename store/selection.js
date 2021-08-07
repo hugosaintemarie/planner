@@ -41,7 +41,7 @@ export const actions = {
         commit('select', day);
     },
     selectRect({ state, commit }, day) {
-        // if (!day) day = state.anchor;
+        if (!day) day = state.target;
         commit('target', day);
 
         const weekStartsOn = 1;
@@ -67,8 +67,6 @@ export const actions = {
             [lowestDay, highestDay] = [lowestDay, highestDay].sort();
         }
 
-        commit('unselectAll');
-
         for (let w = lowestWeek; w <= highestWeek; w += 1) {
             for (let d = lowestDay; d <= highestDay; d += 1) {
                 let day = setWeek(new Date(), w);
@@ -79,6 +77,7 @@ export const actions = {
         }
     },
     selectRange({ state, commit }, day) {
+        if (!day) day = state.target;
         commit('target', day);
 
         const anchor = state.anchor;
@@ -87,8 +86,6 @@ export const actions = {
         const last = Math.max(anchor, day);
 
         const interval = eachDayOfInterval({ start: first, end: last });
-
-        commit('unselectAll');
 
         for (const day of interval) commit('select', day);
     },

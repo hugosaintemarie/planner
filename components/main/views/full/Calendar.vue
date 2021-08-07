@@ -29,12 +29,8 @@
                                     : 'bg-gray-800/50'
                                 : ''
                         "
-                        @mousedown="
-                            isWithinBounds(day) && mousedownDay(day)
-                        "
-                        @mouseenter="
-                            isWithinBounds(day) && mouseenterDay(day)
-                        "
+                        @mousedown="isWithinBounds(day) && mousedownDay(day)"
+                        @mouseenter="isWithinBounds(day) && mouseenterDay(day)"
                     >
                         <div
                             v-if="isSelected(day)"
@@ -148,8 +144,11 @@ export default {
         },
         mousedownDay(day) {
             if (this.$store.getters['keyboard/isKeydown']('shift')) {
+                if (!this.$store.getters['keyboard/isKeydown']('meta'))
+                    this.$store.dispatch('selection/unselectAll', day);
                 this.$store.dispatch('selection/selectRect', day);
             } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
+                this.$store.dispatch('selection/unselectAll', day);
                 this.$store.dispatch('selection/selectRange', day);
             } else if (this.$store.getters['keyboard/isKeydown']('meta')) {
                 if (this.isSelected(day)) {
@@ -158,6 +157,7 @@ export default {
                 } else {
                     this.unselect = false;
                     this.$store.dispatch('selection/select', day);
+                    this.$store.dispatch('selection/anchor', day);
                 }
             } else {
                 this.$store.dispatch('selection/unselectAll');
@@ -191,4 +191,3 @@ export default {
     },
 };
 </script>
-

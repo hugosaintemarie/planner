@@ -118,7 +118,10 @@
                         <!-- All day events -->
                     </div>
                 </div>
-                <div class="mb-4 mt-12 border-t border-gray-800">
+                <div
+                    class="mb-4 mt-12 border-t border-gray-800"
+                    :style="tool === 'select' ? 'cursor: cell' : ''"
+                >
                     <div
                         v-for="hour in hours"
                         :key="hour"
@@ -173,6 +176,9 @@ export default {
         },
         hours() {
             return new Array(24).fill(0).map((_, i) => i);
+        },
+        tool() {
+            return this.$store.getters['tools/selected'];
         },
     },
     methods: {

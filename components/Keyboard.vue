@@ -4,15 +4,30 @@
 
 <script>
 export default {
+    data() {
+        return {
+            isMousedown: false,
+        };
+    },
     mounted() {
+        document.addEventListener('mousedown', this.onMousedown);
+        document.addEventListener('mouseup', this.onMouseup);
         document.addEventListener('keydown', this.onKeydown);
         document.addEventListener('keyup', this.onKeyup);
     },
     beforeDestroy() {
+        document.removeEventListener('mousedown', this.onMousedown);
+        document.removeEventListener('mouseup', this.onMouseup);
         document.removeEventListener('keydown', this.onKeydown);
         document.removeEventListener('keyup', this.onKeyup);
     },
     methods: {
+        onMousedown() {
+            this.isMousedown = true;
+        },
+        onMouseup() {
+            this.isMousedown = false;
+        },
         onKeydown(e) {
             const which = e.which;
 
@@ -43,14 +58,20 @@ export default {
                 }
             }
 
-            if (which === 8) this.$store.dispatch('selection/empty');
+            if (which === 8) this.$store.dispatch('selection/empty'); // Backspace
 
-            if (which === 83) this.$store.dispatch('tools/select', 'select');
-            if (which === 68) this.$store.dispatch('tools/select', 'draw');
+            // Alt + mousedown
+            if (which === 18 && this.isMousedown) {
+                this.$store.dispatch('selection/unselectAll');
+                this.$store.dispatch('selection/selectRange');
+            }
 
-            if (which === 70) this.$store.dispatch('views/select', 'full');
-            if (which === 76) this.$store.dispatch('views/select', 'linear');
-            if (which === 87) this.$store.dispatch('views/select', 'week');
+            if (which === 83) this.$store.dispatch('tools/select', 'select'); // S
+            if (which === 68) this.$store.dispatch('tools/select', 'draw'); // D
+
+            if (which === 70) this.$store.dispatch('views/select', 'full'); // F
+            if (which === 76) this.$store.dispatch('views/select', 'linear'); // L
+            if (which === 87) this.$store.dispatch('views/select', 'week'); // W
 
             if (ctrlOrMeta && which === 83) this.save(e); // Cmd + S
         },
@@ -60,6 +81,12 @@ export default {
             if (e.target.readOnly === false) {
                 if (which === 13) e.target.blur();
                 return;
+            }
+
+            // Alt + mousedown
+            if (which === 18 && this.isMousedown) {
+                this.$store.dispatch('selection/unselectAll');
+                this.$store.dispatch('selection/selectRect');
             }
 
             this.$store.dispatch('keyboard/keyup', which);
