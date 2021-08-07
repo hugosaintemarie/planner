@@ -3,7 +3,7 @@
         id="tooltip"
         class="
             absolute
-            z-20
+            z-40
             px-2
             py-1.5
             text-white

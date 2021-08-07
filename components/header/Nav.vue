@@ -96,7 +96,7 @@
                                 v-if="entry.entries"
                                 class="
                                     absolute
-                                    z-20
+                                    z-50
                                     left-0
                                     top-0
                                     w-full
