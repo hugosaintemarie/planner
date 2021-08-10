@@ -77,10 +77,13 @@ import {
     addDays,
     eachDayOfInterval,
     eachWeekOfInterval,
+    endOfDay,
     format,
+    isEqual,
     isWeekend,
     isWithinInterval,
     lastDayOfWeek,
+    startOfDay,
     subDays,
 } from 'date-fns';
 
@@ -127,7 +130,11 @@ export default {
             });
         },
         isSelected(day) {
-            return this.selected.some((d) => d.toString() === day.toString());
+            return this.selected.some(
+                (d) =>
+                    isEqual(d.start, startOfDay(day)) &&
+                    isEqual(d.end, endOfDay(day))
+            );
         },
         selectionClasses(day) {
             let classes =
@@ -143,43 +150,53 @@ export default {
             return classes;
         },
         mousedownDay(day) {
+            const interval = {
+                start: startOfDay(day),
+                end: endOfDay(day),
+            };
+
             if (this.$store.getters['keyboard/isKeydown']('shift')) {
                 if (!this.$store.getters['keyboard/isKeydown']('meta'))
-                    this.$store.dispatch('selection/unselectAll', day);
-                this.$store.dispatch('selection/selectRect', day);
+                    this.$store.dispatch('selection/unselectAll', interval);
+                this.$store.dispatch('selection/selectRect', interval);
             } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
-                this.$store.dispatch('selection/unselectAll', day);
-                this.$store.dispatch('selection/selectRange', day);
+                this.$store.dispatch('selection/unselectAll', interval);
+                this.$store.dispatch('selection/selectRange', interval);
             } else if (this.$store.getters['keyboard/isKeydown']('meta')) {
                 if (this.isSelected(day)) {
                     this.unselect = true;
-                    this.$store.dispatch('selection/unselect', day);
+                    this.$store.dispatch('selection/unselect', interval);
                 } else {
                     this.unselect = false;
-                    this.$store.dispatch('selection/select', day);
-                    this.$store.dispatch('selection/anchor', day);
+                    this.$store.dispatch('selection/select', interval);
+                    this.$store.dispatch('selection/anchor', interval);
                 }
             } else {
                 this.$store.dispatch('selection/unselectAll');
-                this.$store.dispatch('selection/select', day);
-                this.$store.dispatch('selection/anchor', day);
-                this.$store.dispatch('selection/target', day);
+                this.$store.dispatch('selection/select', interval);
+                this.$store.dispatch('selection/anchor', interval);
+                this.$store.dispatch('selection/target', interval);
             }
 
             this.mouseenterDay(day);
         },
         mouseenterDay(day) {
+            const interval = {
+                start: startOfDay(day),
+                end: endOfDay(day),
+            };
+
             if (this.mousedown) {
                 if (this.$store.getters['keyboard/isKeydown']('meta')) {
                     if (this.unselect)
-                        this.$store.dispatch('selection/unselect', day);
-                    else this.$store.dispatch('selection/select', day);
+                        this.$store.dispatch('selection/unselect', interval);
+                    else this.$store.dispatch('selection/select', interval);
                 } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
                     this.$store.dispatch('selection/unselectAll');
-                    this.$store.dispatch('selection/selectRange', day);
+                    this.$store.dispatch('selection/selectRange', interval);
                 } else {
                     this.$store.dispatch('selection/unselectAll');
-                    this.$store.dispatch('selection/selectRect', day);
+                    this.$store.dispatch('selection/selectRect', interval);
                 }
             }
         },

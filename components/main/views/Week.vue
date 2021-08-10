@@ -99,11 +99,14 @@
                 <div
                     class="
                         sticky
+                        z-10
                         top-8
                         h-20
                         bg-gray-800
-                        border-b border-gray-700
+                        border-b border-l border-gray-700
+                        -translate-x-px
                     "
+                    style="width: calc(100% + 2px)"
                 >
                     <div
                         class="
@@ -126,11 +129,21 @@
                         v-for="hour in hours"
                         :key="hour"
                         class="
+                            relative
                             h-16
                             text-center text-gray-400 text-xs
                             border-b border-gray-800
                         "
+                        @mousedown="mousedownHour(day, hour)"
                     >
+                        <div
+                            v-if="isSelected(day, hour)"
+                            :class="selectionClasses(day)"
+                            style="
+                                height: calc(100% + 2px);
+                                width: calc(100% + 2px);
+                            "
+                        ></div>
                         <!-- Events that hour -->
                     </div>
                 </div>
@@ -143,9 +156,13 @@
 import {
     eachDayOfInterval,
     eachMonthOfInterval,
+    endOfHour,
     format,
     getDaysInMonth,
+    isEqual,
     isWeekend,
+    setHours,
+    startOfHour,
 } from 'date-fns';
 
 export default {
@@ -180,6 +197,9 @@ export default {
         tool() {
             return this.$store.getters['tools/selected'];
         },
+        selected() {
+            return this.$store.getters['selection/selected'];
+        },
     },
     methods: {
         format(day, args) {
@@ -188,8 +208,41 @@ export default {
         isWeekend(day) {
             return isWeekend(day);
         },
+        isSelected(day, hour) {
+            const start = startOfHour(setHours(new Date(day), hour));
+            const end = endOfHour(start);
+
+            return this.selected.some(
+                (d) => isEqual(d.start, start) && isEqual(d.end, end)
+            );
+        },
         daysInMonth(date) {
             return getDaysInMonth(date);
+        },
+        mousedownHour(day, hour) {
+            const date = setHours(new Date(day), hour);
+
+            const interval = {
+                start: startOfHour(date),
+                end: endOfHour(date),
+            };
+
+            this.$store.dispatch('selection/select', interval);
+        },
+        selectionClasses(_day, _hour) {
+            let classes =
+                'bg-blue-400/10 absolute -left-px -top-px border-blue-400 pointer-events-none';
+
+            // if (!this.isSelected(subDays(day, 7))) classes += ' border-t';
+            // if (!this.isSelected(subDays(day, 1)) || day.getDay() === 1)
+            //     classes += ' border-l';
+            // if (!this.isSelected(addDays(day, 1)) || day.getDay() === 0)
+            //     classes += ' border-r';
+            // if (!this.isSelected(addDays(day, 7))) classes += ' border-b';
+
+            classes += ' border-t border-r border-b border-l';
+
+            return classes;
         },
     },
 };

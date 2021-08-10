@@ -1,6 +1,7 @@
 import {
     addDays,
     eachDayOfInterval,
+    isEqual,
     getDay,
     getWeek,
     setDay,
@@ -14,14 +15,22 @@ export const state = () => ({
 });
 
 export const mutations = {
-    select: (state, day) => {
-        const string = day.toString();
-        if (!state.list.some((d) => d.toString() === string))
-            state.list.push(day);
+    select: (state, interval) => {
+        console.log({ interval });
+        if (
+            !state.list.some(
+                (d) =>
+                    isEqual(d.start, interval.start) &&
+                    isEqual(d.end, interval.end)
+            )
+        ) {
+            state.list.push(interval);
+        }
     },
-    unselect: (state, day) => {
+    unselect: (state, interval) => {
         const index = state.list.findIndex(
-            (d) => d.toString() === day.toString()
+            (d) =>
+                isEqual(d.start, interval.start) && isEqual(d.end, interval.end)
         );
         if (index > -1) state.list.splice(index, 1);
     },
