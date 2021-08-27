@@ -323,10 +323,13 @@ export default {
             if (this.$store.getters['keyboard/isKeydown']('shift')) {
                 if (!this.$store.getters['keyboard/isKeydown']('meta'))
                     this.$store.dispatch('selection/unselectAll', interval);
-                this.$store.dispatch('selection/selectSlotsRect', interval);
-            } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
-                this.$store.dispatch('selection/unselectAll', interval);
-                this.$store.dispatch('selection/selectSlotsRange', interval);
+                this.$store.dispatch('selection/selectSlotsRect', {
+                    interval,
+                    slots: this.slots,
+                });
+                // } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
+                //     this.$store.dispatch('selection/unselectAll', interval);
+                //     this.$store.dispatch('selection/selectSlotsRange', interval);
             } else if (this.$store.getters['keyboard/isKeydown']('meta')) {
                 if (this.isSelected(day, slot)) {
                     this.unselect = true;
@@ -360,15 +363,18 @@ export default {
                     if (this.unselect)
                         this.$store.dispatch('selection/unselect', interval);
                     else this.$store.dispatch('selection/select', interval);
-                } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
-                    this.$store.dispatch('selection/unselectAll');
-                    this.$store.dispatch(
-                        'selection/selectSlotsRange',
-                        interval
-                    );
+                    // } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
+                    //     this.$store.dispatch('selection/unselectAll');
+                    //     this.$store.dispatch(
+                    //         'selection/selectSlotsRange',
+                    //         interval
+                    //     );
                 } else {
                     this.$store.dispatch('selection/unselectAll');
-                    this.$store.dispatch('selection/selectSlotsRect', interval);
+                    this.$store.dispatch('selection/selectSlotsRect', {
+                        interval,
+                        slots: this.slots,
+                    });
                 }
             }
         },

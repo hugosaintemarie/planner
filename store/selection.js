@@ -2,8 +2,12 @@ import {
     addDays,
     eachDayOfInterval,
     isEqual,
+    getMinutes,
+    getHours,
     getDay,
     getWeek,
+    setMinutes,
+    setHours,
     setDay,
     setWeek,
     startOfDay,
@@ -103,6 +107,63 @@ export const actions = {
                 start: startOfDay(day),
                 end: endOfDay(day),
             });
+    },
+    selectSlotsRect({ state, commit }, { interval, slots }) {
+        // if (!day) day = state.target;
+        // commit('target', day);
+
+        const anchor = state.anchor;
+
+        const first = Math.min(anchor.start, interval.start);
+        const last = Math.max(anchor.start, interval.start);
+
+        const slot1 = setHours(
+            setMinutes(new Date(0), getMinutes(first)),
+            getHours(first)
+        );
+        const slot2 = setHours(
+            setMinutes(new Date(0), getMinutes(last)),
+            getHours(last)
+        );
+        const [firstSlot, lastSlot] = [slot1, slot2].sort();
+
+        slots = slots.filter(
+            (s) => s.start >= firstSlot && s.start <= lastSlot
+        );
+
+        const days = eachDayOfInterval({
+            start: first,
+            end: last,
+        });
+
+        for (const day of days) {
+            for (const slot of slots) {
+                console.log(day, slot);
+                commit('select', {
+                    start: setHours(
+                        setMinutes(new Date(day), getMinutes(slot.start)),
+                        getHours(slot.start)
+                    ),
+                    end: setHours(
+                        setMinutes(new Date(day), getMinutes(slot.end)),
+                        getHours(slot.end)
+                    ),
+                });
+            }
+        }
+    },
+    selectSlotsRange({ state, commit }, day) {
+        // if (!day) day = state.target;
+        // commit('target', day);
+        // const anchor = state.anchor;
+        // const first = Math.min(anchor.start, day.start);
+        // const last = Math.max(anchor.start, day.start);
+        // const interval = eachDayOfInterval({ start: first, end: last });
+        // for (const day of interval)
+        //     commit('select', {
+        //         start: startOfDay(day),
+        //         end: endOfDay(day),
+        //     });
     },
     unselect({ commit }, day) {
         commit('unselect', day);
