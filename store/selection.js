@@ -138,7 +138,6 @@ export const actions = {
 
         for (const day of days) {
             for (const slot of slots) {
-                console.log(day, slot);
                 commit('select', {
                     start: setHours(
                         setMinutes(new Date(day), getMinutes(slot.start)),
