@@ -7,11 +7,7 @@
                 @mousedown="mousedown = true"
                 @mouseup="mousedown = false"
             >
-                <div
-                    v-for="(week, w) in weeks"
-                    :key="w"
-                    class="flex border-t border-gray-700"
-                >
+                <div v-for="(week, w) in weeks" :key="w" class="flex">
                     <div
                         v-for="(day, d) in days(week)"
                         :key="d"
@@ -20,15 +16,17 @@
                             flex-1
                             p-2
                             h-24
-                            border-l border-gray-700
+                            border-l border-t border-gray-700
                         "
-                        :class="
+                        :class="[
                             isWeekend(day)
                                 ? isWithinBounds(day)
                                     ? 'bg-gray-800'
                                     : 'bg-gray-800/50'
-                                : ''
-                        "
+                                : '',
+                            isFirstRow(day) ? 'border-t-gray-500' : '',
+                            isFirst(day) ? 'border-l-gray-500' : '',
+                        ]"
                         @mousedown="isWithinBounds(day) && mousedownDay(day)"
                         @mouseenter="isWithinBounds(day) && mouseenterDay(day)"
                     >
@@ -82,6 +80,8 @@ import {
     isEqual,
     isWeekend,
     isWithinInterval,
+    getDate,
+    getDay,
     lastDayOfWeek,
     startOfDay,
     subDays,
@@ -128,6 +128,12 @@ export default {
                 start: new Date(document.getElementById('start').value),
                 end: new Date(document.getElementById('end').value),
             });
+        },
+        isFirstRow(day) {
+            return getDate(day) <= 7;
+        },
+        isFirst(day) {
+            return getDate(day) === 1 && getDay(day) !== 1;
         },
         isSelected(day) {
             return this.selected.some(
