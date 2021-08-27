@@ -11,6 +11,7 @@
                     left-0
                     flex-none
                     w-16
+                    min-h-full
                     bg-gray-800
                     border-r border-gray-700
                 "
@@ -29,12 +30,13 @@
                 ></div>
                 <div class="py-4">
                     <div
-                        v-for="hour in hours"
-                        :key="hour"
-                        class="h-16 text-center text-gray-400 text-xs"
+                        v-for="(slot, s) in slots"
+                        :key="s"
+                        class="text-center text-gray-400 text-xs"
+                        :style="`height: ${height(slot)}px`"
                     >
                         <span class="block -translate-y-2">
-                            {{ hour.toString().padStart(2, '0') }}:00
+                            {{ format(slot.start, 'HH:mm') }}
                         </span>
                     </div>
                     <div
@@ -45,7 +47,7 @@
                             -translate-y-2
                         "
                     >
-                        00:00
+                        {{ format(slots[slots.length - 1].end, 'HH:mm') }}
                     </div>
                 </div>
             </div>
@@ -89,6 +91,7 @@
                     relative
                     flex-none
                     w-32
+                    min-h-full
                     border-r
                     last:border-none
                     border-gray-700
@@ -126,18 +129,18 @@
                     :style="tool === 'select' ? 'cursor: cell' : ''"
                 >
                     <div
-                        v-for="hour in hours"
-                        :key="hour"
+                        v-for="(slot, s) in slots"
+                        :key="s"
                         class="
                             relative
-                            h-16
                             text-center text-gray-400 text-xs
                             border-b border-gray-800
                         "
-                        @mousedown="mousedownHour(day, hour)"
+                        :style="`height: ${height(slot)}px`"
+                        @mousedown="mousedownSlot(day, slot)"
                     >
                         <div
-                            v-if="isSelected(day, hour)"
+                            v-if="isSelected(day, slot)"
                             :class="selectionClasses(day)"
                             style="
                                 height: calc(100% + 2px);
@@ -154,24 +157,93 @@
 
 <script>
 import {
+    differenceInMinutes,
     eachDayOfInterval,
     eachMonthOfInterval,
-    endOfHour,
     format,
     getDaysInMonth,
     isEqual,
     isWeekend,
     setHours,
-    startOfHour,
+    setMinutes,
 } from 'date-fns';
 
 export default {
+    data() {
+        return {
+            pxPerMinute: 1.5,
+        };
+    },
     computed: {
         calendar() {
             return this.$store.getters['calendars/selected'];
         },
         weekdays() {
             return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        },
+        slots() {
+            const slots = [];
+
+            for (let i = 0; i < this.stops.length; i += 1) {
+                const current = this.stops[i];
+                const next = this.stops[i + 1];
+                if (!next) break;
+
+                const [currHours, currMinutes] = current.split(':');
+                const [nextHours, nextMinutes] = next.split(':');
+
+                slots.push({
+                    start: setHours(
+                        setMinutes(new Date(0), currMinutes),
+                        currHours
+                    ),
+                    end: setHours(
+                        setMinutes(new Date(0), nextMinutes),
+                        nextHours
+                    ),
+                });
+            }
+
+            // // First slot
+            // const [firstHours, firstMinutes] = this.stops[0].split(':');
+            // slots.unshift({
+            //     start: setHours(new Date(0), 0),
+            //     end: setHours(
+            //         setMinutes(new Date(0), firstMinutes),
+            //         firstHours
+            //     ),
+            // });
+
+            // Last slot
+            // const [lastHours, lastMinutes] =
+            //     this.stops[this.stops.length - 1].split(':');
+            // slots.push({
+            //     start: setHours(
+            //         setMinutes(new Date(0), lastMinutes),
+            //         lastHours
+            //     ),
+            //     end: addDays(setHours(setMinutes(new Date(0), 0), 0), 1),
+            // });
+
+            return slots;
+        },
+        stops() {
+            // const stops = new Array(25)
+            //     .fill(0)
+            //     .map((_, i) => `${i.toString().padStart(2, '0')}:00`);
+
+            const stops = [
+                '09:00',
+                '10:30',
+                '10:45',
+                '12:15',
+                '13:45',
+                '15:15',
+                '15:30',
+                '17:00',
+            ];
+
+            return stops;
         },
         months() {
             return eachMonthOfInterval(
@@ -208,9 +280,21 @@ export default {
         isWeekend(day) {
             return isWeekend(day);
         },
-        isSelected(day, hour) {
-            const start = startOfHour(setHours(new Date(day), hour));
-            const end = endOfHour(start);
+        duration(interval) {
+            return differenceInMinutes(interval.end, interval.start);
+        },
+        height(slot) {
+            return Math.round(this.duration(slot) * this.pxPerMinute);
+        },
+        isSelected(day, slot) {
+            const start = setHours(
+                setMinutes(new Date(day), slot.start.getMinutes()),
+                slot.start.getHours()
+            );
+            const end = setHours(
+                setMinutes(new Date(day), slot.end.getMinutes()),
+                slot.end.getHours()
+            );
 
             return this.selected.some(
                 (d) => isEqual(d.start, start) && isEqual(d.end, end)
@@ -219,12 +303,16 @@ export default {
         daysInMonth(date) {
             return getDaysInMonth(date);
         },
-        mousedownHour(day, hour) {
-            const date = setHours(new Date(day), hour);
-
+        mousedownSlot(day, slot) {
             const interval = {
-                start: startOfHour(date),
-                end: endOfHour(date),
+                start: setHours(
+                    setMinutes(new Date(day), slot.start.getMinutes()),
+                    slot.start.getHours()
+                ),
+                end: setHours(
+                    setMinutes(new Date(day), slot.end.getMinutes()),
+                    slot.end.getHours()
+                ),
             };
 
             this.$store.dispatch('selection/select', interval);
