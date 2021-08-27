@@ -6,6 +6,8 @@ import {
     getWeek,
     setDay,
     setWeek,
+    startOfDay,
+    endOfDay,
 } from 'date-fns';
 
 export const state = () => ({
@@ -16,7 +18,6 @@ export const state = () => ({
 
 export const mutations = {
     select: (state, interval) => {
-        console.log({ interval });
         if (
             !state.list.some(
                 (d) =>
@@ -56,8 +57,8 @@ export const actions = {
         const weekStartsOn = 1;
         const anchor = state.anchor;
 
-        const first = Math.min(anchor, day);
-        const last = Math.max(anchor, day);
+        const first = Math.min(anchor.start, day.start);
+        const last = Math.max(anchor.start, day.start);
 
         const interval = eachDayOfInterval({ start: first, end: last });
 
@@ -68,8 +69,8 @@ export const actions = {
             ...interval.map((d) => getWeek(d, { weekStartsOn }))
         );
 
-        let lowestDay = Math.min(getDay(anchor), getDay(day));
-        let highestDay = Math.max(getDay(anchor), getDay(day));
+        let lowestDay = Math.min(getDay(anchor.start), getDay(day.start));
+        let highestDay = Math.max(getDay(anchor.start), getDay(day.start));
 
         if (lowestDay === 0) {
             lowestDay = 8 - weekStartsOn;
@@ -78,10 +79,11 @@ export const actions = {
 
         for (let w = lowestWeek; w <= highestWeek; w += 1) {
             for (let d = lowestDay; d <= highestDay; d += 1) {
-                let day = setWeek(new Date(), w);
-                day = setDay(day, d);
-                day.setHours(0, 0, 0);
-                commit('select', day);
+                const day = setWeek(setDay(new Date(), d), w);
+                commit('select', {
+                    start: startOfDay(day),
+                    end: endOfDay(day),
+                });
             }
         }
     },
@@ -91,12 +93,16 @@ export const actions = {
 
         const anchor = state.anchor;
 
-        const first = Math.min(anchor, day);
-        const last = Math.max(anchor, day);
+        const first = Math.min(anchor.start, day.start);
+        const last = Math.max(anchor.start, day.start);
 
         const interval = eachDayOfInterval({ start: first, end: last });
 
-        for (const day of interval) commit('select', day);
+        for (const day of interval)
+            commit('select', {
+                start: startOfDay(day),
+                end: endOfDay(day),
+            });
     },
     unselect({ commit }, day) {
         commit('unselect', day);
