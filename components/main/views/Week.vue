@@ -141,7 +141,7 @@
                     >
                         <div
                             v-if="isSelected(day, slot)"
-                            :class="selectionClasses(day)"
+                            :class="selectionClasses(day, slot)"
                             style="
                                 height: calc(100% + 2px);
                                 width: calc(100% + 2px);
@@ -157,15 +157,19 @@
 
 <script>
 import {
+    addDays,
     differenceInMinutes,
     eachDayOfInterval,
     eachMonthOfInterval,
     format,
     getDaysInMonth,
+    getHours,
+    getMinutes,
     isEqual,
     isWeekend,
     setHours,
     setMinutes,
+    subDays,
 } from 'date-fns';
 
 export default {
@@ -189,18 +193,12 @@ export default {
                 const next = this.stops[i + 1];
                 if (!next) break;
 
-                const [currHours, currMinutes] = current.split(':');
-                const [nextHours, nextMinutes] = next.split(':');
+                const [currH, currM] = current.split(':');
+                const [nextH, nextM] = next.split(':');
 
                 slots.push({
-                    start: setHours(
-                        setMinutes(new Date(0), currMinutes),
-                        currHours
-                    ),
-                    end: setHours(
-                        setMinutes(new Date(0), nextMinutes),
-                        nextHours
-                    ),
+                    start: setHours(setMinutes(new Date(0), currM), currH),
+                    end: setHours(setMinutes(new Date(0), nextM), nextH),
                 });
             }
 
@@ -228,20 +226,23 @@ export default {
             return slots;
         },
         stops() {
-            // const stops = new Array(25)
-            //     .fill(0)
-            //     .map((_, i) => `${i.toString().padStart(2, '0')}:00`);
-
-            const stops = [
-                '09:00',
-                '10:30',
-                '10:45',
-                '12:15',
-                '13:45',
-                '15:15',
-                '15:30',
-                '17:00',
+            const temp = [
+                new Array(25)
+                    .fill(0)
+                    .map((_, i) => `${i.toString().padStart(2, '0')}:00`),
+                [
+                    '09:00',
+                    '10:30',
+                    '10:45',
+                    '12:15',
+                    '13:45',
+                    '15:15',
+                    '15:30',
+                    '17:00',
+                ],
             ];
+
+            const stops = temp[1];
 
             return stops;
         },
@@ -317,18 +318,26 @@ export default {
 
             this.$store.dispatch('selection/select', interval);
         },
-        selectionClasses(_day, _hour) {
+        selectionClasses(day, slot) {
             let classes =
                 'bg-blue-400/10 absolute -left-px -top-px border-blue-400 pointer-events-none';
 
-            // if (!this.isSelected(subDays(day, 7))) classes += ' border-t';
-            // if (!this.isSelected(subDays(day, 1)) || day.getDay() === 1)
-            //     classes += ' border-l';
-            // if (!this.isSelected(addDays(day, 1)) || day.getDay() === 0)
-            //     classes += ' border-r';
-            // if (!this.isSelected(addDays(day, 7))) classes += ' border-b';
+            const prev = this.slots.find(
+                (d) =>
+                    getHours(d.end) === getHours(slot.start) &&
+                    getMinutes(d.end) === getMinutes(slot.start)
+            );
 
-            classes += ' border-t border-r border-b border-l';
+            const next = this.slots.find(
+                (d) =>
+                    getHours(d.start) === getHours(slot.end) &&
+                    getMinutes(d.start) === getMinutes(slot.end)
+            );
+
+            if (!prev || !this.isSelected(day, prev)) classes += ' border-t';
+            if (!this.isSelected(subDays(day, 1), slot)) classes += ' border-l';
+            if (!this.isSelected(addDays(day, 1), slot)) classes += ' border-r';
+            if (!next || !this.isSelected(day, next)) classes += ' border-b';
 
             return classes;
         },
