@@ -50,7 +50,7 @@ export const actions = {
     select({ commit }, day) {
         commit('select', day);
     },
-    selectRect({ state, commit }, day) {
+    selectDaysRect({ state, commit }, day) {
         if (!day) day = state.target;
         commit('target', day);
 
@@ -87,7 +87,7 @@ export const actions = {
             }
         }
     },
-    selectRange({ state, commit }, day) {
+    selectDaysRange({ state, commit }, day) {
         if (!day) day = state.target;
         commit('target', day);
 
@@ -119,9 +119,17 @@ export const actions = {
         }[event.which];
 
         if (event.shiftKey) {
-            dispatch('selectRect', addDays(state.target, delta));
+            dispatch('unselectAll');
+            dispatch('selectDaysRect', {
+                start: addDays(state.target.start, delta),
+                end: addDays(state.target.end, delta),
+            });
         } else if (event.altKey) {
-            dispatch('selectRange', addDays(state.target, delta));
+            dispatch('unselectAll');
+            dispatch('selectDaysRange', {
+                start: addDays(state.target.start, delta),
+                end: addDays(state.target.end, delta),
+            });
         } else {
             dispatch('move', delta);
         }
@@ -131,10 +139,21 @@ export const actions = {
 
         dispatch('unselectAll');
 
-        for (const day of _list) commit('select', addDays(day, delta));
+        for (const day of _list)
+            commit('select', {
+                start: addDays(day.start, delta),
+                end: addDays(day.end, delta),
+            });
 
-        commit('anchor', addDays(state.anchor, delta));
-        commit('target', addDays(state.target, delta));
+        commit('anchor', {
+            start: addDays(state.anchor.start, delta),
+            end: addDays(state.anchor.end, delta),
+        });
+
+        commit('target', {
+            start: addDays(state.target.start, delta),
+            end: addDays(state.target.end, delta),
+        });
     },
     anchor({ commit }, day) {
         commit('anchor', day);

@@ -3,6 +3,8 @@
         <div
             class="no-scrollbar relative flex h-full overflow-auto"
             style="scroll-snap-type: x mandatory; scroll-padding: 4rem"
+            @mousedown="mousedown = true"
+            @mouseup="mousedown = false"
         >
             <div
                 class="
@@ -138,6 +140,7 @@
                         "
                         :style="`height: ${height(slot)}px`"
                         @mousedown="mousedownSlot(day, slot)"
+                        @mouseenter="mouseenterSlot(day, slot)"
                     >
                         <div
                             v-if="isSelected(day, slot)"
@@ -176,6 +179,7 @@ export default {
     data() {
         return {
             pxPerMinute: 1.5,
+            mousedown: false,
         };
     },
     computed: {
@@ -316,7 +320,57 @@ export default {
                 ),
             };
 
-            this.$store.dispatch('selection/select', interval);
+            if (this.$store.getters['keyboard/isKeydown']('shift')) {
+                if (!this.$store.getters['keyboard/isKeydown']('meta'))
+                    this.$store.dispatch('selection/unselectAll', interval);
+                this.$store.dispatch('selection/selectSlotsRect', interval);
+            } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
+                this.$store.dispatch('selection/unselectAll', interval);
+                this.$store.dispatch('selection/selectSlotsRange', interval);
+            } else if (this.$store.getters['keyboard/isKeydown']('meta')) {
+                if (this.isSelected(day, slot)) {
+                    this.unselect = true;
+                    this.$store.dispatch('selection/unselect', interval);
+                } else {
+                    this.unselect = false;
+                    this.$store.dispatch('selection/select', interval);
+                    this.$store.dispatch('selection/anchor', interval);
+                }
+            } else {
+                this.$store.dispatch('selection/unselectAll');
+                this.$store.dispatch('selection/select', interval);
+                this.$store.dispatch('selection/anchor', interval);
+                this.$store.dispatch('selection/target', interval);
+            }
+        },
+        mouseenterSlot(day, slot) {
+            const interval = {
+                start: setHours(
+                    setMinutes(new Date(day), slot.start.getMinutes()),
+                    slot.start.getHours()
+                ),
+                end: setHours(
+                    setMinutes(new Date(day), slot.end.getMinutes()),
+                    slot.end.getHours()
+                ),
+            };
+
+            if (this.mousedown) {
+                if (this.$store.getters['keyboard/isKeydown']('meta')) {
+                    if (this.unselect)
+                        this.$store.dispatch('selection/unselect', interval);
+                    else this.$store.dispatch('selection/select', interval);
+                } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
+                    this.$store.dispatch('selection/unselectAll');
+                    this.$store.dispatch(
+                        'selection/selectSlotsRange',
+                        interval
+                    );
+                } else {
+                    this.$store.dispatch('selection/unselectAll');
+                    this.$store.dispatch('selection/selectSlotsRect', interval);
+                }
+            }
         },
         selectionClasses(day, slot) {
             let classes =

@@ -158,10 +158,10 @@ export default {
             if (this.$store.getters['keyboard/isKeydown']('shift')) {
                 if (!this.$store.getters['keyboard/isKeydown']('meta'))
                     this.$store.dispatch('selection/unselectAll', interval);
-                this.$store.dispatch('selection/selectRect', interval);
+                this.$store.dispatch('selection/selectDaysRect', interval);
             } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
                 this.$store.dispatch('selection/unselectAll', interval);
-                this.$store.dispatch('selection/selectRange', interval);
+                this.$store.dispatch('selection/selectDaysRange', interval);
             } else if (this.$store.getters['keyboard/isKeydown']('meta')) {
                 if (this.isSelected(day)) {
                     this.unselect = true;
@@ -193,10 +193,10 @@ export default {
                     else this.$store.dispatch('selection/select', interval);
                 } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
                     this.$store.dispatch('selection/unselectAll');
-                    this.$store.dispatch('selection/selectRange', interval);
+                    this.$store.dispatch('selection/selectDaysRange', interval);
                 } else {
                     this.$store.dispatch('selection/unselectAll');
-                    this.$store.dispatch('selection/selectRect', interval);
+                    this.$store.dispatch('selection/selectDaysRect', interval);
                 }
             }
         },

@@ -63,7 +63,7 @@ export default {
             // Alt + mousedown
             if (which === 18 && this.isMousedown) {
                 this.$store.dispatch('selection/unselectAll');
-                this.$store.dispatch('selection/selectRange');
+                this.$store.dispatch('selection/selectDaysRange');
             }
 
             if (which === 83) this.$store.dispatch('tools/select', 'select'); // S
@@ -86,7 +86,7 @@ export default {
             // Alt + mousedown
             if (which === 18 && this.isMousedown) {
                 this.$store.dispatch('selection/unselectAll');
-                this.$store.dispatch('selection/selectRect');
+                this.$store.dispatch('selection/selectDaysRect');
             }
 
             this.$store.dispatch('keyboard/keyup', which);
