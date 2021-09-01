@@ -24,8 +24,7 @@
                                     ? 'bg-gray-800'
                                     : 'bg-gray-800/50'
                                 : '',
-                            isFirstRow(day) ? 'border-t-gray-500' : '',
-                            isFirst(day) ? 'border-l-gray-500' : '',
+                            monthsDivider(day),
                         ]"
                         @mousedown="isWithinBounds(day) && mousedownDay(day)"
                         @mouseenter="isWithinBounds(day) && mouseenterDay(day)"
@@ -128,6 +127,17 @@ export default {
                 start: new Date(document.getElementById('start').value),
                 end: new Date(document.getElementById('end').value),
             });
+        },
+        monthsDivider(day) {
+            // TODO: move condition
+            const showMonthsDivider = false;
+
+            if (!showMonthsDivider) return;
+
+            let classes = '';
+            if (this.isFirstRow(day)) classes += 'border-t-gray-500';
+            if (this.isFirst(day)) classes += ' border-l-gray-500';
+            return classes;
         },
         isFirstRow(day) {
             return getDate(day) <= 7;
