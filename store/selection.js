@@ -77,13 +77,17 @@ export const actions = {
         let highestDay = Math.max(getDay(anchor.start), getDay(day.start));
 
         if (lowestDay === 0) {
+            if (highestDay === 0) highestDay = 8 - weekStartsOn;
+
             lowestDay = 8 - weekStartsOn;
             [lowestDay, highestDay] = [lowestDay, highestDay].sort();
         }
 
         for (let w = lowestWeek; w <= highestWeek; w += 1) {
             for (let d = lowestDay; d <= highestDay; d += 1) {
-                const day = setWeek(setDay(new Date(), d), w);
+                let day = setDay(new Date(), d);
+                day = setWeek(day, w, { weekStartsOn });
+
                 commit('select', {
                     start: startOfDay(day),
                     end: endOfDay(day),
