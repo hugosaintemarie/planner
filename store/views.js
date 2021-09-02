@@ -30,3 +30,9 @@ export const actions = {
         commit('select', name);
     },
 };
+
+export const getters = {
+    current(state) {
+        return state.selected;
+    },
+};

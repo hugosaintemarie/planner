@@ -190,65 +190,7 @@ export default {
             return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
         },
         slots() {
-            const slots = [];
-
-            for (let i = 0; i < this.stops.length; i += 1) {
-                const current = this.stops[i];
-                const next = this.stops[i + 1];
-                if (!next) break;
-
-                const [currH, currM] = current.split(':');
-                const [nextH, nextM] = next.split(':');
-
-                slots.push({
-                    start: setHours(setMinutes(new Date(0), currM), currH),
-                    end: setHours(setMinutes(new Date(0), nextM), nextH),
-                });
-            }
-
-            // // First slot
-            // const [firstHours, firstMinutes] = this.stops[0].split(':');
-            // slots.unshift({
-            //     start: setHours(new Date(0), 0),
-            //     end: setHours(
-            //         setMinutes(new Date(0), firstMinutes),
-            //         firstHours
-            //     ),
-            // });
-
-            // Last slot
-            // const [lastHours, lastMinutes] =
-            //     this.stops[this.stops.length - 1].split(':');
-            // slots.push({
-            //     start: setHours(
-            //         setMinutes(new Date(0), lastMinutes),
-            //         lastHours
-            //     ),
-            //     end: addDays(setHours(setMinutes(new Date(0), 0), 0), 1),
-            // });
-
-            return slots;
-        },
-        stops() {
-            const temp = [
-                new Array(25)
-                    .fill(0)
-                    .map((_, i) => `${i.toString().padStart(2, '0')}:00`),
-                [
-                    '09:00',
-                    '10:30',
-                    '10:45',
-                    '12:15',
-                    '13:45',
-                    '15:15',
-                    '15:30',
-                    '17:00',
-                ],
-            ];
-
-            const stops = temp[1];
-
-            return stops;
+            return this.$store.getters['week/slots'];
         },
         months() {
             return eachMonthOfInterval(

@@ -1,4 +1,5 @@
 import {
+    addMinutes,
     addDays,
     eachDayOfInterval,
     isEqual,
@@ -174,39 +175,64 @@ export const actions = {
     unselectAll({ commit }) {
         commit('unselectAll');
     },
-    update({ state, dispatch }, event) {
-        const delta = {
-            37: -1,
-            38: -7,
-            39: 1,
-            40: 7,
-        }[event.which];
+    update({ state, dispatch, rootGetters }, event) {
+        if (rootGetters['views/current'] === 'full') {
+            const delta = {
+                37: -1,
+                38: -7,
+                39: 1,
+                40: 7,
+            }[event.which];
 
-        if (event.shiftKey) {
-            dispatch('unselectAll');
-            dispatch('selectDaysRect', {
-                start: addDays(state.target.start, delta),
-                end: addDays(state.target.end, delta),
-            });
-        } else if (event.altKey) {
-            dispatch('unselectAll');
-            dispatch('selectDaysRange', {
-                start: addDays(state.target.start, delta),
-                end: addDays(state.target.end, delta),
-            });
-        } else {
-            dispatch('move', delta);
+            if (event.shiftKey) {
+                dispatch('unselectAll');
+                dispatch('selectDaysRect', {
+                    start: addDays(state.target.start, delta),
+                    end: addDays(state.target.end, delta),
+                });
+            } else if (event.altKey) {
+                dispatch('unselectAll');
+                dispatch('selectDaysRange', {
+                    start: addDays(state.target.start, delta),
+                    end: addDays(state.target.end, delta),
+                });
+            } else {
+                dispatch('moveDays', delta);
+            }
+        } else if (rootGetters['views/current'] === 'week') {
+            const delta = {
+                37: -24 * 60,
+                38: 'prev',
+                39: 24 * 60,
+                40: 'next',
+            }[event.which];
+
+            // if (event.shiftKey) {
+            //     dispatch('unselectAll');
+            //     dispatch('selectDaysRect', {
+            //         start: addDays(state.target.start, delta),
+            //         end: addDays(state.target.end, delta),
+            //     });
+            // } else if (event.altKey) {
+            //     dispatch('unselectAll');
+            //     dispatch('selectDaysRange', {
+            //         start: addDays(state.target.start, delta),
+            //         end: addDays(state.target.end, delta),
+            //     });
+            // } else {
+            dispatch('moveSlots', delta);
+            // }
         }
     },
-    move({ state, commit, dispatch }, delta) {
+    moveDays({ state, commit, dispatch }, delta) {
         const _list = state.list.slice();
 
         dispatch('unselectAll');
 
-        for (const day of _list)
+        for (const interval of _list)
             commit('select', {
-                start: addDays(day.start, delta),
-                end: addDays(day.end, delta),
+                start: addDays(interval.start, delta),
+                end: addDays(interval.end, delta),
             });
 
         commit('anchor', {
@@ -218,6 +244,55 @@ export const actions = {
             start: addDays(state.target.start, delta),
             end: addDays(state.target.end, delta),
         });
+    },
+    moveSlots({ state, commit, dispatch, rootGetters }, delta) {
+        const _list = state.list.slice();
+        const slots = rootGetters['week/slots'];
+
+        dispatch('unselectAll');
+
+        if (isNaN(delta)) {
+            for (const interval of _list) {
+                let target;
+                if (delta === 'prev') {
+                    target = slots.find(
+                        (d) =>
+                            getHours(d.end) === getHours(interval.start) &&
+                            getMinutes(d.end) === getMinutes(interval.start)
+                    );
+                } else if (delta === 'next') {
+                    target = slots.find(
+                        (d) =>
+                            getHours(d.start) === getHours(interval.end) &&
+                            getMinutes(d.start) === getMinutes(interval.end)
+                    );
+                }
+
+                let start = setHours(interval.start, getHours(target.start));
+                start = setMinutes(start, getMinutes(target.start));
+
+                let end = setHours(interval.end, getHours(target.end));
+                end = setMinutes(end, getMinutes(target.end));
+
+                commit('select', { start, end });
+            }
+        } else {
+            for (const interval of _list)
+                commit('select', {
+                    start: addMinutes(interval.start, delta),
+                    end: addMinutes(interval.end, delta),
+                });
+
+            commit('anchor', {
+                start: addMinutes(state.anchor.start, delta),
+                end: addMinutes(state.anchor.end, delta),
+            });
+
+            commit('target', {
+                start: addMinutes(state.target.start, delta),
+                end: addMinutes(state.target.end, delta),
+            });
+        }
     },
     anchor({ commit }, day) {
         commit('anchor', day);
