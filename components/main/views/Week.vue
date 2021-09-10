@@ -127,7 +127,7 @@
                     </div>
                 </div>
                 <div
-                    class="mb-4 mt-12 border-t border-gray-800"
+                    class="relative mb-4 mt-12 border-t border-gray-800"
                     :style="tool === 'select' ? 'cursor: cell' : ''"
                 >
                     <div
@@ -150,7 +150,63 @@
                                 width: calc(100% + 2px);
                             "
                         ></div>
-                        <!-- Events that hour -->
+                        <!-- <div
+                            v-if="eventsInSlot(day, slot)"
+                            class="p-1 text-left text-sm space-y-1"
+                        >
+                            <div
+                                v-for="event in eventsInSlot(day, slot)"
+                                :key="event.id"
+                                class="px-2 py-1 rounded select-none"
+                                :style="`background-color: ${event.category.bgColor}`"
+                            >
+                                <p
+                                    class="font-semibold"
+                                    :style="`color: ${event.category.textColor}`"
+                                >
+                                    {{ event.category.title }}
+                                </p>
+                            </div>
+                        </div> -->
+                    </div>
+
+                    <div
+                        v-if="eventsThatDay(day)"
+                        class="
+                            absolute
+                            left-0
+                            top-0
+                            w-full
+                            text-left text-sm
+                            space-y-1
+                        "
+                    >
+                        <div class="relative m-px">
+                            <div
+                                v-for="event in eventsThatDay(day)"
+                                :key="event.id"
+                                class="
+                                    absolute
+                                    left-0
+                                    px-2
+                                    py-1
+                                    w-full
+                                    rounded
+                                    select-none
+                                "
+                                :style="`background-color: ${
+                                    event.category.bgColor
+                                }; top: ${top(event)}px;
+                            height: calc(${height(event)}px - 3px)`"
+                            >
+                                <p
+                                    class="font-semibold"
+                                    :style="`color: ${event.category.textColor}`"
+                                >
+                                    {{ event.category.title }}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -232,6 +288,22 @@ export default {
         },
         height(slot) {
             return Math.round(this.duration(slot) * this.pxPerMinute);
+        },
+        differenceFromStart(event) {
+            const firstSlot = this.slots[0];
+            const start = setHours(
+                setMinutes(new Date(event.start), firstSlot.start.getMinutes()),
+                firstSlot.start.getHours()
+            );
+            return differenceInMinutes(event.start, start);
+        },
+        top(event) {
+            console.log(
+                Math.round(this.differenceFromStart(event) * this.pxPerMinute)
+            );
+            return Math.round(
+                this.differenceFromStart(event) * this.pxPerMinute
+            );
         },
         isSelected(day, slot) {
             const start = setHours(
@@ -342,6 +414,11 @@ export default {
             if (!next || !this.isSelected(day, next)) classes += ' border-b';
 
             return classes;
+        },
+        eventsThatDay(day) {
+            const events = this.$store.getters['events/onCalendarOnDay'](day);
+            if (events.length) return events;
+            else return false;
         },
     },
 };

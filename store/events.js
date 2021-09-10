@@ -1,3 +1,5 @@
+import { isWithinInterval, startOfDay, endOfDay } from 'date-fns';
+
 export const state = () => ({
     list: [],
 });
@@ -17,12 +19,12 @@ export const actions = {
     add({ commit }, category) {
         const selection = this.getters['selection/selected'];
 
-        for (const date of selection) {
+        for (const interval of selection) {
             commit('add', {
                 category,
                 calendar: this.getters['calendars/selected'],
-                start: date,
-                end: date,
+                start: interval.start,
+                end: interval.end,
             });
         }
     },
@@ -43,12 +45,29 @@ export const getters = {
         );
     },
     onCalendarOnDay: (_, getters) => (day) => {
-        return getters.onCalendar.filter(
-            (event) =>
-                event.start.toString() === day.toString() &&
-                event.end.toString() === day.toString()
+        return getters.onCalendar.filter((event) =>
+            isWithinInterval(day, {
+                start: startOfDay(event.start),
+                end: endOfDay(event.end),
+            })
         );
     },
+    // onCalendarOnSlot: (_, getters) => (day, slot) => {
+    //     const start = setHours(
+    //         setMinutes(new Date(day), slot.start.getMinutes()),
+    //         slot.start.getHours()
+    //     );
+    //     const end = setHours(
+    //         setMinutes(new Date(day), slot.end.getMinutes()),
+    //         slot.end.getHours()
+    //     );
+
+    //     return getters.onCalendar.filter(
+    //         (event) =>
+    //             event.start.toString() === start.toString() &&
+    //             event.end.toString() === end.toString()
+    //     );
+    // },
 };
 
 class Event {

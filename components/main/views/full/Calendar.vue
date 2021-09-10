@@ -15,7 +15,7 @@
                             relative
                             flex-1
                             p-2
-                            h-24
+                            h-40
                             border-l border-t border-gray-700
                         "
                         :class="[
@@ -47,7 +47,7 @@
                         >
                             {{ format(day, 'd MMM') }}
                         </p>
-                        <div v-if="eventsThatDay(day)" class="mt-1">
+                        <div v-if="eventsThatDay(day)" class="mt-1 space-y-1">
                             <div
                                 v-for="event in eventsThatDay(day)"
                                 :key="event.id"
