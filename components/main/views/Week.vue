@@ -298,9 +298,6 @@ export default {
             return differenceInMinutes(event.start, start);
         },
         top(event) {
-            console.log(
-                Math.round(this.differenceFromStart(event) * this.pxPerMinute)
-            );
             return Math.round(
                 this.differenceFromStart(event) * this.pxPerMinute
             );

@@ -20,8 +20,6 @@ export const state = () => ({
             });
         }
 
-        console.log(new Date(0));
-
         // // First slot
         // const [firstHours, firstMinutes] = this.stops[0].split(':');
         // slots.unshift({
