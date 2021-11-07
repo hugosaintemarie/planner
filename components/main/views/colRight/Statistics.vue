@@ -32,7 +32,7 @@ export default {
     },
     methods: {
         count(category) {
-            return this.$store.getters['events/onCalendar'].filter(
+            return this.$store.getters['events/onCalendar']().filter(
                 (d) => d.category === category
             ).length;
         },

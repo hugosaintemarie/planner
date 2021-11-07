@@ -39,13 +39,12 @@ export const actions = {
 };
 
 export const getters = {
-    onCalendar(state, _getters, _rootState, rootGetters) {
-        return state.list.filter(
-            (d) => d.calendar === rootGetters['calendars/selected']
-        );
+    onCalendar: (state, _getters, _rootState, rootGetters) => (calendar) => {
+        if (!calendar) calendar = rootGetters['calendars/selected'];
+        return state.list.filter((d) => d.calendar === calendar);
     },
-    onCalendarOnDay: (_, getters) => (day) => {
-        return getters.onCalendar.filter((event) =>
+    onCalendarOnDay: (_, getters) => (day, calendar) => {
+        return getters.onCalendar(calendar).filter((event) =>
             isWithinInterval(day, {
                 start: startOfDay(event.start),
                 end: endOfDay(event.end),
