@@ -1,6 +1,6 @@
 <template>
     <div class="flex-1 overflow-hidden">
-        <div class="no-scrollbar h-full overflow-auto space-y-6">
+        <div class="no-scrollbar pb-6 h-full overflow-auto space-y-6">
             <div
                 v-for="calendar in calendars"
                 :key="calendar.id"
