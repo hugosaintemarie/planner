@@ -51,15 +51,51 @@
                             <div
                                 v-for="event in eventsThatDay(day)"
                                 :key="event.id"
-                                class="px-2 py-1 rounded select-none"
-                                :style="`background-color: ${event.category.bgColor}`"
                             >
-                                <p
-                                    class="font-semibold"
-                                    :style="`color: ${event.category.textColor}`"
+                                <div
+                                    v-if="event.fullDay"
+                                    class="px-2 py-1 rounded select-none"
+                                    :style="`background-color: ${event.category.bgColor}`"
                                 >
-                                    {{ event.category.title }}
-                                </p>
+                                    <p
+                                        class="font-semibold"
+                                        :style="`color: ${event.category.textColor}`"
+                                    >
+                                        {{ event.category.title }}
+                                    </p>
+                                </div>
+                                <div v-if="!event.fullDay" class="flex">
+                                    <div
+                                        class="
+                                            flex-none
+                                            mr-2
+                                            mt-1.5
+                                            w-2
+                                            h-2
+                                            rounded-full
+                                        "
+                                        :style="`background-color: ${event.category.color}`"
+                                    ></div>
+                                    <p
+                                        class="flex flex-1"
+                                        :style="`color: ${event.category.textColor}`"
+                                    >
+                                        <span class="font-semibold">
+                                            {{ event.category.title }}
+                                        </span>
+                                        <span class="ml-auto">
+                                            {{
+                                                event.start.toLocaleTimeString(
+                                                    [],
+                                                    {
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                    }
+                                                )
+                                            }}
+                                        </span>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -217,9 +253,12 @@ export default {
             }
         },
         eventsThatDay(day) {
-            const events = this.$store.getters['events/onCalendarOnDay'](day);
-            if (events.length) return events;
-            else return false;
+            let events = this.$store.getters['events/onCalendarOnDay'](day);
+            if (!events.length) return false;
+
+            events = events.sort((a, b) => a.start - b.start);
+            events = events.sort((d) => (d.fullDay ? 0 : 1));
+            return events;
         },
     },
 };

@@ -16,16 +16,20 @@ export const mutations = {
 };
 
 export const actions = {
-    add({ commit }, category) {
+    add({ commit }, { category, fullDay }) {
         const selection = this.getters['selection/selected'];
 
         for (const interval of selection) {
-            commit('add', {
+            const event = {
                 category,
                 calendar: this.getters['calendars/selected'],
                 start: interval.start,
                 end: interval.end,
-            });
+            };
+            if (fullDay) event.fullDay = fullDay;
+            console.log(event);
+
+            commit('add', event);
         }
     },
     delete({ commit }, id) {
@@ -76,5 +80,6 @@ class Event {
         this.category = props.category;
         this.start = props.start;
         this.end = props.end;
+        this.fullDay = props.fullDay;
     }
 }

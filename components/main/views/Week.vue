@@ -25,7 +25,7 @@
                         z-10
                         top-0
                         p-2
-                        h-28
+                        h-32
                         bg-gray-800
                         border-b border-gray-700
                     "
@@ -106,7 +106,7 @@
                         sticky
                         z-10
                         top-8
-                        h-20
+                        h-24
                         bg-gray-800
                         border-b border-l border-gray-700
                         -translate-x-px
@@ -122,8 +122,26 @@
                     >
                         {{ format(day, 'eee d') }}
                     </div>
-                    <div class="p-2">
+                    <div
+                        v-if="eventsThatDay(day, 'full')"
+                        class="p-px w-full text-left text-sm space-y-1"
+                    >
                         <!-- All day events -->
+                        <div class="relative m-px">
+                            <div
+                                v-for="event in eventsThatDay(day, 'full')"
+                                :key="event.id"
+                                class="px-1 py-0.5 w-full rounded select-none"
+                                :style="`background-color: ${event.category.bgColor};`"
+                            >
+                                <p
+                                    class="font-semibold"
+                                    :style="`color: ${event.category.textColor}`"
+                                >
+                                    {{ event.category.title }}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div
@@ -171,7 +189,7 @@
                     </div>
 
                     <div
-                        v-if="eventsThatDay(day)"
+                        v-if="eventsThatDay(day, 'notFull')"
                         class="
                             absolute
                             left-0
@@ -183,7 +201,7 @@
                     >
                         <div class="relative m-px">
                             <div
-                                v-for="event in eventsThatDay(day)"
+                                v-for="event in eventsThatDay(day, 'notFull')"
                                 :key="event.id"
                                 class="
                                     absolute
@@ -196,8 +214,9 @@
                                 "
                                 :style="`background-color: ${
                                     event.category.bgColor
-                                }; top: ${top(event)}px;
-                            height: calc(${height(event)}px - 3px)`"
+                                }; top: ${top(event)}px; height: calc(${height(
+                                    event
+                                )}px - 3px)`"
                             >
                                 <p
                                     class="font-semibold"
@@ -412,10 +431,14 @@ export default {
 
             return classes;
         },
-        eventsThatDay(day) {
-            const events = this.$store.getters['events/onCalendarOnDay'](day);
-            if (events.length) return events;
-            else return false;
+        eventsThatDay(day, type) {
+            let events = this.$store.getters['events/onCalendarOnDay'](day);
+            if (!events.length) return false;
+
+            if (type === 'notFull') events = events.filter((e) => !e.fullDay);
+            else if (type === 'full') events = events.filter((e) => e.fullDay);
+            console.log(events);
+            return events;
         },
     },
 };

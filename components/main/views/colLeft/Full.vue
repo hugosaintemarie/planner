@@ -15,7 +15,14 @@
                 @click="select(calendar.id)"
             >
                 <div
-                    class="mb-3 w-full bg-gray-800 border-2 rounded-lg"
+                    class="
+                        mb-3
+                        w-full
+                        bg-gray-800
+                        border-2
+                        rounded-lg
+                        overflow-hidden
+                    "
                     :class="
                         selected === calendar.id
                             ? 'border-gray-100'

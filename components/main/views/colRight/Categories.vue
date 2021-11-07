@@ -45,7 +45,10 @@ export default {
     },
     methods: {
         onClick(category) {
-            this.$store.dispatch('events/add', category);
+            this.$store.dispatch('events/add', {
+                category,
+                fullDay: this.$store.getters['views/current'] === 'full',
+            });
         },
         rename(event) {
             // const title = event.target.innerHTML;
