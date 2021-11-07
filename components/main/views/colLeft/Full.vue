@@ -31,9 +31,17 @@
                         <div
                             v-for="(day, d) in days(week)"
                             :key="d"
-                            class="relative flex-1 h-5 overflow-hidden"
+                            class="relative flex-1 h-5"
                             :class="d === 0 ? '' : 'border-l border-gray-700'"
                         >
+                            <div
+                                v-if="isSelected(day)"
+                                :class="selectionClasses(day, calendar.id)"
+                                style="
+                                    height: calc(100% + 2px);
+                                    width: calc(100% + 2px);
+                                "
+                            ></div>
                             <div
                                 v-if="eventsThatDay(day, calendar)"
                                 class="
@@ -72,7 +80,16 @@
 </template>
 
 <script>
-import { eachDayOfInterval, eachWeekOfInterval, lastDayOfWeek } from 'date-fns';
+import {
+    addDays,
+    eachDayOfInterval,
+    endOfDay,
+    eachWeekOfInterval,
+    isEqual,
+    lastDayOfWeek,
+    startOfDay,
+    subDays,
+} from 'date-fns';
 export default {
     computed: {
         calendars() {
@@ -124,6 +141,30 @@ export default {
             );
             if (events.length) return events;
             else return false;
+        },
+        isSelected(day) {
+            return this.$store.getters['selection/selected'].some(
+                (d) =>
+                    isEqual(d.start, startOfDay(day)) &&
+                    isEqual(d.end, endOfDay(day))
+            );
+        },
+        selectionClasses(day, calendar) {
+            let classes =
+                'bg-blue-400/10 absolute z-10 -left-px -top-px pointer-events-none';
+
+            if (calendar !== this.selected) return classes;
+
+            classes += ' border-blue-400';
+
+            if (!this.isSelected(subDays(day, 7))) classes += ' border-t';
+            if (!this.isSelected(subDays(day, 1)) || day.getDay() === 1)
+                classes += ' border-l';
+            if (!this.isSelected(addDays(day, 1)) || day.getDay() === 0)
+                classes += ' border-r';
+            if (!this.isSelected(addDays(day, 7))) classes += ' border-b';
+
+            return classes;
         },
     },
 };
