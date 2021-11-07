@@ -301,7 +301,8 @@ export const actions = {
         commit('target', day);
     },
     empty({ state }) {
-        for (const day of state.list) {
+        for (const interval of state.list) {
+            const day = interval.start;
             this.dispatch('events/emptyOnCalendarOnDay', day);
         }
     },
