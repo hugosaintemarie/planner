@@ -437,7 +437,6 @@ export default {
 
             if (type === 'notFull') events = events.filter((e) => !e.fullDay);
             else if (type === 'full') events = events.filter((e) => e.fullDay);
-            console.log(events);
             return events;
         },
     },
