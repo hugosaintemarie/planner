@@ -46,6 +46,9 @@ export const getters = {
     selected(state) {
         return state.list[state.selected];
     },
+    default(state) {
+        return state.list[0];
+    },
 };
 
 const colors = [

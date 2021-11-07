@@ -14,7 +14,7 @@
                         class="
                             relative
                             flex-1
-                            p-2
+                            w-0
                             h-40
                             border-l border-t border-gray-700
                         "
@@ -28,6 +28,7 @@
                         ]"
                         @mousedown="isWithinBounds(day) && mousedownDay(day)"
                         @mouseenter="isWithinBounds(day) && mouseenterDay(day)"
+                        @dblclick="isWithinBounds(day) && dblclickDay(day)"
                     >
                         <div
                             v-if="isSelected(day)"
@@ -38,7 +39,7 @@
                             "
                         ></div>
                         <p
-                            class="text-xs select-none uppercase"
+                            class="m-2 text-xs select-none uppercase"
                             :class="
                                 isWithinBounds(day)
                                     ? 'text-gray-500'
@@ -51,17 +52,47 @@
                             <div
                                 v-for="event in eventsThatDay(day)"
                                 :key="event.id"
+                                :class="
+                                    tool === 'select'
+                                        ? 'pointer-events-none'
+                                        : ''
+                                "
+                                @mousedown.stop="mousedownEvent(event)"
+                                @dblclick.stop="dblclickEvent(event)"
                             >
                                 <div
                                     v-if="event.fullDay"
-                                    class="px-2 py-1 rounded select-none"
-                                    :style="`background-color: ${event.category.bgColor}`"
+                                    class="px-2 py-1 select-none"
+                                    :class="[
+                                        isStart(event, day)
+                                            ? 'ml-2 rounded-l'
+                                            : '',
+                                        isEnd(event, day)
+                                            ? 'mr-2 rounded-r'
+                                            : '',
+                                        tool === 'select'
+                                            ? 'pointer-events-none'
+                                            : '',
+                                    ]"
+                                    :style="`background-color: ${
+                                        event.category.bgColor
+                                    }; margin-left: ${
+                                        isStart(event, day) ||
+                                        isFirstOfWeek(day)
+                                            ? ''
+                                            : '-1px'
+                                    };`"
                                 >
                                     <p
                                         class="font-semibold"
                                         :style="`color: ${event.category.textColor}`"
                                     >
-                                        {{ event.category.title }}
+                                        {{
+                                            isStart(event, day) ||
+                                            isFirstOfWeek(day)
+                                                ? event.category.title
+                                                : '&nbsp;'
+                                        }}
                                     </p>
                                 </div>
                                 <div v-if="!event.fullDay" class="flex">
@@ -155,6 +186,12 @@ export default {
         format(day, args) {
             return format(day, args);
         },
+        startOfDay(day) {
+            return startOfDay(day);
+        },
+        endOfDay(day) {
+            return endOfDay(day);
+        },
         isWeekend(day) {
             return isWeekend(day);
         },
@@ -164,6 +201,12 @@ export default {
                 end: new Date(document.getElementById('end').value),
             });
         },
+        isStart(event, day) {
+            return event.start.getTime() === startOfDay(day).getTime();
+        },
+        isEnd(event, day) {
+            return event.end.getTime() === endOfDay(day).getTime();
+        },
         monthsDivider(day) {
             // TODO: move condition
             const showMonthsDivider = false;
@@ -171,15 +214,18 @@ export default {
             if (!showMonthsDivider) return;
 
             let classes = '';
-            if (this.isFirstRow(day)) classes += 'border-t-gray-500';
-            if (this.isFirst(day)) classes += ' border-l-gray-500';
+            if (this.isFirstOfMonthRow(day)) classes += 'border-t-gray-500';
+            if (this.isFirstOfMonth(day)) classes += ' border-l-gray-500';
             return classes;
         },
-        isFirstRow(day) {
+        isFirstOfMonthRow(day) {
             return getDate(day) <= 7;
         },
-        isFirst(day) {
+        isFirstOfMonth(day) {
             return getDate(day) === 1 && getDay(day) !== 1;
+        },
+        isFirstOfWeek(day) {
+            return getDay(day) === 1;
         },
         isSelected(day) {
             return this.selected.some(
@@ -202,6 +248,10 @@ export default {
             return classes;
         },
         mousedownDay(day) {
+            if (this.tool === 'select') this.mousedownDaySelect(day);
+            else if (this.tool === 'draw') this.mousedownDayDraw(day);
+        },
+        mousedownDaySelect(day) {
             const interval = {
                 start: startOfDay(day),
                 end: endOfDay(day),
@@ -232,25 +282,46 @@ export default {
 
             this.mouseenterDay(day);
         },
+        mousedownDayDraw(day) {
+            this.$store.dispatch('events/init', day);
+        },
         mouseenterDay(day) {
+            if (this.mousedown) {
+                if (this.tool === 'select') this.mouseenterDaySelect(day);
+                else if (this.tool === 'draw') this.mouseenterDayDraw(day);
+            }
+        },
+        mouseenterDaySelect(day) {
             const interval = {
                 start: startOfDay(day),
                 end: endOfDay(day),
             };
 
-            if (this.mousedown) {
-                if (this.$store.getters['keyboard/isKeydown']('meta')) {
-                    if (this.unselect)
-                        this.$store.dispatch('selection/unselect', interval);
-                    else this.$store.dispatch('selection/select', interval);
-                } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
-                    this.$store.dispatch('selection/unselectAll');
-                    this.$store.dispatch('selection/selectDaysRange', interval);
-                } else {
-                    this.$store.dispatch('selection/unselectAll');
-                    this.$store.dispatch('selection/selectDaysRect', interval);
-                }
+            if (this.$store.getters['keyboard/isKeydown']('meta')) {
+                if (this.unselect)
+                    this.$store.dispatch('selection/unselect', interval);
+                else this.$store.dispatch('selection/select', interval);
+            } else if (this.$store.getters['keyboard/isKeydown']('alt')) {
+                this.$store.dispatch('selection/unselectAll');
+                this.$store.dispatch('selection/selectDaysRange', interval);
+            } else {
+                this.$store.dispatch('selection/unselectAll');
+                this.$store.dispatch('selection/selectDaysRect', interval);
             }
+        },
+        mouseenterDayDraw(day) {
+            this.$store.dispatch('events/draw', day);
+        },
+        dblclickDay(day) {
+            if (this.tool === 'select') return;
+
+            const selection = [
+                {
+                    start: startOfDay(day),
+                    end: endOfDay(day),
+                },
+            ];
+            this.$store.dispatch('events/add', { selection, fullDay: true });
         },
         eventsThatDay(day) {
             let events = this.$store.getters['events/onCalendarOnDay'](day);
@@ -259,6 +330,16 @@ export default {
             events = events.sort((a, b) => a.start - b.start);
             events = events.sort((d) => (d.fullDay ? 0 : 1));
             return events;
+        },
+        mousedownEvent(event) {
+            if (this.tool === 'draw') {
+                console.log('mousedown', event);
+            }
+        },
+        dblclickEvent(event) {
+            if (this.tool === 'draw') {
+                console.log('dblclick', event);
+            }
         },
     },
 };
