@@ -1,6 +1,10 @@
 <template>
     <div class="flex-1 overflow-hidden">
-        <div class="no-scrollbar pb-6 h-full overflow-auto space-y-6">
+        <draggable
+            v-model="cals"
+            v-bind="dragOptions"
+            class="no-scrollbar pb-6 h-full overflow-auto space-y-6"
+        >
             <div
                 v-for="calendar in calendars"
                 :key="calendar.id"
@@ -11,7 +15,7 @@
                 @click="select(calendar.id)"
             >
                 <div
-                    class="mb-3 w-full border-2 rounded-lg"
+                    class="mb-3 w-full bg-gray-800 border-2 rounded-lg"
                     :class="
                         selected === calendar.id
                             ? 'border-gray-100'
@@ -63,7 +67,7 @@
                     calendar.title || '&nbsp;'
                 }}</span>
             </div>
-        </div>
+        </draggable>
     </div>
 </template>
 
@@ -85,6 +89,19 @@ export default {
                 },
                 { weekStartsOn: 1 }
             );
+        },
+        cals: {
+            get() {
+                return this.$store.state.calendars.list;
+            },
+            set(value) {
+                this.$store.commit('calendars/update', value);
+            },
+        },
+        dragOptions() {
+            return {
+                animation: 200,
+            };
         },
     },
     mounted() {

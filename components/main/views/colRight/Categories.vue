@@ -6,8 +6,6 @@
             v-model="categories"
             v-bind="dragOptions"
             class="mt-4 space-y-2"
-            @start="drag = true"
-            @end="drag = false"
         >
             <div
                 v-for="category in categories"
