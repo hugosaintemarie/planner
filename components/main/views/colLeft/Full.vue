@@ -3,7 +3,7 @@
         <draggable
             v-model="cals"
             v-bind="dragOptions"
-            class="no-scrollbar pb-6 h-full overflow-auto space-y-6"
+            class="h-full pb-6 space-y-6 overflow-auto no-scrollbar"
         >
             <div
                 v-for="calendar in calendars"
@@ -15,14 +15,7 @@
                 @click="select(calendar.id)"
             >
                 <div
-                    class="
-                        mb-3
-                        w-full
-                        bg-gray-800
-                        border-2
-                        rounded-lg
-                        overflow-hidden
-                    "
+                    class="w-full mb-3 overflow-hidden bg-gray-800 border-2 rounded-lg"
                     :class="
                         selected === calendar.id
                             ? 'border-gray-100'
@@ -51,12 +44,7 @@
                             ></div>
                             <div
                                 v-if="eventsThatDay(day, calendar)"
-                                class="
-                                    flex flex-wrap
-                                    items-center
-                                    justify-center
-                                    h-full
-                                "
+                                class="flex flex-wrap items-center justify-center h-full"
                             >
                                 <div
                                     v-for="event in eventsThatDay(
@@ -64,13 +52,7 @@
                                         calendar
                                     )"
                                     :key="event.id"
-                                    class="
-                                        flex-none
-                                        m-px
-                                        w-1.5
-                                        h-1.5
-                                        rounded-full
-                                    "
+                                    class="flex-none m-px w-1.5 h-1.5 rounded-full"
                                     :style="`background-color: ${event.category.color}`"
                                 ></div>
                             </div>

@@ -3,7 +3,7 @@
         <div
             v-for="(tool, name) in tools"
             :key="name"
-            class="flex items-center justify-center w-14 h-full cursor-pointer"
+            class="flex items-center justify-center h-full cursor-pointer w-14"
             :class="
                 name === selected
                     ? 'text-white bg-gray-700'

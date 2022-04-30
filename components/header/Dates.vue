@@ -7,7 +7,7 @@
             class="px-2 py-1 text-gray-500 bg-gray-900 rounded-sm"
             value="2021-11-01"
         />
-        <i class="fas fa-arrow-right mx-2 text-gray-600 text-sm"></i>
+        <i class="mx-2 text-sm text-gray-600 fas fa-arrow-right"></i>
         <input
             id="end"
             type="date"

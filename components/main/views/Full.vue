@@ -1,7 +1,7 @@
 <template>
-    <div class="flex flex-col p-4 pb-0 h-full">
+    <div class="flex flex-col h-full p-4 pb-0">
         <MainViewsFullHeader />
-        <div class="flex flex-1 flex-col -mb-px mt-3 w-full overflow-hidden">
+        <div class="flex flex-col flex-1 w-full mt-3 -mb-px overflow-hidden">
             <MainViewsFullDays />
             <MainViewsFullCalendar />
         </div>

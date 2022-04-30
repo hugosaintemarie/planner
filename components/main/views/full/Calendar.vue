@@ -1,6 +1,6 @@
 <template>
     <div class="flex-1 overflow-hidden">
-        <div class="no-scrollbar pb-4 h-full overflow-auto">
+        <div class="h-full pb-4 overflow-auto no-scrollbar">
             <div
                 class="border-b border-r border-gray-700"
                 :style="tool === 'select' ? 'cursor: cell' : ''"
@@ -11,13 +11,7 @@
                     <div
                         v-for="(day, d) in days(week)"
                         :key="d"
-                        class="
-                            relative
-                            flex-1
-                            w-0
-                            h-40
-                            border-l border-t border-gray-700
-                        "
+                        class="relative flex-1 w-0 h-40 border-t border-l border-gray-700"
                         :class="[
                             isWeekend(day)
                                 ? isWithinBounds(day)
@@ -39,7 +33,7 @@
                             "
                         ></div>
                         <p
-                            class="m-2 text-xs select-none uppercase"
+                            class="m-2 text-xs uppercase select-none"
                             :class="
                                 isWithinBounds(day)
                                     ? 'text-gray-500'
@@ -97,14 +91,7 @@
                                 </div>
                                 <div v-if="!event.fullDay" class="flex">
                                     <div
-                                        class="
-                                            flex-none
-                                            mr-2
-                                            mt-1.5
-                                            w-2
-                                            h-2
-                                            rounded-full
-                                        "
+                                        class="flex-none mr-2 mt-1.5 w-2 h-2 rounded-full"
                                         :style="`background-color: ${event.category.color}`"
                                     ></div>
                                     <p

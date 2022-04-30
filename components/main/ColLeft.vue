@@ -3,28 +3,13 @@
         <div class="flex p-4 border-b border-gray-700">
             <div class="flex-1 select-none">
                 <h1 class="font-semibold">Calendars</h1>
-                <p class="text-gray-400 text-xs">
+                <p class="text-xs text-gray-400">
                     {{ count }} calendars, 2 hidden
                 </p>
             </div>
             <div class="flex items-center">
                 <i
-                    class="
-                        far
-                        fa-calendar-plus
-                        flex
-                        items-center
-                        justify-center
-                        w-8
-                        h-8
-                        text-gray-500
-                        hover:text-white
-                        text-base
-                        hover:bg-gray-700
-                        border border-gray-700
-                        rounded
-                        cursor-pointer
-                    "
+                    class="flex items-center justify-center w-8 h-8 text-base text-gray-500 border border-gray-700 rounded cursor-pointer far fa-calendar-plus hover:text-white hover:bg-gray-700"
                     @click="add"
                 ></i>
             </div>

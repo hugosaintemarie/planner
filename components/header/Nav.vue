@@ -4,13 +4,7 @@
             <li
                 v-for="(item, title, index) in nav"
                 :key="title"
-                class="
-                    relative
-                    p-4
-                    hover:bg-gray-700
-                    cursor-pointer
-                    select-none
-                "
+                class="relative p-4 cursor-pointer select-none hover:bg-gray-700"
                 :class="[
                     title === openNav ? 'bg-gray-700' : '',
                     index === 0 ? 'font-bold' : '',
@@ -21,17 +15,7 @@
                 {{ title }}
 
                 <div
-                    class="
-                        absolute
-                        left-0
-                        top-full
-                        font-normal
-                        bg-gray-800
-                        border border-gray-700
-                        rounded-b-md
-                        shadow-lg
-                        cursor-default
-                    "
+                    class="absolute left-0 font-normal bg-gray-800 border border-gray-700 shadow-lg cursor-default top-full rounded-b-md"
                     :class="title === openNav ? 'block' : 'hidden'"
                 >
                     <ul
@@ -46,16 +30,7 @@
                         <li
                             v-for="(entry, e) in list"
                             :key="e"
-                            class="
-                                group
-                                relative
-                                flex
-                                items-center
-                                px-4
-                                py-2
-                                whitespace-nowrap
-                                border-gray-700
-                            "
+                            class="relative flex items-center px-4 py-2 border-gray-700 group whitespace-nowrap"
                             :class="[
                                 entry.disabled
                                     ? 'text-gray-500'
@@ -71,62 +46,33 @@
                         >
                             <i
                                 v-if="entry.checked"
-                                class="fas fa-check absolute left-2"
+                                class="absolute fas fa-check left-2"
                             ></i>
                             <span class="ml-4 mr-12">
                                 {{ entry.title }}
                             </span>
                             <i
                                 v-if="entry.entries"
-                                class="
-                                    fas
-                                    fa-chevron-right
-                                    -mr-1
-                                    ml-auto
-                                    text-xs
-                                "
+                                class="ml-auto -mr-1 text-xs fas fa-chevron-right"
                             ></i>
                             <span
                                 v-if="entry.shortcut"
-                                class="-mr-1 ml-auto text-gray-400 text-xs"
+                                class="ml-auto -mr-1 text-xs text-gray-400"
                             >
                                 {{ entry.shortcut }}
                             </span>
                             <svg
                                 v-if="entry.entries"
-                                class="
-                                    absolute
-                                    z-50
-                                    left-0
-                                    top-0
-                                    w-full
-                                    pointer-events-none
-                                "
+                                class="absolute top-0 left-0 z-50 w-full pointer-events-none"
                             ></svg>
                             <ul
                                 v-if="entry.entries && !entry.disabled"
-                                class="
-                                    absolute
-                                    left-full
-                                    top-0
-                                    group-hover:block
-                                    hidden
-                                    bg-gray-800
-                                    border border-gray-700
-                                    rounded-md rounded-tl-none
-                                "
+                                class="absolute top-0 hidden bg-gray-800 border border-gray-700 rounded-md rounded-tl-none left-full group-hover:block"
                             >
                                 <li
                                     v-for="(subentry, j) in entry.entries"
                                     :key="j"
-                                    class="
-                                        flex
-                                        items-center
-                                        px-4
-                                        py-2
-                                        whitespace-nowrap
-                                        border-gray-700
-                                    "
+                                    class="flex items-center px-4 py-2 border-gray-700 whitespace-nowrap"
                                     :class="[
                                         subentry.disabled
                                             ? 'text-gray-500'

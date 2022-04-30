@@ -1,33 +1,12 @@
 <template>
     <div
         id="tooltip"
-        class="
-            absolute
-            z-40
-            px-2
-            py-1.5
-            text-white
-            bg-black
-            rounded
-            pointer-events-none
-            overflow-visible
-            -translate-x-1/2
-        "
+        class="absolute z-40 px-2 py-1.5 text-white bg-black rounded pointer-events-none overflow-visible -translate-x-1/2"
         :style="`left: ${x}px; top: ${y}px`"
         :class="!visible ? 'opacity-0' : ''"
     >
         <div
-            class="
-                absolute
-                -top-3
-                left-1/2
-                w-3
-                h-3
-                bg-black
-                rounded-tl-sm
-                transform
-                origin-bottom-left
-            "
+            class="absolute w-3 h-3 origin-bottom-left transform bg-black rounded-tl-sm -top-3 left-1/2"
             style="transform: translate(calc(-50% - 0.165rem)) rotate(45deg)"
         ></div>
         {{ tooltip }}

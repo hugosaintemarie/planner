@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col h-screen text-white text-sm bg-gray-900">
+    <div class="flex flex-col h-screen text-sm text-white bg-gray-900">
         <Header />
         <Main />
         <Tooltip />

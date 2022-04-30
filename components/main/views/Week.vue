@@ -1,40 +1,23 @@
 <template>
     <div class="w-full h-full overflow-hidden">
         <div
-            class="no-scrollbar relative flex h-full overflow-auto"
+            class="relative flex h-full overflow-auto no-scrollbar"
             style="scroll-snap-type: x mandatory; scroll-padding: 4rem"
             @mousedown="mousedown = true"
             @mouseup="mousedown = false"
         >
             <div
-                class="
-                    sticky
-                    z-20
-                    left-0
-                    flex-none
-                    w-16
-                    min-h-full
-                    bg-gray-800
-                    border-r border-gray-700
-                "
+                class="sticky left-0 z-20 flex-none w-16 min-h-full bg-gray-800 border-r border-gray-700"
                 style="height: max-content"
             >
                 <div
-                    class="
-                        sticky
-                        z-10
-                        top-0
-                        p-2
-                        h-32
-                        bg-gray-800
-                        border-b border-gray-700
-                    "
+                    class="sticky top-0 z-10 h-32 p-2 bg-gray-800 border-b border-gray-700"
                 ></div>
                 <div class="py-4">
                     <div
                         v-for="(slot, s) in slots"
                         :key="s"
-                        class="text-center text-gray-400 text-xs"
+                        class="text-xs text-center text-gray-400"
                         :style="`height: ${height(slot)}px`"
                     >
                         <span class="block -translate-y-2">
@@ -42,45 +25,23 @@
                         </span>
                     </div>
                     <div
-                        class="
-                            block
-                            h-0
-                            text-center text-gray-400 text-xs
-                            -translate-y-2
-                        "
+                        class="block h-0 text-xs text-center text-gray-400 -translate-y-2"
                     >
                         {{ format(slots[slots.length - 1].end, 'HH:mm') }}
                     </div>
                 </div>
             </div>
             <div
-                class="
-                    sticky
-                    z-10
-                    left-0
-                    top-0
-                    flex
-                    h-8
-                    bg-gray-800
-                    border-b border-gray-700
-                "
+                class="sticky top-0 left-0 z-10 flex h-8 bg-gray-800 border-b border-gray-700"
             >
                 <div
                     v-for="month in months"
                     :key="month.valueOf()"
-                    class="flex-none border-r last:border-none border-gray-700"
+                    class="flex-none border-r border-gray-700 last:border-none"
                     :style="`width: calc(${daysInMonth(month)} * 128px)`"
                 >
                     <span
-                        class="
-                            sticky
-                            left-16
-                            top-0
-                            px-4
-                            py-2
-                            text-gray-400 text-xs
-                            font-semibold
-                        "
+                        class="sticky top-0 px-4 py-2 text-xs font-semibold text-gray-400 left-16"
                     >
                         {{ format(month, 'MMMM yyyy') }}
                     </span>
@@ -89,42 +50,22 @@
             <div
                 v-for="day in days"
                 :key="day.valueOf()"
-                class="
-                    relative
-                    flex-none
-                    w-32
-                    min-h-full
-                    border-r
-                    last:border-none
-                    border-gray-700
-                "
+                class="relative flex-none w-32 min-h-full border-r border-gray-700 last:border-none"
                 style="scroll-snap-align: start; height: max-content"
                 :class="[isWeekend(day) ? 'bg-gray-800/40' : '']"
             >
                 <div
-                    class="
-                        sticky
-                        z-10
-                        top-8
-                        h-24
-                        bg-gray-800
-                        border-b border-l border-gray-700
-                        -translate-x-px
-                    "
+                    class="sticky z-10 h-24 -translate-x-px bg-gray-800 border-b border-l border-gray-700 top-8"
                     style="width: calc(100% + 2px)"
                 >
                     <div
-                        class="
-                            p-2
-                            text-center text-gray-400 text-xs
-                            border-b border-gray-700
-                        "
+                        class="p-2 text-xs text-center text-gray-400 border-b border-gray-700"
                     >
                         {{ format(day, 'eee d') }}
                     </div>
                     <div
                         v-if="eventsThatDay(day, 'full')"
-                        class="p-px w-full text-left text-sm space-y-1"
+                        class="w-full p-px space-y-1 text-sm text-left"
                     >
                         <!-- All day events -->
                         <div class="relative m-px">
@@ -145,17 +86,13 @@
                     </div>
                 </div>
                 <div
-                    class="relative mb-4 mt-12 border-t border-gray-800"
+                    class="relative mt-12 mb-4 border-t border-gray-800"
                     :style="tool === 'select' ? 'cursor: cell' : ''"
                 >
                     <div
                         v-for="(slot, s) in slots"
                         :key="s"
-                        class="
-                            relative
-                            text-center text-gray-400 text-xs
-                            border-b border-gray-800
-                        "
+                        class="relative text-xs text-center text-gray-400 border-b border-gray-800"
                         :style="`height: ${height(slot)}px`"
                         @mousedown="mousedownSlot(day, slot)"
                         @mouseenter="mouseenterSlot(day, slot)"
@@ -170,7 +107,7 @@
                         ></div>
                         <!-- <div
                             v-if="eventsInSlot(day, slot)"
-                            class="p-1 text-left text-sm space-y-1"
+                            class="p-1 space-y-1 text-sm text-left"
                         >
                             <div
                                 v-for="event in eventsInSlot(day, slot)"
@@ -190,28 +127,13 @@
 
                     <div
                         v-if="eventsThatDay(day, 'notFull')"
-                        class="
-                            absolute
-                            left-0
-                            top-0
-                            w-full
-                            text-left text-sm
-                            space-y-1
-                        "
+                        class="absolute top-0 left-0 w-full space-y-1 text-sm text-left"
                     >
                         <div class="relative m-px">
                             <div
                                 v-for="event in eventsThatDay(day, 'notFull')"
                                 :key="event.id"
-                                class="
-                                    absolute
-                                    left-0
-                                    px-2
-                                    py-1
-                                    w-full
-                                    rounded
-                                    select-none
-                                "
+                                class="absolute left-0 w-full px-2 py-1 rounded select-none"
                                 :style="`background-color: ${
                                     event.category.bgColor
                                 }; top: ${top(event)}px; height: calc(${height(

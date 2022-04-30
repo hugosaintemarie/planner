@@ -15,7 +15,7 @@
                 @click="onClick(category)"
             >
                 <span
-                    class="whitespace-pre font-semibold"
+                    class="font-semibold whitespace-pre"
                     :data-id="category.id"
                     :style="`color: ${category.textColor}`"
                     @keyup="rename"
