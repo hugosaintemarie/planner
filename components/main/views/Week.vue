@@ -167,6 +167,7 @@ import {
     getMinutes,
     isEqual,
     isWeekend,
+    parseISO,
     setHours,
     setMinutes,
     subDays,
@@ -192,8 +193,10 @@ export default {
         months() {
             return eachMonthOfInterval(
                 {
-                    start: new Date(document.getElementById('start').value),
-                    end: new Date(document.getElementById('end').value),
+                    start: parseISO(
+                        this.$store.getters['settings/get']('start')
+                    ),
+                    end: parseISO(this.$store.getters['settings/get']('end')),
                 },
                 { weekStartsOn: 1 }
             );
@@ -201,8 +204,10 @@ export default {
         days() {
             return eachDayOfInterval(
                 {
-                    start: new Date(document.getElementById('start').value),
-                    end: new Date(document.getElementById('end').value),
+                    start: parseISO(
+                        this.$store.getters['settings/get']('start')
+                    ),
+                    end: parseISO(this.$store.getters['settings/get']('end')),
                 },
                 { weekStartsOn: 1 }
             );

@@ -76,6 +76,7 @@ import {
     eachWeekOfInterval,
     isEqual,
     lastDayOfWeek,
+    parseISO,
     startOfDay,
     subDays,
 } from 'date-fns';
@@ -90,8 +91,10 @@ export default {
         weeks() {
             return eachWeekOfInterval(
                 {
-                    start: new Date(document.getElementById('start').value),
-                    end: new Date(document.getElementById('end').value),
+                    start: parseISO(
+                        this.$store.getters['settings/get']('start')
+                    ),
+                    end: parseISO(this.$store.getters['settings/get']('end')),
                 },
                 { weekStartsOn: 1 }
             );
