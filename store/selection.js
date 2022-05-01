@@ -176,6 +176,8 @@ export const actions = {
         commit('unselectAll');
     },
     update({ state, dispatch, rootGetters }, event) {
+        if (!state.list.length) return;
+
         if (rootGetters['views/current'] === 'full') {
             const delta = {
                 37: -1,
