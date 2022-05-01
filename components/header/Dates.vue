@@ -5,7 +5,7 @@
             type="date"
             name="start"
             class="px-2 py-1 text-gray-500 bg-gray-900 rounded-sm"
-            value="2021-11-01"
+            :value="start"
         />
         <i class="mx-2 text-sm text-gray-600 fas fa-arrow-right"></i>
         <input
@@ -13,10 +13,23 @@
             type="date"
             name="end"
             class="px-2 py-1 text-gray-500 bg-gray-900 rounded-sm"
-            value="2021-12-31"
+            :value="end"
         />
     </div>
 </template>
+
+<script>
+export default {
+    computed: {
+        start() {
+            return this.$store.getters['settings/get']('start');
+        },
+        end() {
+            return this.$store.getters['settings/get']('end');
+        },
+    },
+};
+</script>
 
 <style lang="scss" scoped>
 input {

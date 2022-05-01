@@ -22,7 +22,7 @@ export default {
         },
         title: {
             get() {
-                return this.calendar.title;
+                return this.calendar?.title;
             },
             set(value) {
                 this.$store.dispatch('calendars/rename', value);
