@@ -1,7 +1,7 @@
 export const state = () => ({
     settings: {
-        start: '2021-11-01',
-        end: '2021-12-31',
+        start: '2022-04-01',
+        end: '2022-05-30',
     },
 });
 
