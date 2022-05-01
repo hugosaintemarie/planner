@@ -86,7 +86,7 @@ export const actions = {
 
         for (let w = lowestWeek; w <= highestWeek; w += 1) {
             for (let d = lowestDay; d <= highestDay; d += 1) {
-                let day = setDay(new Date(), d);
+                let day = setDay(new Date(anchor.start), d, { weekStartsOn });
                 day = setWeek(day, w, { weekStartsOn });
 
                 commit('select', {
