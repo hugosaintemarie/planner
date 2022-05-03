@@ -72,7 +72,7 @@
                                 <li
                                     v-for="(subentry, j) in entry.entries"
                                     :key="j"
-                                    class="flex items-center px-4 py-2 border-gray-700 whitespace-nowrap"
+                                    class="relative flex items-center px-4 py-2 border-gray-700 whitespace-nowrap"
                                     :class="[
                                         subentry.disabled
                                             ? 'text-gray-500'
@@ -82,10 +82,19 @@
                                             : '',
                                         j === 0 ? 'rounded-tr' : '',
                                     ]"
+                                    @click="
+                                        entry.onchildclick
+                                            ? entry.onchildclick(j)
+                                            : null
+                                    "
                                 >
                                     <span class="mr-12">
                                         {{ subentry.title }}
                                     </span>
+                                    <i
+                                        v-show="subentry.checked"
+                                        class="absolute text-sm right-3 fas fa-check"
+                                    ></i>
                                 </li>
                             </ul>
                         </li>
@@ -106,11 +115,8 @@ export default {
     data() {
         return {
             openNav: null,
-        };
-    },
-    computed: {
-        nav() {
-            return {
+            test: 0,
+            nav: {
                 Planner: {
                     entries: [
                         [{ title: 'About Planner', disabled: true }],
@@ -123,7 +129,6 @@ export default {
                             { title: 'New project', disabled: true },
                             {
                                 title: 'Change project',
-                                open: false,
                                 entries: [
                                     {
                                         title: 'No other project',
@@ -197,21 +202,18 @@ export default {
                         [
                             {
                                 title: 'Show/hide days',
-                                open: false,
-                                entries: [
-                                    { title: 'Monday' },
-                                    { title: 'Tuesday' },
-                                    { title: 'Wednesday' },
-                                    { title: 'Thursday' },
-                                    { title: 'Friday' },
-                                    { title: 'Saturday' },
-                                    { title: 'Sunday' },
-                                ],
+                                selectable: true,
+                                entries: this.$store.getters['views/days'],
+                                onchildclick: (index) => {
+                                    this.$store.dispatch(
+                                        'views/toggleDay',
+                                        index
+                                    );
+                                },
                             },
                             {
                                 title: 'Week starts on',
                                 disabled: true,
-                                open: false,
                                 entries: [
                                     { title: 'Monday' },
                                     { title: 'Tuesday' },
@@ -225,8 +227,8 @@ export default {
                         ],
                     ],
                 },
-            };
-        },
+            },
+        };
     },
     methods: {
         open(title) {

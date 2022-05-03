@@ -1,7 +1,6 @@
 import { setMinutes, setHours } from 'date-fns';
 
 export const state = () => ({
-    selected: 'full',
     slots() {
         const stops = this.stops();
         const slots = [];

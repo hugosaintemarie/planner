@@ -168,10 +168,11 @@ export default {
     },
     methods: {
         days(week) {
+            const shown = this.$store.getters['views/days'];
             return eachDayOfInterval({
                 start: week,
                 end: lastDayOfWeek(week, { weekStartsOn: 1 }),
-            });
+            }).filter((_d, i) => shown[i].checked);
         },
         format(day, args) {
             return format(day, args);
