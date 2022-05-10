@@ -57,7 +57,12 @@
                             ></i>
                             <span
                                 v-if="entry.shortcut"
-                                class="ml-auto -mr-1 text-xs text-gray-400"
+                                class="ml-auto -mr-1 text-xs"
+                                :class="
+                                    entry.disabled
+                                        ? 'text-gray-500'
+                                        : 'text-gray-400'
+                                "
                             >
                                 {{ entry.shortcut }}
                             </span>
@@ -136,8 +141,8 @@ export default {
                                     },
                                 ],
                             },
-                            { title: 'Open…' },
-                            { title: 'Save as .planner…' },
+                            { title: 'Open…', disabled: true },
+                            { title: 'Save as .planner…', disabled: true },
                         ],
                         [{ title: 'Project settings…', disabled: true }],
                         [{ title: 'Delete project', disabled: true }],
@@ -146,16 +151,27 @@ export default {
                 Edit: {
                     entries: [
                         [
-                            { title: 'Undo', disabled: true },
-                            { title: 'Redo', disabled: true },
+                            { title: 'Undo', disabled: true, shortcut: '⌘Z' },
+                            { title: 'Redo', disabled: true, shortcut: '⇧⌘Z' },
                         ],
                         [
-                            { title: 'Cut', disabled: true },
-                            { title: 'Copy', disabled: true },
-                            { title: 'Paste', disabled: true },
+                            { title: 'Cut', disabled: true, shortcut: '⌘X' },
+                            { title: 'Copy', disabled: true, shortcut: '⌘C' },
+                            { title: 'Paste', disabled: true, shortcut: '⌘V' },
                         ],
-                        [{ title: 'Select all' }],
-                        [{ title: 'Edit all calendars at once' }],
+                        [
+                            {
+                                title: 'Select all',
+                                disabled: true,
+                                shortcut: '⌘A',
+                            },
+                        ],
+                        [
+                            {
+                                title: 'Edit all calendars at once',
+                                disabled: true,
+                            },
+                        ],
                     ],
                 },
                 View: {
