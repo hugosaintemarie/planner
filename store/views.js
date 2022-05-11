@@ -32,6 +32,12 @@ export const mutations = {
     select: (state, name) => {
         state.selected = name;
     },
+    showDay: (state, index) => {
+        state.days[index].checked = true;
+    },
+    hideDay: (state, index) => {
+        state.days[index].checked = false;
+    },
     toggleDay: (state, index) => {
         state.days[index].checked = !state.days[index].checked;
     },
@@ -40,6 +46,21 @@ export const mutations = {
 export const actions = {
     select({ commit }, name) {
         commit('select', name);
+    },
+    showDay({ commit }, index) {
+        commit('showDay', index);
+    },
+    hideDay({ commit, dispatch, getters }, index) {
+        commit('hideDay', index);
+        dispatch('selection/unselectAll', null, { root: true });
+        dispatch(
+            'toasts/add',
+            {
+                msg: `${getters.titleByIndex(index)} column hidden`,
+                undo: { action: 'views/showDay', data: index },
+            },
+            { root: true }
+        );
     },
     toggleDay({ commit, dispatch }, index) {
         commit('toggleDay', index);
@@ -53,5 +74,8 @@ export const getters = {
     },
     days(state) {
         return state.days;
+    },
+    titleByIndex: (state) => (index) => {
+        return state.days[index].title;
     },
 };

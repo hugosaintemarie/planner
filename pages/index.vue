@@ -3,6 +3,7 @@
         <Header />
         <Main />
         <Tooltip />
+        <Toast />
         <Keyboard />
     </div>
 </template>

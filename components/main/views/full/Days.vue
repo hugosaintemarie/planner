@@ -81,7 +81,7 @@ export default {
         },
         hide(weekday) {
             this.$store.dispatch(
-                'views/toggleDay',
+                'views/hideDay',
                 this.weekdays.indexOf(weekday)
             );
         },
