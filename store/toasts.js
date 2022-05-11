@@ -20,7 +20,6 @@ export const actions = {
     add({ commit, getters }, toast) {
         commit('increment');
         const index = getters.count;
-        console.log(index);
 
         toast.visible = true;
         toast.index = index;

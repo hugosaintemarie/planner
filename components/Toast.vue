@@ -34,7 +34,6 @@
 export default {
     computed: {
         toasts() {
-            console.log(this.$store.getters['toasts/visible']);
             return this.$store.getters['toasts/visible'];
         },
     },
