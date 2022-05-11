@@ -120,7 +120,6 @@ export default {
     data() {
         return {
             openNav: null,
-            test: 0,
             nav: {
                 Planner: {
                     entries: [
