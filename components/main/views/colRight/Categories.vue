@@ -1,28 +1,56 @@
 <template>
-    <div class="p-4">
+    <div class="p-4 pb-2 pr-2">
         <h1 class="font-semibold">Categories</h1>
 
         <draggable
             v-model="categories"
             v-bind="dragOptions"
-            class="mt-4 space-y-2"
+            class="mt-3"
+            handle=".handle"
+            drag-class="opacity-0"
         >
             <div
                 v-for="category in categories"
                 :key="category.id"
-                class="px-3 py-2 rounded"
-                :style="`background-color: ${category.bgColor}`"
-                @click="onClick(category)"
+                class="flex items-center gap-2 py-1 group"
             >
-                <span
-                    class="font-semibold whitespace-pre"
-                    :data-id="category.id"
-                    :style="`color: ${category.textColor}`"
-                    @keyup="rename"
-                    >{{ category.title || '&nbsp;' }}</span
+                <div
+                    class="flex-1 px-3 py-2 rounded"
+                    :style="`background-color: ${category.bgColor}`"
+                    @click="onClick(category)"
                 >
+                    <span
+                        class="font-semibold whitespace-pre"
+                        :data-id="category.id"
+                        :style="`color: ${category.textColor}`"
+                        @keyup="rename"
+                        >{{ category.title || '&nbsp;' }}</span
+                    >
+                </div>
+                <div
+                    class="relative p-1 rounded opacity-0 handle cursor-grab active:cursor-grabbing group-hover:opacity-100"
+                    :style="`color: ${category.textColor}`"
+                    data-tooltip="<p class='text-xs leading-normal text-gray-400'><strong class='text-gray-200'>Click</strong> to open menu<br><strong class='text-gray-200'>Drag</strong> to reorder</p>"
+                    data-tooltip-side="left"
+                    @mouseenter="$nuxt.$emit('show-tooltip', $event)"
+                    @mouseleave="$nuxt.$emit('hide-tooltip', $event)"
+                >
+                    <div
+                        class="absolute inset-0 rounded opacity-0 hover:opacity-50"
+                        :style="`background-color: ${category.bgColor}`"
+                    ></div>
+                    <span class="relative pointer-events-none">⋮⋮</span>
+                </div>
             </div>
         </draggable>
+
+        <div
+            class="flex items-center gap-2 py-2 mt-2 text-gray-400 cursor-pointer hover:text-white"
+            @click="addCategory"
+        >
+            <i class="fas fa-plus fa-xs"></i>
+            Add new category
+        </div>
     </div>
 </template>
 
@@ -54,6 +82,9 @@ export default {
             // const title = event.target.innerHTML;
             // const id = parseInt(event.target.dataset.id);
             // this.$store.commit('categories/rename', { id, title });
+        },
+        addCategory() {
+            this.$store.dispatch('categories/add');
         },
     },
 };

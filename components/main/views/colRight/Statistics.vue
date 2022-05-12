@@ -2,7 +2,11 @@
     <div class="p-4">
         <h1 class="font-semibold">Statistics</h1>
 
-        <div class="mt-4 space-y-4">
+        <transition-group
+            class="mt-4 space-y-4"
+            move-class="duration-200"
+            tag="div"
+        >
             <div
                 v-for="category in categories"
                 :key="category.id"
@@ -19,7 +23,7 @@
                     count(category) || 0
                 }}</span>
             </div>
-        </div>
+        </transition-group>
     </div>
 </template>
 
