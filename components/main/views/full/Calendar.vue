@@ -11,7 +11,7 @@
                     <div
                         v-for="(day, d) in days(week)"
                         :key="d"
-                        class="relative flex-1 w-0 h-40 border-t border-l border-gray-700"
+                        class="relative flex-1 w-0 border-t border-l border-gray-700 h-44"
                         :class="[
                             isWeekend(day)
                                 ? isWithinBounds(day)
@@ -33,7 +33,7 @@
                             "
                         ></div>
                         <p
-                            class="m-2 text-xs uppercase select-none"
+                            class="m-2 mb-1.5 text-xs uppercase select-none"
                             :class="
                                 isWithinBounds(day)
                                     ? 'text-gray-500'
@@ -56,13 +56,13 @@
                             >
                                 <div
                                     v-if="event.fullDay"
-                                    class="px-2 py-1 select-none"
+                                    class="px-1 py-0.5 select-none"
                                     :class="[
                                         isStart(event, day)
-                                            ? 'ml-2 rounded-l'
+                                            ? 'ml-1 rounded-l'
                                             : '',
                                         isEnd(event, day)
-                                            ? 'mr-2 rounded-r'
+                                            ? 'mr-1 rounded-r'
                                             : '',
                                         tool === 'select'
                                             ? 'pointer-events-none'
@@ -78,7 +78,7 @@
                                     };`"
                                 >
                                     <p
-                                        class="font-semibold"
+                                        class="text-xs"
                                         :style="`color: ${event.category.textColor}`"
                                     >
                                         {{

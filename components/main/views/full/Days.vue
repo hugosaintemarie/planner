@@ -21,20 +21,20 @@
             ></i>
             <transition
                 enter-active-class="duration-100 ease-out"
-                enter-class="-translate-y-1 opacity-0"
+                enter-class="scale-90 opacity-0"
                 enter-to-class="opacity-100"
                 leave-active-class="duration-100 ease-in"
                 leave-class="opacity-100"
-                leave-to-class="-translate-y-1 opacity-0"
+                leave-to-class="scale-90 opacity-0"
             >
                 <div
                     v-show="weekday.open"
-                    class="absolute z-50 p-1 mt-1 text-gray-400 -translate-x-1/2 bg-gray-800 rounded-md top-full left-1/2"
+                    class="absolute z-50 p-1 mt-1 text-gray-400 origin-top -translate-x-1/2 bg-gray-800 border border-gray-700 rounded-md shadow top-full left-1/2"
                     @click="hide(weekday)"
                 >
                     <ul>
                         <li
-                            class="flex items-center gap-2 p-2 rounded hover:text-white whitespace-nowrap"
+                            class="flex items-center gap-2 p-2 rounded hover:text-white whitespace-nowrap hover:bg-gray-700"
                         >
                             <i class="fas fa-eye-slash"></i>
                             Hide column
