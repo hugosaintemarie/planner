@@ -2,47 +2,45 @@
     <div class="p-4 pb-2 pr-2">
         <h1 class="font-semibold">Categories</h1>
 
-        <draggable
-            v-model="categories"
-            v-bind="dragOptions"
+        <Container
             class="mt-3"
-            handle=".handle"
-            drag-class="opacity-0"
+            lock-axis="y"
+            behaviour="contain"
+            drag-handle-selector=".handle"
+            @drop="onDrop"
         >
-            <div
-                v-for="category in categories"
-                :key="category.id"
-                class="flex items-center gap-2 py-1 group"
-            >
-                <div
-                    class="flex-1 px-3 py-2 rounded"
-                    :style="`background-color: ${category.bgColor}`"
-                    @click="onClick(category)"
-                >
-                    <span
-                        class="font-semibold whitespace-pre"
-                        :data-id="category.id"
-                        :style="`color: ${category.textColor}`"
-                        @keyup="rename"
-                        >{{ category.title || '&nbsp;' }}</span
-                    >
-                </div>
-                <div
-                    class="relative p-1 rounded opacity-0 handle cursor-grab active:cursor-grabbing group-hover:opacity-100"
-                    :style="`color: ${category.textColor}`"
-                    data-tooltip="<p class='text-xs leading-normal text-gray-400'><strong class='text-gray-200'>Click</strong> to open menu<br><strong class='text-gray-200'>Drag</strong> to reorder</p>"
-                    data-tooltip-side="left"
-                    @mouseenter="$nuxt.$emit('show-tooltip', $event)"
-                    @mouseleave="$nuxt.$emit('hide-tooltip', $event)"
-                >
+            <Draggable v-for="category in categories" :key="category.id">
+                <div class="flex items-center gap-2 py-1 group">
                     <div
-                        class="absolute inset-0 rounded opacity-0 hover:opacity-50"
+                        class="flex-1 px-3 py-2 rounded"
                         :style="`background-color: ${category.bgColor}`"
-                    ></div>
-                    <span class="relative pointer-events-none">⋮⋮</span>
+                        @click="onClick(category)"
+                    >
+                        <span
+                            class="font-semibold whitespace-pre"
+                            :data-id="category.id"
+                            :style="`color: ${category.textColor}`"
+                            @keyup="rename"
+                            >{{ category.title || '&nbsp;' }}</span
+                        >
+                    </div>
+                    <div
+                        class="relative p-1 rounded opacity-0 handle cursor-grab group-active:cursor-grabbing group-hover:opacity-100"
+                        :style="`color: ${category.textColor}`"
+                        data-tooltip="<p class='text-xs leading-normal text-gray-400'><strong class='text-gray-200'>Click</strong> to open menu<br><strong class='text-gray-200'>Drag</strong> to reorder</p>"
+                        data-tooltip-side="left"
+                        @mouseenter="$nuxt.$emit('show-tooltip', $event)"
+                        @mouseleave="$nuxt.$emit('hide-tooltip', $event)"
+                    >
+                        <div
+                            class="absolute inset-0 rounded opacity-0 hover:opacity-50"
+                            :style="`background-color: ${category.bgColor}`"
+                        ></div>
+                        <span class="relative pointer-events-none">⋮⋮</span>
+                    </div>
                 </div>
-            </div>
-        </draggable>
+            </Draggable>
+        </Container>
 
         <div
             class="flex items-center gap-2 py-2 mt-2 text-gray-400 cursor-pointer hover:text-white"
@@ -55,6 +53,9 @@
 </template>
 
 <script>
+// eslint-disable-next-line import/no-absolute-path
+import { applyDrag } from '/plugins/draggable-utils';
+
 export default {
     computed: {
         categories: {
@@ -65,13 +66,11 @@ export default {
                 this.$store.commit('categories/update', value);
             },
         },
-        dragOptions() {
-            return {
-                animation: 200,
-            };
-        },
     },
     methods: {
+        onDrop(dropResult) {
+            this.categories = applyDrag(this.categories, dropResult);
+        },
         onClick(category) {
             this.$store.dispatch('events/add', {
                 category,

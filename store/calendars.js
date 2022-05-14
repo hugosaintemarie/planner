@@ -31,6 +31,9 @@ export const actions = {
     delete({ commit }, id) {
         commit('delete', id);
     },
+    update({ commit }, value) {
+        commit('update', value);
+    },
     select({ commit }, id) {
         commit('select', id);
     },

@@ -1,70 +1,75 @@
 <template>
     <div class="flex-1 overflow-hidden">
-        <draggable
-            v-model="cals"
-            v-bind="dragOptions"
-            class="h-full pb-6 space-y-6 overflow-auto no-scrollbar"
+        <Container
+            class="h-full pb-6 overflow-auto no-scrollbar"
+            lock-axis="y"
+            behaviour="contain"
+            @drop="onDrop"
         >
-            <div
-                v-for="calendar in calendars"
-                :key="calendar.id"
-                class="flex flex-col items-center m-4 rounded-md cursor-pointer"
-                :class="
-                    selected === calendar.id ? 'text-white' : ' text-gray-400'
-                "
-                @click="select(calendar.id)"
-            >
+            <Draggable v-for="calendar in calendars" :key="calendar.id">
                 <div
-                    class="w-full mb-3 overflow-hidden bg-gray-800 border-2 rounded-lg"
+                    class="flex flex-col items-center m-4 rounded-md cursor-pointer"
                     :class="
                         selected === calendar.id
-                            ? 'border-gray-100'
-                            : 'border-gray-700'
+                            ? 'text-white'
+                            : ' text-gray-400'
                     "
+                    @click="select(calendar.id)"
                 >
                     <div
-                        v-for="(week, w) in weeks"
-                        :key="w"
-                        class="flex"
-                        :class="w === 0 ? '' : 'border-t border-gray-700'"
+                        class="w-full mb-3 overflow-hidden bg-gray-800 border-2 rounded-lg"
+                        :class="
+                            selected === calendar.id
+                                ? 'border-gray-100'
+                                : 'border-gray-700'
+                        "
                     >
                         <div
-                            v-for="(day, d) in days(week)"
-                            :key="d"
-                            class="relative flex-1 h-5"
-                            :class="d === 0 ? '' : 'border-l border-gray-700'"
+                            v-for="(week, w) in weeks"
+                            :key="w"
+                            class="flex"
+                            :class="w === 0 ? '' : 'border-t border-gray-700'"
                         >
                             <div
-                                v-if="isSelected(day)"
-                                :class="selectionClasses(day, calendar.id)"
-                                style="
-                                    height: calc(100% + 2px);
-                                    width: calc(100% + 2px);
+                                v-for="(day, d) in days(week)"
+                                :key="d"
+                                class="relative flex-1 h-5"
+                                :class="
+                                    d === 0 ? '' : 'border-l border-gray-700'
                                 "
-                            ></div>
-                            <div
-                                v-if="eventsThatDay(day, calendar)"
-                                class="flex flex-wrap items-center justify-center h-full"
                             >
                                 <div
-                                    v-for="event in eventsThatDay(
-                                        day,
-                                        calendar
-                                    )"
-                                    :key="event.id"
-                                    class="flex-none m-px w-1.5 h-1.5 rounded-full"
-                                    :style="`background-color: ${event.category.color}`"
+                                    v-if="isSelected(day)"
+                                    :class="selectionClasses(day, calendar.id)"
+                                    style="
+                                        height: calc(100% + 2px);
+                                        width: calc(100% + 2px);
+                                    "
                                 ></div>
+                                <div
+                                    v-if="eventsThatDay(day, calendar)"
+                                    class="flex flex-wrap items-center justify-center h-full"
+                                >
+                                    <div
+                                        v-for="event in eventsThatDay(
+                                            day,
+                                            calendar
+                                        )"
+                                        :key="event.id"
+                                        class="flex-none m-px w-1.5 h-1.5 rounded-full"
+                                        :style="`background-color: ${event.category.color}`"
+                                    ></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <span class="whitespace-pre">{{
-                    calendar.title || '&nbsp;'
-                }}</span>
-            </div>
-        </draggable>
+                    <span class="whitespace-pre">{{
+                        calendar.title || '&nbsp;'
+                    }}</span>
+                </div>
+            </Draggable>
+        </Container>
     </div>
 </template>
 
@@ -80,10 +85,19 @@ import {
     startOfDay,
     subDays,
 } from 'date-fns';
+
+// eslint-disable-next-line import/no-absolute-path
+import { applyDrag } from '/plugins/draggable-utils';
+
 export default {
     computed: {
-        calendars() {
-            return this.$store.state.calendars.list;
+        calendars: {
+            get() {
+                return this.$store.state.calendars.list;
+            },
+            set(value) {
+                this.$store.commit('calendars/update', value);
+            },
         },
         selected() {
             return this.$store.state.calendars.selected;
@@ -107,16 +121,19 @@ export default {
                 this.$store.commit('calendars/update', value);
             },
         },
-        dragOptions() {
-            return {
-                animation: 200,
-            };
-        },
+        // dragOptions() {
+        //     return {
+        //         animation: 200,
+        //     };
+        // },
     },
     mounted() {
         this.select(0);
     },
     methods: {
+        onDrop(dropResult) {
+            this.calendars = applyDrag(this.calendars, dropResult);
+        },
         select(id) {
             this.$store.dispatch('calendars/select', id);
         },
