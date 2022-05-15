@@ -1,8 +1,7 @@
 <template>
     <div class="w-full h-full overflow-hidden">
         <div
-            class="relative flex h-full overflow-auto no-scrollbar"
-            style="scroll-snap-type: x mandatory; scroll-padding: 4rem"
+            class="relative flex h-full overflow-auto no-scrollbar snap-x snap-mandatory scroll-p-16"
             @mousedown="mousedown = true"
             @mouseup="mousedown = false"
         >
@@ -50,8 +49,7 @@
             <div
                 v-for="day in days"
                 :key="day.valueOf()"
-                class="relative flex-none w-32 min-h-full border-r border-gray-700 last:border-none"
-                style="scroll-snap-align: start; height: max-content"
+                class="relative flex-none w-32 min-h-full border-r border-gray-700 last:border-none snap-start h-max"
                 :class="[isWeekend(day) ? 'bg-gray-800/40' : '']"
             >
                 <div

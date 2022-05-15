@@ -59,7 +59,7 @@ export const state = () => ({
             ],
         ];
 
-        const stops = temp[1];
+        const stops = temp[0];
 
         return stops;
     },
