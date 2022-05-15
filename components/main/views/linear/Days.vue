@@ -8,11 +8,13 @@
                 :style="`width: ${monthWidth(month)}px`"
             >
                 <p class="sticky inline left-4">
-                    <strong class="font-bold text-gray-50">{{
-                        month.toLocaleString('en-US', {
-                            month: 'long',
-                        })
-                    }}</strong>
+                    <strong class="font-bold text-gray-50">
+                        {{
+                            month.toLocaleString('en-US', {
+                                month: 'long',
+                            })
+                        }}
+                    </strong>
                     {{ month.getFullYear() }}
                 </p>
             </div>
@@ -21,7 +23,7 @@
             <div
                 v-for="day in daysShown"
                 :key="toDayString(day)"
-                class="relative flex-none w-40 py-1 pl-4 text-xs text-center text-gray-400"
+                class="relative flex-none w-40 py-1 pl-4 text-xs text-center text-gray-400 snap-start"
                 :style="`width: ${dayWidth}px`"
             >
                 <span>{{ toDayString(day) }}</span>
@@ -92,7 +94,6 @@ export default {
                 parseISO(this.$store.getters['settings/get']('end')),
             ]);
 
-            console.log(start, end);
             const days = eachDayOfInterval(
                 {
                     start,
