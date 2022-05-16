@@ -1,5 +1,5 @@
 <template>
-    <div class="relative flex w-fit">
+    <div class="relative flex w-fit -ml-60">
         <MainViewsLinearAside />
         <div class="flex-1 -ml-px">
             <div

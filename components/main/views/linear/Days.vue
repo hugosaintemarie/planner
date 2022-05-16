@@ -1,5 +1,5 @@
 <template>
-    <div class="sticky top-0 pt-2 bg-gray-800 left-60 w-fit">
+    <div class="sticky top-0 z-10 pt-2 bg-gray-800 w-fit">
         <div class="relative flex">
             <div
                 v-for="month in months"

@@ -1,6 +1,6 @@
 <template>
     <aside
-        class="sticky left-0 flex-none overflow-hidden bg-gray-800 border-r border-gray-700 w-60"
+        class="sticky flex-none overflow-hidden bg-gray-800 border-r border-gray-700 w-60 -left-60"
     >
         <Container
             class="h-full pb-6 overflow-auto no-scrollbar"
