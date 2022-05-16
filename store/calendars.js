@@ -43,6 +43,9 @@ export const actions = {
 };
 
 export const getters = {
+    all(state) {
+        return state.list;
+    },
     selected(state) {
         return state.list.find((d) => d.id === state.selected);
     },

@@ -1,10 +1,10 @@
 <template>
-    <div class="bg-gray-800 border-l border-gray-700">
+    <aside class="flex-none bg-gray-800 border-l border-gray-700 w-60">
         <div class="h-full overflow-auto">
-            <MainViewsColRightCategories />
-            <MainViewsColRightStatistics class="border-t border-gray-700" />
+            <MainSidebarCategories />
+            <MainSidebarStatistics class="border-t border-gray-700" />
         </div>
-    </div>
+    </aside>
 </template>
 
 <script>

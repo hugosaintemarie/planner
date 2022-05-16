@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="sticky top-0 pt-2 bg-gray-800 left-60 w-fit">
         <div class="relative flex">
             <div
                 v-for="month in months"
@@ -45,7 +45,7 @@ import {
 export default {
     data() {
         return {
-            dayWidth: 160,
+            dayWidth: 128,
         };
     },
     computed: {

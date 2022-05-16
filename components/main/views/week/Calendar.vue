@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full h-full overflow-hidden">
+    <div class="flex-1 w-full h-full overflow-hidden">
         <div
             class="relative flex h-full overflow-auto no-scrollbar snap-x snap-mandatory scroll-p-16"
             @mousedown="mousedown = true"
