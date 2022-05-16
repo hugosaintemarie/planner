@@ -6,8 +6,7 @@
             @mouseup="mousedown = false"
         >
             <div
-                class="sticky left-0 z-20 flex-none w-16 min-h-full bg-gray-800 border-r border-gray-700"
-                style="height: max-content"
+                class="sticky left-0 z-20 flex-none w-16 min-h-full bg-gray-800 border-r border-gray-700 h-max"
             >
                 <div
                     class="sticky top-0 z-10 h-32 p-2 bg-gray-800 border-b border-gray-700"
