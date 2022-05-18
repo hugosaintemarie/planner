@@ -87,14 +87,41 @@
                                                     : ''
                                             }}
                                         </p>
-                                        <input
+                                        <div
                                             v-if="!event.category"
-                                            ref="eventTitle"
-                                            type="text"
-                                            class="w-full bg-transparent border-none outline-none text-inherit"
-                                            placeholder="New event"
-                                            @blur="confirmEvent(event, $event)"
-                                        />
+                                            class="relative"
+                                        >
+                                            <input
+                                                ref="eventTitle"
+                                                v-model="eventTitle"
+                                                type="text"
+                                                class="w-full bg-transparent border-none outline-none text-inherit"
+                                                placeholder="New event"
+                                                @blur="
+                                                    confirmEvent(event, $event)
+                                                "
+                                            />
+                                            <div
+                                                v-if="filteredCategories.length"
+                                                class="absolute z-10 px-2 py-1 mt-1 bg-gray-800 border border-gray-700 rounded shadow-sm -left-1 top-full"
+                                            >
+                                                <div
+                                                    v-for="category in filteredCategories"
+                                                    :key="category.title"
+                                                    class="flex items-stretch gap-2 p-1 pl-0"
+                                                >
+                                                    <div
+                                                        class="w-1 rounded-full"
+                                                        :style="`background-color: ${category.color}`"
+                                                    ></div>
+                                                    <p
+                                                        class="py-1 text-gray-400"
+                                                    >
+                                                        {{ category.title }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div v-if="!event.fullDay" class="flex">
@@ -153,6 +180,7 @@ export default {
     data() {
         return {
             mousedown: false,
+            eventTitle: '',
         };
     },
     computed: {
@@ -172,6 +200,22 @@ export default {
         },
         tool() {
             return this.$store.getters['tools/selected'];
+        },
+        filteredCategories() {
+            return this.$store.getters['categories/all']
+                .filter((item) =>
+                    item.title
+                        .toLowerCase()
+                        .startsWith(this.eventTitle.toLowerCase())
+                )
+                .sort((a, b) => (a.title > b.title ? 1 : -1))
+                .sort((a, b) =>
+                    a.title.length > b.title.length
+                        ? 1
+                        : a.title.length < b.title.length
+                        ? -1
+                        : 0
+                );
         },
     },
     methods: {
@@ -357,6 +401,8 @@ export default {
                 categoryID,
                 title,
             });
+
+            this.eventTitle = '';
         },
     },
 };
