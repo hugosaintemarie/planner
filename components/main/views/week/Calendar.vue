@@ -70,13 +70,13 @@
                                 v-for="event in eventsThatDay(day, 'full')"
                                 :key="event.id"
                                 class="px-1 py-0.5 w-full rounded select-none"
-                                :style="`background-color: ${event.category.bgColor};`"
+                                :style="`background-color: ${event.bgColor()};`"
                             >
                                 <p
                                     class="font-semibold"
-                                    :style="`color: ${event.category.textColor}`"
+                                    :style="`color: ${event.textColor()}`"
                                 >
-                                    {{ event.category.title }}
+                                    {{ event.title() }}
                                 </p>
                             </div>
                         </div>
@@ -131,17 +131,15 @@
                                 v-for="event in eventsThatDay(day, 'notFull')"
                                 :key="event.id"
                                 class="absolute left-0 w-full px-2 py-1 rounded select-none"
-                                :style="`background-color: ${
-                                    event.category.bgColor
-                                }; top: ${top(event)}px; height: calc(${height(
+                                :style="`background-color: ${event.bgColor()}; top: ${top(
                                     event
-                                )}px - 3px)`"
+                                )}px; height: calc(${height(event)}px - 3px)`"
                             >
                                 <p
                                     class="font-semibold"
-                                    :style="`color: ${event.category.textColor}`"
+                                    :style="`color: ${event.textColor()}`"
                                 >
-                                    {{ event.category.title }}
+                                    {{ event.title() }}
                                 </p>
                             </div>
                         </div>

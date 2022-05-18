@@ -37,7 +37,7 @@
                             v-for="event in eventsThatDay(day, calendar)"
                             :key="event.id"
                             class="flex-none m-px w-1.5 h-1.5 rounded-full"
-                            :style="`background-color: ${event.category.color}`"
+                            :style="`background-color: ${event.color()}`"
                         ></div>
                     </div>
                 </div>

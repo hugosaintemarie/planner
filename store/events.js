@@ -33,11 +33,13 @@ export const mutations = {
         event.start = startOfDay(Math.min(day, state.origin.start));
         event.end = endOfDay(Math.max(day, state.origin.end));
     },
+    confirm(_state, { event, category }) {
+        event.category = category;
+    },
 };
 
 export const actions = {
     add({ commit }, { category, selection, fullDay }) {
-        if (!category) category = this.getters['categories/default'];
         if (!selection) selection = this.getters['selection/selected'];
 
         for (const interval of selection) {
@@ -55,6 +57,22 @@ export const actions = {
     delete({ commit }, id) {
         commit('delete', id);
     },
+    confirm({ commit, rootGetters }, { event, categoryID, title }) {
+        const byTitle = rootGetters['categories/findByTitle'](
+            title || 'New event'
+        );
+        if (byTitle) return commit('confirm', { event, category: byTitle });
+
+        if (categoryID === undefined)
+            this.dispatch('categories/add', title, { root: true });
+
+        const category =
+            categoryID === undefined
+                ? rootGetters['categories/newest']
+                : rootGetters['categories/get'](categoryID);
+
+        commit('confirm', { event, category });
+    },
     emptyOnCalendarOnDay({ commit, getters }, day) {
         for (const event of getters.onCalendarOnDay(day)) {
             commit('delete', event.id);
@@ -62,7 +80,7 @@ export const actions = {
     },
     init({ commit }, day) {
         const event = {
-            category: this.getters['categories/default'],
+            category: null,
             calendar: this.getters['calendars/selected'],
             start: startOfDay(day),
             end: endOfDay(day),
@@ -115,5 +133,25 @@ class Event {
         this.start = props.start;
         this.end = props.end;
         this.fullDay = props.fullDay || false;
+    }
+
+    title() {
+        if (!this.category) return 'New event';
+        return this.category.title;
+    }
+
+    color() {
+        if (!this.category) return 'hsl(0, 0%, 52%)';
+        return this.category.color;
+    }
+
+    bgColor() {
+        if (!this.category) return 'hsla(0, 0%, 38%, 30%)';
+        return this.category.bgColor;
+    }
+
+    textColor() {
+        if (!this.category) return 'hsl(0, 0%, 85%)';
+        return this.category.textColor;
     }
 }

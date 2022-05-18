@@ -20,9 +20,9 @@
                                 : '',
                             monthsDivider(day),
                         ]"
-                        @mousedown="isWithinBounds(day) && mousedownDay(day)"
-                        @mouseenter="isWithinBounds(day) && mouseenterDay(day)"
-                        @dblclick="isWithinBounds(day) && dblclickDay(day)"
+                        @mousedown="mousedownDay(day)"
+                        @mouseenter="mouseenterDay(day)"
+                        @dblclick="dblclickDay(day)"
                     >
                         <div
                             v-if="isSelected(day)"
@@ -56,7 +56,7 @@
                             >
                                 <div
                                     v-if="event.fullDay"
-                                    class="px-1 py-0.5 select-none"
+                                    class="px-1 py-0.5 select-none h-6"
                                     :class="[
                                         isStart(event, day)
                                             ? 'ml-1 rounded-l'
@@ -68,38 +68,46 @@
                                             ? 'pointer-events-none'
                                             : '',
                                     ]"
-                                    :style="`background-color: ${
-                                        event.category.bgColor
-                                    }; margin-left: ${
+                                    :style="`background-color: ${event.bgColor()}; margin-left: ${
                                         isStart(event, day) ||
                                         isFirstOfWeek(day)
                                             ? ''
                                             : '-1px'
                                     };`"
                                 >
-                                    <p
-                                        class="text-xs"
-                                        :style="`color: ${event.category.textColor}`"
-                                    >
-                                        {{
-                                            isStart(event, day) ||
-                                            isFirstOfWeek(day)
-                                                ? event.category.title
-                                                : '&nbsp;'
-                                        }}
-                                    </p>
+                                    <div :style="`color: ${event.textColor()}`">
+                                        <p
+                                            v-if="event.category"
+                                            class="text-sm"
+                                        >
+                                            {{
+                                                isStart(event, day) ||
+                                                isFirstOfWeek(day)
+                                                    ? event.title()
+                                                    : ''
+                                            }}
+                                        </p>
+                                        <input
+                                            v-if="!event.category"
+                                            ref="eventTitle"
+                                            type="text"
+                                            class="w-full bg-transparent border-none outline-none text-inherit"
+                                            placeholder="New event"
+                                            @blur="confirmEvent(event, $event)"
+                                        />
+                                    </div>
                                 </div>
                                 <div v-if="!event.fullDay" class="flex">
                                     <div
                                         class="flex-none mr-2 mt-1.5 w-2 h-2 rounded-full"
-                                        :style="`background-color: ${event.category.color}`"
+                                        :style="`background-color: ${event.color()}`"
                                     ></div>
                                     <p
                                         class="flex flex-1"
-                                        :style="`color: ${event.category.textColor}`"
+                                        :style="`color: ${event.textColor()}`"
                                     >
                                         <span class="font-semibold">
-                                            {{ event.category.title }}
+                                            {{ event.title() }}
                                         </span>
                                         <span class="ml-auto">
                                             {{
@@ -239,6 +247,8 @@ export default {
             return classes;
         },
         mousedownDay(day) {
+            if (!this.isWithinBounds(day)) return;
+
             if (this.tool === 'select') this.mousedownDaySelect(day);
             else if (this.tool === 'draw') this.mousedownDayDraw(day);
         },
@@ -277,6 +287,8 @@ export default {
             this.$store.dispatch('events/init', day);
         },
         mouseenterDay(day) {
+            if (!this.isWithinBounds(day)) return;
+
             if (this.mousedown) {
                 if (this.tool === 'select') this.mouseenterDaySelect(day);
                 else if (this.tool === 'draw') this.mouseenterDayDraw(day);
@@ -304,6 +316,8 @@ export default {
             this.$store.dispatch('events/draw', day);
         },
         dblclickDay(day) {
+            if (!this.isWithinBounds(day)) return;
+
             if (this.tool === 'select') return;
 
             const selection = [
@@ -313,6 +327,8 @@ export default {
                 },
             ];
             this.$store.dispatch('events/add', { selection, fullDay: true });
+
+            this.$nextTick(() => this.$refs.eventTitle[0].focus());
         },
         eventsThatDay(day) {
             let events = this.$store.getters['events/onCalendarOnDay'](day);
@@ -331,6 +347,16 @@ export default {
             if (this.tool === 'draw') {
                 console.log('dblclick', event);
             }
+        },
+        confirmEvent(event, $event) {
+            const title = $event.target.value;
+            const categoryID = undefined;
+
+            this.$store.dispatch('events/confirm', {
+                event,
+                categoryID,
+                title,
+            });
         },
     },
 };

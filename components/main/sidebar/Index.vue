@@ -11,13 +11,8 @@
 export default {
     mounted() {
         for (let i = 0; i < 6; i += 1) {
-            this.add();
+            this.$store.dispatch('categories/add', `Category ${i}`);
         }
-    },
-    methods: {
-        add() {
-            this.$store.dispatch('categories/add');
-        },
     },
 };
 </script>

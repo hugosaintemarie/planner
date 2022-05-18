@@ -68,7 +68,7 @@ export default {
     computed: {
         categories: {
             get() {
-                return this.$store.state.categories.list;
+                return this.$store.getters['categories/all'];
             },
             set(value) {
                 this.$store.commit('categories/update', value);

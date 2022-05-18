@@ -4,9 +4,9 @@ export const state = () => ({
 });
 
 export const mutations = {
-    add(state) {
+    add(state, title) {
         const id = state.list.length;
-        state.list.push(new Category(id));
+        state.list.push(new Category(id, title));
     },
     delete(state, id) {
         const index = state.list.findIndex((item) => item.id === id);
@@ -25,8 +25,8 @@ export const mutations = {
 };
 
 export const actions = {
-    add({ commit }) {
-        commit('add');
+    add({ commit }, title) {
+        commit('add', title);
     },
     delete({ commit }, id) {
         commit('delete', id);
@@ -43,11 +43,23 @@ export const actions = {
 };
 
 export const getters = {
+    all(state) {
+        return state.list;
+    },
     selected(state) {
         return state.list[state.selected];
     },
     default(state) {
         return state.list[0];
+    },
+    get: (state) => (id) => {
+        return state.list.find((item) => item.id === id);
+    },
+    newest(state) {
+        return state.list.slice(-1)[0];
+    },
+    findByTitle: (state) => (title) => {
+        return state.list.find((d) => d.title === title);
     },
 };
 
@@ -121,11 +133,11 @@ const textColors = [
 ];
 
 class Category {
-    constructor(id) {
+    constructor(id, title) {
         this.id = id;
-        this.title = `Category ${id}`;
-        this.color = colors[id % colors.length];
-        this.bgColor = bgColors[id % bgColors.length];
-        this.textColor = textColors[id % textColors.length];
+        this.title = title || 'New event';
+        this.color = colors[(title ? id : 18) % colors.length];
+        this.bgColor = bgColors[(title ? id : 18) % bgColors.length];
+        this.textColor = textColors[(title ? id : 18) % textColors.length];
     }
 }
