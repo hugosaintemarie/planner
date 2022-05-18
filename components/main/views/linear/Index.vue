@@ -1,5 +1,5 @@
 <template>
-    <div class="relative w-full h-full">
+    <div class="relative h-full overflow-hidden">
         <MainAsideHeader
             class="absolute top-0 left-0 z-20 flex-none bg-gray-800 border-r border-gray-700 w-60"
         />

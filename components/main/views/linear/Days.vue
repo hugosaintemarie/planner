@@ -23,7 +23,7 @@
             <div
                 v-for="day in daysShown"
                 :key="toDayString(day)"
-                class="relative flex-none w-40 py-1 pl-4 text-xs text-center text-gray-400 snap-start"
+                class="relative flex-none w-40 py-1 text-xs text-center text-gray-400 snap-start"
                 :style="`width: ${dayWidth}px`"
             >
                 <span>{{ toDayString(day) }}</span>
