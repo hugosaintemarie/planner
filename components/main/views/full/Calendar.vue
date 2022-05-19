@@ -67,56 +67,71 @@
                                         tool === 'select'
                                             ? 'pointer-events-none'
                                             : '',
+                                        isLineStart(event, day) ? '' : '-ml-px',
                                     ]"
-                                    :style="`background-color: ${event.bgColor()}; margin-left: ${
-                                        isStart(event, day) ||
-                                        isFirstOfWeek(day)
-                                            ? ''
-                                            : '-1px'
-                                    };`"
+                                    :style="`background-color: ${event.bgColor()}`"
                                 >
                                     <div :style="`color: ${event.textColor()}`">
                                         <p
-                                            v-if="event.category"
+                                            v-if="
+                                                event.category &&
+                                                isLineStart(event, day)
+                                            "
                                             class="text-sm"
                                         >
-                                            {{
-                                                isStart(event, day) ||
-                                                isFirstOfWeek(day)
-                                                    ? event.title()
-                                                    : ''
-                                            }}
+                                            {{ event.title() }}
                                         </p>
                                         <div
-                                            v-if="!event.category"
+                                            v-if="
+                                                !event.category &&
+                                                isLineStart(event, day)
+                                            "
                                             class="relative"
                                         >
                                             <input
                                                 ref="eventTitle"
                                                 v-model="eventTitle"
+                                                v-click-outside="
+                                                    () => confirmEvent(event)
+                                                "
                                                 type="text"
                                                 class="w-full bg-transparent border-none outline-none text-inherit"
                                                 placeholder="New event"
-                                                @blur="
-                                                    confirmEvent(event, $event)
+                                                @keydown="
+                                                    keydownInput(event, $event)
                                                 "
                                             />
                                             <div
-                                                v-if="filteredCategories.length"
-                                                class="absolute z-10 px-2 py-1 mt-1 bg-gray-800 border border-gray-700 rounded shadow-sm -left-1 top-full"
+                                                v-if="showSelector(event, day)"
+                                                class="absolute z-10 p-1 mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-sm -left-1 top-full whitespace-nowrap"
                                             >
                                                 <div
-                                                    v-for="category in filteredCategories"
+                                                    v-for="(
+                                                        category, i
+                                                    ) in filteredCategories"
                                                     :key="category.title"
-                                                    class="flex items-stretch gap-2 p-1 pl-0"
+                                                    class="flex items-stretch gap-2 py-1 pl-2 pr-4 text-gray-400 rounded cursor-pointer"
+                                                    :class="
+                                                        i === catHovered
+                                                            ? 'text-gray-200 bg-gray-700'
+                                                            : ''
+                                                    "
+                                                    @mouseenter="catHovered = i"
+                                                    @mouseleave="
+                                                        catHovered = null
+                                                    "
+                                                    @mousedown.stop="
+                                                        confirmEvent(
+                                                            event,
+                                                            category
+                                                        )
+                                                    "
                                                 >
                                                     <div
                                                         class="w-1 rounded-full"
                                                         :style="`background-color: ${category.color}`"
                                                     ></div>
-                                                    <p
-                                                        class="py-1 text-gray-400"
-                                                    >
+                                                    <p class="py-1">
                                                         {{ category.title }}
                                                     </p>
                                                 </div>
@@ -159,6 +174,8 @@
 </template>
 
 <script>
+import vClickOutside from 'v-click-outside';
+
 import {
     addDays,
     eachDayOfInterval,
@@ -177,10 +194,14 @@ import {
 } from 'date-fns';
 
 export default {
+    directives: {
+        clickOutside: vClickOutside.directive,
+    },
     data() {
         return {
             mousedown: false,
             eventTitle: '',
+            catHovered: null,
         };
     },
     computed: {
@@ -392,17 +413,47 @@ export default {
                 console.log('dblclick', event);
             }
         },
-        confirmEvent(event, $event) {
-            const title = $event.target.value;
-            const categoryID = undefined;
-
+        confirmEvent(event, category) {
             this.$store.dispatch('events/confirm', {
                 event,
-                categoryID,
-                title,
+                categoryID: category?.id || undefined,
+                title: category ? null : this.eventTitle,
             });
 
             this.eventTitle = '';
+        },
+        showSelector(event, day) {
+            const show =
+                this.filteredCategories.length &&
+                !event.category &&
+                this.isStart(event, day) &&
+                !this.mousedown;
+
+            if (show) this.$nextTick(() => this.$refs.eventTitle[0].focus());
+            return show;
+        },
+        isLineStart(event, day) {
+            return this.isStart(event, day) || this.isFirstOfWeek(day);
+        },
+        keydownInput(event, $event) {
+            if (!['Enter', 'ArrowDown', 'ArrowUp'].includes($event.key)) return;
+
+            $event.preventDefault();
+
+            if ($event.key === 'Enter') {
+                const category = this.filteredCategories[this.catHovered];
+                return this.confirmEvent(event, category);
+            }
+
+            const shown = this.filteredCategories.length;
+
+            if ($event.key === 'ArrowDown') {
+                if (this.catHovered === null) this.catHovered = 0;
+                else this.catHovered = (this.catHovered + 1) % shown;
+            } else if ($event.key === 'ArrowUp') {
+                if (this.catHovered === null) this.catHovered = shown - 1;
+                else this.catHovered = (this.catHovered - 1 + shown) % shown;
+            }
         },
     },
 };

@@ -58,13 +58,13 @@ export const actions = {
         commit('delete', id);
     },
     confirm({ commit, rootGetters }, { event, categoryID, title }) {
-        const byTitle = rootGetters['categories/findByTitle'](
-            title || 'New event'
-        );
-        if (byTitle) return commit('confirm', { event, category: byTitle });
-
-        if (categoryID === undefined)
-            this.dispatch('categories/add', title, { root: true });
+        if (categoryID === undefined) {
+            const byTitle = rootGetters['categories/findByTitle'](
+                title || 'New event'
+            );
+            if (byTitle) return commit('confirm', { event, category: byTitle });
+            else this.dispatch('categories/add', title, { root: true });
+        }
 
         const category =
             categoryID === undefined
