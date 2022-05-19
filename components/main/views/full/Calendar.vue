@@ -436,13 +436,22 @@ export default {
             return this.isStart(event, day) || this.isFirstOfWeek(day);
         },
         keydownInput(event, $event) {
-            if (!['Enter', 'ArrowDown', 'ArrowUp'].includes($event.key)) return;
+            const allowed = ['Enter', 'Escape', 'ArrowDown', 'ArrowUp'];
+            if (!allowed.includes($event.key)) return;
 
             $event.preventDefault();
 
             if ($event.key === 'Enter') {
                 const category = this.filteredCategories[this.catHovered];
                 return this.confirmEvent(event, category);
+            }
+
+            if ($event.key === 'Escape') {
+                this.$store.dispatch('events/delete', {
+                    id: event.id,
+                });
+                this.eventTitle = '';
+                return;
             }
 
             const shown = this.filteredCategories.length;
