@@ -92,7 +92,9 @@
                                                 ref="eventTitle"
                                                 v-model="eventTitle"
                                                 v-click-outside="
-                                                    () => confirmEvent(event)
+                                                    () => {
+                                                        clickOutside(event);
+                                                    }
                                                 "
                                                 type="text"
                                                 class="w-full bg-transparent border-none outline-none text-inherit"
@@ -202,6 +204,7 @@ export default {
             mousedown: false,
             eventTitle: '',
             catHovered: null,
+            drawing: false,
         };
     },
     computed: {
@@ -378,6 +381,7 @@ export default {
             }
         },
         mouseenterDayDraw(day) {
+            this.drawing = true;
             this.$store.dispatch('events/draw', day);
         },
         dblclickDay(day) {
@@ -463,6 +467,10 @@ export default {
                 if (this.catHovered === null) this.catHovered = shown - 1;
                 else this.catHovered = (this.catHovered - 1 + shown) % shown;
             }
+        },
+        clickOutside(event) {
+            if (!this.drawing) this.confirmEvent(event);
+            setTimeout(() => (this.drawing = false), 1);
         },
     },
 };
