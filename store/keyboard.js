@@ -22,11 +22,13 @@ export const actions = {
 
 export const getters = {
     isKeydown: (state) => (key) => {
-        if (key === 'shift') return state.keysdown.includes(16);
-        if (key === 'meta')
-            return [17, 91, 93].some((k) => state.keysdown.includes(k));
-        if (key === 'alt') key = 18;
+        const keys = [key];
 
-        return state.keysdown.includes(key);
+        // Support aliases
+        if (key === 'shift') keys.push(16);
+        if (key === 'meta') keys.push(17, 91, 93);
+        if (key === 'alt') keys.push(18);
+
+        return keys.some((k) => state.keysdown.includes(k));
     },
 };
