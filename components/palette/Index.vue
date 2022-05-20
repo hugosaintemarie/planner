@@ -12,6 +12,7 @@
         >
             <input
                 ref="search"
+                v-model="search"
                 type="text"
                 placeholder="Search for commands…"
                 class="w-full p-2 bg-transparent border-b border-gray-700 outline-none"
@@ -23,6 +24,7 @@
                     class="flex items-center gap-2 p-2 text-gray-400 rounded cursor-pointer"
                     :class="i === hovered ? 'text-gray-200 bg-gray-700' : ''"
                     @mouseenter="hovered = i"
+                    @click="onClick(command)"
                 >
                     <i
                         :class="command.icon"
@@ -57,12 +59,12 @@ export default {
                     icon: 'fas fa-plus',
                 },
                 {
-                    title: 'Replace events…',
+                    title: 'Replace events',
                     icon: 'fas fa-exchange-alt',
                     condition: this.selectionCount > 0,
                 },
                 {
-                    title: 'Delete events…',
+                    title: 'Delete events',
                     icon: 'far fa-trash-alt',
                     condition: this.selectionCount > 0,
                 },
@@ -72,7 +74,9 @@ export default {
             return this.commands
                 .filter((command) =>
                     this.search
-                        ? command.title.toLowerCase().startsWith(this.search)
+                        ? command.title
+                              .toLowerCase()
+                              .startsWith(this.search.toLowerCase())
                         : true
                 )
                 .filter((command) =>
@@ -90,13 +94,15 @@ export default {
         },
         close() {
             this.isOpen = false;
+            this.search = '';
+            this.hovered = 0;
         },
         onKeydown(event) {
             event.stopPropagation();
 
             if (event.key === 'Enter') {
                 if (!this.isOpen) this.toggle();
-                else this.close();
+                else this.onClick(this.filteredCommands[this.hovered]);
             } else if (event.key === 'Escape') {
                 this.close();
             } else if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
@@ -107,14 +113,15 @@ export default {
                 else if (event.key === 'ArrowUp')
                     this.hovered = (this.hovered - 1 + shown) % shown;
             } else {
-                setTimeout(() => {
-                    this.search = event.target.value?.toLowerCase();
-                    this.hovered = 0;
-                }, 1);
+                this.hovered = 0;
             }
         },
         onKeyup(event) {
             event.stopPropagation();
+        },
+        onClick(command) {
+            console.log(command);
+            this.close();
         },
     },
 };
