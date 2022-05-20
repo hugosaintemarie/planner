@@ -314,4 +314,7 @@ export const getters = {
     selected(state) {
         return state.list;
     },
+    count(state) {
+        return state.list.length;
+    },
 };
