@@ -4,36 +4,44 @@
         :class="isOpen ? '' : 'pointer-events-none'"
         @click="isOpen = false"
     >
-        <div
-            v-show="isOpen"
-            class="w-64 h-40 bg-gray-800 border border-gray-700 rounded-lg shadow-xl"
-            @click.stop
-            @keyup="onKeyup"
-        >
-            <input
-                ref="search"
-                v-model="search"
-                type="text"
-                placeholder="Search for commands…"
-                class="w-full p-2 bg-transparent border-b border-gray-700 outline-none"
-            />
-            <div class="p-2">
-                <div
-                    v-for="(command, i) in filteredCommands"
-                    :key="command.title"
-                    class="flex items-center gap-2 p-2 text-gray-400 rounded cursor-pointer"
-                    :class="i === hovered ? 'text-gray-200 bg-gray-700' : ''"
-                    @mouseenter="hovered = i"
-                    @click="onClick(command)"
-                >
-                    <i
-                        :class="command.icon"
-                        class="flex items-center justify-center w-4 h-4"
-                    ></i>
-                    <span>{{ command.title }}</span>
+        <div v-if="!state">
+            <div
+                v-show="isOpen"
+                class="w-64 bg-gray-800 border border-gray-700 rounded-lg shadow-xl h-44"
+                @click.stop
+                @keyup="onKeyup"
+            >
+                <input
+                    ref="search"
+                    v-model="search"
+                    type="text"
+                    placeholder="Search for commands…"
+                    class="w-full p-2 bg-transparent border-b border-gray-700 outline-none"
+                />
+                <div class="p-2">
+                    <div
+                        v-for="(command, i) in filteredCommands"
+                        :key="command.id"
+                        class="flex items-center gap-2 p-2 text-gray-400 rounded cursor-pointer"
+                        :class="
+                            i === hovered ? 'text-gray-200 bg-gray-700' : ''
+                        "
+                        @mouseenter="hovered = i"
+                        @click="onClick(command)"
+                    >
+                        <i
+                            :class="command.icon"
+                            class="flex items-center justify-center w-4 h-4"
+                        ></i>
+                        <span>{{ command.title }}</span>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <PaletteAdd v-if="state === 'add'" />
+        <PaletteReplace v-if="state === 'replace'" />
+        <PaletteDelete v-if="state === 'delete'" />
     </div>
 </template>
 
@@ -44,6 +52,7 @@ export default {
             isOpen: false,
             search: '',
             hovered: 0,
+            state: null,
         };
     },
     computed: {
@@ -53,17 +62,20 @@ export default {
         commands() {
             return [
                 {
+                    id: 'add',
                     title: `Add ${this.selectionCount} event${
                         this.selectionCount > 1 ? 's' : ''
                     }`,
                     icon: 'fas fa-plus',
                 },
                 {
+                    id: 'replace',
                     title: 'Replace events',
                     icon: 'fas fa-exchange-alt',
                     condition: this.selectionCount > 0,
                 },
                 {
+                    id: 'delete',
                     title: 'Delete events',
                     icon: 'far fa-trash-alt',
                     condition: this.selectionCount > 0,
@@ -90,7 +102,7 @@ export default {
     methods: {
         toggle() {
             this.isOpen = !this.isOpen;
-            if (this.isOpen) this.$nextTick(() => this.$refs.search.focus());
+            if (this.isOpen) this.focus();
         },
         close() {
             this.isOpen = false;
@@ -98,13 +110,22 @@ export default {
             this.hovered = 0;
         },
         onKeydown(event) {
+            if (this.state && event.key !== 'Escape') return;
+
             event.stopPropagation();
+
+            if (event.key === 'Shift') return;
 
             if (event.key === 'Enter') {
                 if (!this.isOpen) this.toggle();
                 else this.onClick(this.filteredCommands[this.hovered]);
             } else if (event.key === 'Escape') {
-                this.close();
+                if (this.state) {
+                    this.state = null;
+                    this.focus();
+                } else {
+                    this.close();
+                }
             } else if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
                 const shown = this.filteredCommands.length;
 
@@ -120,8 +141,10 @@ export default {
             event.stopPropagation();
         },
         onClick(command) {
-            console.log(command);
-            this.close();
+            this.state = command.id;
+        },
+        focus() {
+            this.$nextTick(() => this.$refs.search.focus());
         },
     },
 };
