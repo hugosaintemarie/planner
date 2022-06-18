@@ -39,9 +39,9 @@
             </div>
         </div>
 
-        <PaletteAdd v-if="state === 'add'" />
-        <PaletteReplace v-if="state === 'replace'" />
-        <PaletteDelete v-if="state === 'delete'" />
+        <PaletteAdd v-if="state === 'add'" @close="close" />
+        <PaletteReplace v-if="state === 'replace'" @close="close" />
+        <PaletteDelete v-if="state === 'delete'" @close="close" />
     </div>
 </template>
 
@@ -108,19 +108,18 @@ export default {
             this.isOpen = false;
             this.search = '';
             this.hovered = 0;
+            this.state = null;
         },
         onKeydown(event) {
             if (this.state && event.key !== 'Escape') return;
 
             event.stopPropagation();
 
-            if (event.key === 'Shift') return;
-
             if (event.key === 'Enter') {
                 if (!this.isOpen) this.toggle();
                 else this.onClick(this.filteredCommands[this.hovered]);
             } else if (event.key === 'Escape') {
-                if (this.state) {
+                if (this.state && !event.metaKey) {
                     this.state = null;
                     this.focus();
                 } else {
@@ -133,7 +132,7 @@ export default {
                     this.hovered = (this.hovered + 1) % shown;
                 else if (event.key === 'ArrowUp')
                     this.hovered = (this.hovered - 1 + shown) % shown;
-            } else {
+            } else if (String.fromCharCode(event.keyCode).match(/\w|\s/g)) {
                 this.hovered = 0;
             }
         },

@@ -70,32 +70,32 @@ export default {
         onKeydown(event) {
             event.stopPropagation();
 
-            if (event.key === 'Shift') return;
-
             if (event.key === 'Enter') {
                 this.onClick();
             } else if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
+                event.preventDefault();
+
                 const shown = this.filteredCategories.length;
 
                 if (event.key === 'ArrowDown')
                     this.hovered = (this.hovered + 1) % shown;
                 else if (event.key === 'ArrowUp')
                     this.hovered = (this.hovered - 1 + shown) % shown;
-            } else {
+            } else if (String.fromCharCode(event.keyCode).match(/\w|\s/g)) {
                 this.hovered = 0;
             }
         },
         onKeyup(event) {
             event.stopPropagation();
         },
-        onClick() {
-            const category = this.$store.getters['categories/get'](
-                this.hovered
-            );
+        onClick(close = true) {
+            const category = this.filteredCategories[this.hovered];
             this.$store.dispatch('events/add', {
                 category,
                 fullDay: this.$store.getters['views/current'] === 'full',
             });
+            if (close) this.$emit('close');
+            else this.focus();
         },
         focus() {
             this.$nextTick(() => this.$refs.search.focus());
