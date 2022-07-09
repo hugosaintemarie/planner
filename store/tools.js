@@ -21,8 +21,12 @@ export const mutations = {
 };
 
 export const actions = {
-    select({ commit }, name) {
+    select({ commit, dispatch }, name) {
         commit('select', name);
+
+        if (name === 'draw') {
+            dispatch('selection/unselectAll', null, { root: true });
+        }
     },
 };
 
