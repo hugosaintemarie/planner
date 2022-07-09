@@ -420,7 +420,7 @@ export default {
         confirmEvent(event, category) {
             this.$store.dispatch('events/confirm', {
                 event,
-                categoryID: category?.id || undefined,
+                categoryID: category?.id,
                 title: category ? null : this.eventTitle,
             });
 
