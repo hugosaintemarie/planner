@@ -446,6 +446,8 @@ export default {
             $event.preventDefault();
 
             if ($event.key === 'Enter') {
+                $event.stopPropagation();
+
                 const category = this.filteredCategories[this.catHovered];
                 return this.confirmEvent(event, category);
             }
