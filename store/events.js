@@ -39,7 +39,7 @@ export const mutations = {
 };
 
 export const actions = {
-    add({ commit }, { category, selection, fullDay }) {
+    add({ commit, dispatch }, { category, selection, fullDay }) {
         if (!selection) selection = this.getters['selection/selected'];
 
         for (const interval of selection) {
@@ -52,6 +52,7 @@ export const actions = {
             };
 
             commit('add', event);
+            dispatch('updateTracks', event);
         }
     },
     delete({ commit }, id) {
@@ -89,8 +90,37 @@ export const actions = {
 
         commit('init', event);
     },
-    draw({ commit }, day) {
+    draw({ state, commit, dispatch }, day) {
         commit('draw', day);
+
+        const event = state.list.find((d) => d.id === state.currentID);
+        dispatch('updateTracks', event);
+    },
+    updateTracks({ commit, getters }, event) {
+        // Build interval to consider
+        // Recursively find the limits of a "block" of connected events
+        let start = event.start;
+        let end = event.end;
+        let onStart = getters.onCalendarOnDay(start, event.calendar);
+        let onEnd = getters.onCalendarOnDay(end, event.calendar);
+
+        while (
+            onStart.some((e) => e.start < start) ||
+            onEnd.some((e) => e.end > end)
+        ) {
+            start = onStart.sort((a, b) => a.start - b.start)[0].start;
+            end = onEnd.sort((a, b) => b.end - a.end)[0].end;
+            onStart = getters.onCalendarOnDay(start, event.calendar);
+            onEnd = getters.onCalendarOnDay(end, event.calendar);
+        }
+
+        // Events to reorder vertically
+        const events = getters.onCalendarInInterval(
+            { start, end },
+            event.calendar
+        );
+
+        console.log(events);
     },
 };
 
@@ -106,6 +136,11 @@ export const getters = {
                 end: endOfDay(event.end),
             })
         );
+    },
+    onCalendarInInterval: (_, getters) => (interval, calendar) => {
+        return getters
+            .onCalendar(calendar)
+            .filter((event) => isWithinInterval(event.start, interval));
     },
     // onCalendarOnSlot: (_, getters) => (day, slot) => {
     //     const start = setHours(

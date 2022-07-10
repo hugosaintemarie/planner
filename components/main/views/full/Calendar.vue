@@ -403,7 +403,12 @@ export default {
             let events = this.$store.getters['events/onCalendarOnDay'](day);
             if (!events.length) return false;
 
-            events = events.sort((a, b) => a.start - b.start);
+            events = events.sort((a, b) => {
+                const durationA = a.end.getTime() - a.start.getTime();
+                const durationB = b.end.getTime() - b.start.getTime();
+                if (durationA === durationB) return a.start - b.start;
+                else return durationB - durationA;
+            });
             events = events.sort((d) => (d.fullDay ? 0 : 1));
             return events;
         },
